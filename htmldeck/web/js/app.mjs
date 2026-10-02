@@ -3949,12 +3949,6 @@ function bindUI() {
     }
   });
   $('#btn-present').addEventListener('click', togglePresent);
-  const infoBtn = $('#rail-info'), infoCard = $('#info-card');
-  const showInfo = on => {
-    if (on) { const r = infoBtn.getBoundingClientRect(); infoCard.style.left = r.right + 10 + 'px'; infoCard.style.bottom = Math.max(12, innerHeight - r.bottom) + 'px'; }
-    infoCard.classList.toggle('show', on);
-  };
-  for (const [ev, on] of [['mouseenter', true], ['mouseleave', false], ['focus', true], ['blur', false]]) infoBtn.addEventListener(ev, () => showInfo(on));
   $('#rail-keys').addEventListener('click', () => $('#modal-keys').classList.add('show'));
   $('#sb-help').addEventListener('click', () => $('#modal-keys').classList.add('show'));
   $('#modal-keys').addEventListener('click', e => { if (e.target.id === 'modal-keys' || e.target.closest('[data-act]')) $('#modal-keys').classList.remove('show'); });

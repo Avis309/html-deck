@@ -42,8 +42,6 @@ button:disabled { cursor: default; opacity: .38; }
 /* "Doc" in Inter 400: Inter Tight is only loaded from 600 up, and loading lighter weights would thin the whole UI. */
 .brand-word { font: 400 21px/1 'Inter', var(--ui); letter-spacing: -.03em; color: #fff; white-space: nowrap; }
 .brand-word b { font-family: var(--ui); font-weight: 800; }
-.info-head .brand-logo { width: 40px; height: 40px; }
-.info-head .brand-word { font-size: 24px; color: var(--ink); }
 .brand-mark { height: 30px; padding: 0 9px; border-radius: 8px; background: #fff; color: var(--accent); display: grid; place-items: center; font: 900 14px/1 var(--ui); letter-spacing: -.03em; box-shadow: 0 1px 3px rgba(94,27,9,.28); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
 .brand-sub { font-size: 9.5px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.82); }
@@ -227,16 +225,6 @@ button:disabled { cursor: default; opacity: .38; }
 .sb-btn { height: 32px; padding: 0 10px; border-radius: 7px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--ink-2); }
 .sb-btn:hover:not(:disabled) { background: var(--hover); }
 .sb-btn.on { background: var(--accent-50); color: var(--accent); }
-.info-card { position: fixed; z-index: 350; width: 330px; background: #fff; border-radius: 12px; box-shadow: var(--shadow-lg); border: 1px solid var(--line-2); opacity: 0; transform: translateX(-6px); pointer-events: none; transition: opacity .15s, transform .15s; }
-.info-card.show { opacity: 1; transform: none; }
-.info-head { display: flex; align-items: center; gap: 12px; padding: 16px 16px 4px; }
-.info-head .brand-mark { height: 40px; padding: 0 12px; font-size: 17px; background: var(--accent); color: #fff; box-shadow: none; }
-.info-head h3 { margin: 0; font-size: 17px; }
-.info-head .sub { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.info-rows { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; padding: 10px 16px 2px; margin: 0; font-size: 12.5px; }
-.info-rows dt { color: var(--muted); }
-.info-rows dd { margin: 0; font-weight: 600; user-select: text; }
-.author-note { margin: 10px 16px 16px; padding: 10px 12px; border-radius: 8px; background: var(--accent-50); color: var(--accent-fg); font-size: 12.5px; line-height: 1.5; user-select: text; }
 .zoom { width: 150px; accent-color: var(--accent); }
 .zoom-pct { min-width: 52px; justify-content: center; font-variant-numeric: tabular-nums; }
 .page-count { font-variant-numeric: tabular-nums; }

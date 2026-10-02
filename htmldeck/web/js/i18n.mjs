@@ -94,7 +94,6 @@ export const I18N = {
     rail_outline: 'Mục lục',
     rail_colors: 'Màu sắc',
     rail_review: 'AI Feedback',
-    rail_info: 'Thông tin',
     rail_keys: 'Phím tắt',
     
     // Panels
@@ -251,11 +250,6 @@ export const I18N = {
     conflict_dl: 'Tải bản của tôi',
     conflict_force: 'Vẫn ghi đè',
     shortcuts_h: 'Phím tắt',
-    info_author: 'Tác giả',
-    info_email: 'Email',
-    info_purpose: 'Dùng cho',
-    info_purpose_val: 'Sửa nhanh slide / trang HTML nội bộ, gửi feedback cho AI Agent',
-    info_note: 'Mọi góp ý, báo lỗi hoặc đề xuất tính năng cho tool xin gửi về',
     
     // Key descriptions
     k_save: 'Lưu',
@@ -441,7 +435,6 @@ export const I18N = {
     rail_outline: '大纲',
     rail_colors: '颜色',
     rail_review: 'AI 反馈',
-    rail_info: '关于',
     rail_keys: '快捷键',
 
     // Panels
@@ -598,11 +591,6 @@ export const I18N = {
     conflict_dl: '下载我的版本',
     conflict_force: '仍要覆盖',
     shortcuts_h: '键盘快捷键',
-    info_author: '作者',
-    info_email: '邮箱',
-    info_purpose: '用途',
-    info_purpose_val: '快速编辑内部 HTML 幻灯片 / 页面，与 AI Agent 协同反馈',
-    info_note: '如有意见、Bug 反馈或功能建议，请发送邮件至',
 
     // Key descriptions
     k_save: '保存',
@@ -788,7 +776,6 @@ export const I18N = {
     rail_outline: 'Outline',
     rail_colors: 'Colors',
     rail_review: 'AI Feedback',
-    rail_info: 'About',
     rail_keys: 'Shortcuts',
     
     // Panels
@@ -945,11 +932,6 @@ export const I18N = {
     conflict_dl: 'Download my version',
     conflict_force: 'Overwrite anyway',
     shortcuts_h: 'Keyboard Shortcuts',
-    info_author: 'Author',
-    info_email: 'Email',
-    info_purpose: 'Used for',
-    info_purpose_val: 'Quick editing internal HTML slides / pages, sending feedback to AI Agent',
-    info_note: 'Feedback, bug reports, or feature requests: please email',
     
     // Key descriptions
     k_save: 'Save',
