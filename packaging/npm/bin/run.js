@@ -26,7 +26,13 @@ function run(moduleName) {
   // The bundled copy goes first, ahead of site-packages; -P keeps the current folder off sys.path.
   const env = { ...process.env, PYTHONPATH: [PY_HOME, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter) };
   const child = spawn(cmd, [...pre, '-P', '-m', moduleName, ...process.argv.slice(2)], { stdio: 'inherit', env });
-  for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => child.kill(sig));
+  child.on('error', (err) => {
+    console.error(`htmldeck: không chạy được ${cmd}: ${err.message}`);
+    process.exit(127);
+  });
+  // Ctrl-C already reaches the child through the terminal; only stay alive until it exits.
+  process.on('SIGINT', () => {});
+  process.on('SIGTERM', () => child.kill('SIGTERM'));
   child.on('exit', (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
 }
 
