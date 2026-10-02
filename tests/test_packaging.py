@@ -10,7 +10,7 @@ REPO = Path(__file__).resolve().parent.parent
 
 
 def test_no_old_author_email_in_tracked_files():
-    out = subprocess.run(["git", "grep", "-l", "anhnh8@vng.com.vn"], cwd=REPO, capture_output=True, text=True)
+    out = subprocess.run(["git", "grep", "-l", "anhnh8@vng.com.vn", "--", ".", ":!tests/test_packaging.py"], cwd=REPO, capture_output=True, text=True)
     assert out.stdout == ""
 
 
