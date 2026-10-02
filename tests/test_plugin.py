@@ -25,7 +25,7 @@ def _frontmatter(rel):
 def test_all_manifests_name_the_same_plugin():
     assert _json(".claude-plugin/plugin.json")["name"] == "htmldeck"
     assert _json(".codex-plugin/plugin.json")["name"] == "htmldeck"
-    assert _json("packaging/npm/package.json")["name"] == "htmldeck"
+    assert _json("packaging/npm/package.json")["name"] == "@avis309/htmldeck"
     claude_mp = _json(".claude-plugin/marketplace.json")
     assert claude_mp["plugins"] == [{**claude_mp["plugins"][0], "name": "htmldeck", "source": "./"}]
     codex_mp = _json(".agents/plugins/marketplace.json")

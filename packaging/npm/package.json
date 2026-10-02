@@ -1,5 +1,5 @@
 {
-  "name": "htmldeck",
+  "name": "@avis309/htmldeck",
   "version": "0.1.0",
   "description": "Edit and present the HTML documents (decks, reports, pages) of a workspace — in place, without rewriting the file. Needs Python 3.11+.",
   "keywords": ["html", "slides", "presentation", "editor", "reveal.js", "claude-code", "codex"],

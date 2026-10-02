@@ -55,8 +55,8 @@ jobs:
       - name: Publish unless this version is already on npm (the first one is published by hand)
         run: |
           v="${GITHUB_REF_NAME#v}"
-          if npm view "htmldeck@$v" version >/dev/null 2>&1; then
-            echo "htmldeck@$v is already on npm, skipping"
+          if npm view "@avis309/htmldeck@$v" version >/dev/null 2>&1; then
+            echo "@avis309/htmldeck@$v is already on npm, skipping"
           else
             npm publish --provenance --access public
           fi

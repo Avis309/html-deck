@@ -10,7 +10,7 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 
 [![CI](https://github.com/avis309/html-deck/actions/workflows/ci.yml/badge.svg)](https://github.com/avis309/html-deck/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/htmldeck)](https://pypi.org/project/htmldeck/)
-[![npm](https://img.shields.io/npm/v/htmldeck)](https://www.npmjs.com/package/htmldeck)
+[![npm](https://img.shields.io/npm/v/@avis309/htmldeck)](https://www.npmjs.com/package/@avis309/htmldeck)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -49,7 +49,7 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 | Codex | `codex plugin marketplace add avis309/html-deck` then `codex plugin add htmldeck@htmldeck` |
 | uv | `uvx htmldeck` (one-off) · `uv tool install htmldeck` |
 | pipx / pip | `pipx install htmldeck` · `pip install htmldeck` |
-| npm | `npx htmldeck` (one-off) · `npm i -g htmldeck` |
+| npm | `npx @avis309/htmldeck` (one-off) · `npm i -g @avis309/htmldeck` |
 
 HTML Deck needs Python 3.11+ and nothing else. The npm package and the plugins find Python and run
 it for you. It works on Linux, macOS and Windows.
