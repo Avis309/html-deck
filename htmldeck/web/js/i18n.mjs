@@ -3,7 +3,7 @@
 
 export const I18N = {
   vi: {
-    brand_title: 'HtmlDeck · tạo bởi Avis ([email removed])',
+    brand_title: 'HtmlDeck · tạo bởi Avis (hunganh.freeze@gmail.com)',
     present_split: 'Có slide Markdown được tách thành nhiều trang — thoát trình chiếu ở các trang đó sẽ về slide gốc',
     trust_off: 'Script ngoài: tắt', trust_on: 'Script ngoài: đang bật', trust_off_title: 'Script tải từ nguồn ngoài (CDN…) không chạy khi sửa — bấm để tin file này', trust_on_title: 'File này được tin: script ngoài chạy cùng quyền với editor (đọc/ghi file workspace) — bấm để tắt',
     trust_toast: 'Script từ nguồn ngoài đang tắt khi sửa (trình chiếu vẫn chạy đủ).', trust_action: 'Tin file này', trust_confirm: 'Tin file này: script từ nguồn ngoài sẽ chạy trong khung sửa với toàn quyền của editor (đọc/ghi file trong workspace). Chỉ bật với file và nguồn bạn tin. Tiếp tục?',
@@ -350,7 +350,7 @@ export const I18N = {
   },
   
   zh: {
-    brand_title: 'HtmlDeck · 由 Avis 创建 ([email removed])',
+    brand_title: 'HtmlDeck · 由 Avis 创建 (hunganh.freeze@gmail.com)',
     present_split: '部分 Markdown 幻灯片被拆分为多页 — 在这些页面退出演示会回到原幻灯片',
     trust_off: '外部脚本：关闭', trust_on: '外部脚本：已开启', trust_off_title: '编辑时不运行来自外部 (CDN…) 的脚本 — 点击以信任此文件', trust_on_title: '此文件受信任：外部脚本以编辑器权限运行（读写工作区文件）— 点击关闭',
     trust_toast: '编辑时已关闭外部脚本（演示时仍完整运行）。', trust_action: '信任此文件', trust_confirm: '信任此文件：外部脚本将在编辑框中以编辑器的全部权限运行（读写工作区文件）。仅对您信任的文件和来源开启。继续？',
@@ -697,7 +697,7 @@ export const I18N = {
   },
 
   en: {
-    brand_title: 'HtmlDeck · created by Avis ([email removed])',
+    brand_title: 'HtmlDeck · created by Avis (hunganh.freeze@gmail.com)',
     present_split: 'Some Markdown slides are split into several pages — leaving the presentation on those pages returns to the source slide',
     trust_off: 'Remote scripts: off', trust_on: 'Remote scripts: on', trust_off_title: 'Scripts loaded from outside (CDN…) do not run while editing — click to trust this file', trust_on_title: 'This file is trusted: remote scripts run with the editor\'s rights (read/write workspace files) — click to turn off',
     trust_toast: 'Remote scripts are off while editing (presenting still runs everything).', trust_action: 'Trust this file', trust_confirm: 'Trust this file: remote scripts will run in the edit view with the editor\'s full rights (read/write files in the workspace). Only for files and sources you trust. Continue?',

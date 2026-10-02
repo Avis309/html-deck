@@ -8,3 +8,5 @@ node_modules/
 .htmldeck_bak/
 # design plans and specs stay local
 docs/
+build/
+dist/
