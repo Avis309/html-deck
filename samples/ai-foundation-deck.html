@@ -169,7 +169,7 @@ h3{font-size:18px;line-height:1.23;letter-spacing:-.02em}
 .inj-hidden .eye{display:block;margin-bottom:3px;font:800 10px var(--sans);transition:color .6s}
 .inj-hidden.hid,.inj-hidden.hid .eye{border-color:transparent;background:#fff;color:#fff}
 /* agenda (5 parts) */
-.agenda5{grid-template-columns:repeat(5,1fr);gap:14px}
+.agenda5{grid-template-columns:repeat(4,1fr);gap:14px}
 .agenda5 .col h3{flex-wrap:wrap;font-size:13px}
 .agenda5 .col h3 .pn{width:100%;order:-1;font:700 9.5px var(--sans);letter-spacing:.12em;color:var(--soft)}
 .agenda5 .ag-item{padding:12px 14px}
@@ -183,7 +183,7 @@ h3{font-size:18px;line-height:1.23;letter-spacing:-.02em}
 .dv .subtitle{max-width:640px}
 .dv-items{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .dv-items span{padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;font-weight:700}
-.dv-track{position:absolute;left:54px;right:54px;bottom:70px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.dv-track{position:absolute;left:54px;right:54px;bottom:70px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .dv-seg i{display:block;height:5px;border-radius:5px;background:var(--line);overflow:hidden}
 .dv-seg i:after{content:"";display:block;height:100%;width:0;background:var(--pc)}
 .dv-seg.done i:after{width:100%;background:var(--soft)}
@@ -459,7 +459,6 @@ table.cmp td:first-child{color:var(--muted)}
         <span class="tag i">Talking to AI</span>
         <span class="tag m">Ecosystem</span>
         <span class="tag r">Risks</span>
-        <span class="tag" style="border-color:var(--ink);background:var(--ink);color:#fff">AI Adoption</span>
       </div>
     </div>
     <div class="orbit" aria-hidden="true">
@@ -476,28 +475,27 @@ table.cmp td:first-child{color:var(--muted)}
       <span class="chip" style="left:210px;bottom:20px;border-color:#ffcdd2;color:var(--red)">Prompt Injection</span>
     </div>
   </div>
-  <div class="footer"><span class="source">Updated 10/2026. AI changes fast, so this material reflects the current moment only.</span><span class="page">1 / 24</span></div>
+  <div class="footer"><span class="source">Updated 10/2026. AI changes fast, so this material reflects the current moment only.</span><span class="page">1 / 20</span></div>
   <aside class="notes">Opening: today is not about which tool to use, but how AI works, so you know when to trust it and when to verify.</aside>
 </section>
 
 <!-- ============ 02 AGENDA ============ -->
 <section class="slide" data-anim="intro" data-title="02 · Agenda">
   <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Agenda</span></div>
-  <h2>5 parts, <em>from understanding to using</em></h2>
-  <p class="lead">What AI processes → how to talk to it → how it connects to tools → where it can go wrong → handing real work to AI.</p>
+  <h2>4 parts, <em>from understanding to using</em></h2>
+  <p class="lead">What AI processes → how to talk to it → how it connects to tools → where it can go wrong.</p>
   <div class="agenda agenda5">
     <div class="col"><h3><i style="background:var(--orange)"></i><span class="pn">Part 1</span>Mechanics</h3><div class="ag-item"><span class="n">01</span><div><b>Token</b><small>The unit AI reads, writes and bills by</small></div></div><div class="ag-item"><span class="n">02</span><div><b>Next Token Prediction</b><small>AI predicts, it does not think</small></div></div></div>
     <div class="col"><h3><i style="background:var(--indigo)"></i><span class="pn">Part 2</span>Communication</h3><div class="ag-item"><span class="n">03</span><div><b>Prompt &amp; System Prompt</b><small>Per-turn instructions vs standing rules</small></div></div><div class="ag-item"><span class="n">04</span><div><b>Skills</b><small>Packaged SOPs for AI</small></div></div><div class="ag-item"><span class="n">05</span><div><b>Context Window</b><small>Limited working memory</small></div></div></div>
     <div class="col"><h3><i style="background:var(--mint)"></i><span class="pn">Part 3</span>Ecosystem</h3><div class="ag-item"><span class="n">06</span><div><b>MCP Server</b><small>Connectors that link AI to tools</small></div></div><div class="ag-item"><span class="n">07</span><div><b>Agent / Agentic</b><small>Chat → Workflow → Agent</small></div></div></div>
     <div class="col"><h3><i style="background:var(--red)"></i><span class="pn">Part 4</span>Risks</h3><div class="ag-item"><span class="n">08</span><div><b>Hallucination</b><small>Made up, but very confident</small></div></div><div class="ag-item"><span class="n">09</span><div><b>Prompt Injection</b><small>Instructions hidden in what AI reads</small></div></div></div>
-    <div class="col"><h3><i style="background:var(--ink)"></i><span class="pn">Part 5</span>AI Adoption</h3><div class="ag-item"><span class="n">10</span><div><b>Cowork &amp; Work</b><small>Hand off whole tasks on real files</small></div></div><div class="ag-item"><span class="n">11</span><div><b>Workspace &amp; CLAUDE.md</b><small>1 folder + 1 instructions file</small></div></div><div class="ag-item"><span class="n">12</span><div><b>Your first task</b><small>From a request to a result file</small></div></div></div>
     </div>
-  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">2 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">2 / 20</span></div>
 </section>
 
 <!-- ============ DIVIDER 1 ============ -->
 <section class="slide divider" data-anim="divider" data-title="Part 1 · How it works" style="--pc:var(--orange)">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 1 / 5</span></div>
+  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 1 / 4</span></div>
   <div class="dv">
     <div class="dv-num">01</div>
     <div class="dv-text">
@@ -515,8 +513,8 @@ table.cmp td:first-child{color:var(--muted)}
     <div class="a art-col"><small>Next-token probabilities</small>
       <div class="art-bars"><div class="win"><code>" Paris"</code><i data-w="96" style="width:96%"></i><b>96%</b></div><div><code>" a"</code><i data-w="3" style="width:3%"></i><b>2%</b></div><div><code>" the"</code><i data-w="2" style="width:2%"></i><b>1%</b></div></div></div>
   </div>
-  <div class="dv-track"><div class="dv-seg on"><i></i><span>1 · How it works</span></div><div class="dv-seg"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg"><i></i><span>4 · Risks</span></div><div class="dv-seg"><i></i><span>5 · AI Adoption</span></div></div>
-  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">3 / 24</span></div>
+  <div class="dv-track"><div class="dv-seg on"><i></i><span>1 · How it works</span></div><div class="dv-seg"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg"><i></i><span>4 · Risks</span></div></div>
+  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">3 / 20</span></div>
 </section>
 
 <!-- ============ 03 TOKEN ============ -->
@@ -547,7 +545,7 @@ table.cmp td:first-child{color:var(--muted)}
       <div class="card"><span class="tag m">Tip</span><h3>Limit output in words</h3><p>Write "at most 150 words" rather than "150 tokens": it is easier to control.</p></div>
     </div>
   </div>
-  <div class="footer"><span class="source">Counted with tiktoken (cl100k_base, o200k_base: OpenAI tokenizers). Claude and Gemini use their own tokenizers, so the numbers differ.</span><button class="replay">▶ Replay</button><span class="page">4 / 24</span></div>
+  <div class="footer"><span class="source">Counted with tiktoken (cl100k_base, o200k_base: OpenAI tokenizers). Claude and Gemini use their own tokenizers, so the numbers differ.</span><button class="replay">▶ Replay</button><span class="page">4 / 20</span></div>
 </section>
 
 <!-- ============ 04 NEXT TOKEN ============ -->
@@ -575,7 +573,7 @@ table.cmp td:first-child{color:var(--muted)}
       <p style="margin-top:auto;padding-top:14px;border-top:1px solid #33333d">Inside there is no "understanding" or "knowing", only <b>a calculation that picks the next word</b>.</p>
     </div>
   </div>
-  <div class="footer"><span class="source">Probabilities on this slide are a simplified illustration, not real measurements.</span><button class="replay">▶ Replay</button><span class="page">5 / 24</span></div>
+  <div class="footer"><span class="source">Probabilities on this slide are a simplified illustration, not real measurements.</span><button class="replay">▶ Replay</button><span class="page">5 / 20</span></div>
 </section>
 
 <!-- ============ 04b NEXT TOKEN · NO ANSWER ============ -->
@@ -603,12 +601,12 @@ table.cmp td:first-child{color:var(--muted)}
       <p style="margin-top:auto;padding-top:14px;border-top:1px solid #33333d"><b>Not a bug to patch</b>: it is how the architecture works. Do not over-trust information you cannot verify yourself.</p>
     </div>
   </div>
-  <div class="footer"><span class="source">Probabilities on this slide are a simplified illustration, not real measurements.</span><button class="replay">▶ Replay</button><span class="page">6 / 24</span></div>
+  <div class="footer"><span class="source">Probabilities on this slide are a simplified illustration, not real measurements.</span><button class="replay">▶ Replay</button><span class="page">6 / 20</span></div>
 </section>
 
 <!-- ============ DIVIDER 2 ============ -->
 <section class="slide divider" data-anim="divider" data-title="Part 2 · Talking to AI" style="--pc:var(--indigo)">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 2 / 5</span></div>
+  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 2 / 4</span></div>
   <div class="dv">
     <div class="dv-num">02</div>
     <div class="dv-text">
@@ -625,8 +623,8 @@ table.cmp td:first-child{color:var(--muted)}
     <div class="a arr">→</div>
     <div class="a art-bub a2"><b>Week 40:</b> Spend +5% · NRU −2% · CPI +7%<br>3 recommended actions ✓</div>
   </div>
-  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg on"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg"><i></i><span>4 · Risks</span></div><div class="dv-seg"><i></i><span>5 · AI Adoption</span></div></div>
-  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">7 / 24</span></div>
+  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg on"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg"><i></i><span>4 · Risks</span></div></div>
+  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">7 / 20</span></div>
 </section>
 
 <!-- ============ 05 PROMPT ============ -->
@@ -658,7 +656,7 @@ table.cmp td:first-child{color:var(--muted)}
       </div>
     </div>
   </div>
-  <div class="footer"><span class="source">AI Foundation · Talking to AI</span><button class="replay">▶ Replay</button><span class="page">8 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Talking to AI</span><button class="replay">▶ Replay</button><span class="page">8 / 20</span></div>
 </section>
 
 <!-- ============ 06 SYSTEM PROMPT ============ -->
@@ -680,7 +678,7 @@ table.cmp td:first-child{color:var(--muted)}
     </div>
     <div class="code" data-code><span class="ln"><span class="c"># Example: paste into Project instructions</span></span><span class="ln"><span class="k">Role:</span> marketing data analysis assistant.</span><span class="ln"> </span><span class="ln"><span class="c"># Rules</span></span><span class="ln">- Only analyse data the user provides.</span><span class="ln">  Never use figures from other sources.</span><span class="ln">- If the data cannot support a conclusion,</span><span class="ln">  say <span class="g">"not enough data"</span> instead of guessing.</span><span class="ln">- Every insight needs evidence from the data.</span><span class="ln">- Default output: tables or bullets,</span><span class="ln">  no rambling prose.</span><span class="ln">- Give no legal or financial</span><span class="ln">  advice.</span></div>
   </div>
-  <div class="footer"><span class="source">AI Foundation · Talking to AI</span><button class="replay">▶ Replay</button><span class="page">9 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Talking to AI</span><button class="replay">▶ Replay</button><span class="page">9 / 20</span></div>
 </section>
 
 <!-- ============ 07 SKILLS ============ -->
@@ -710,7 +708,7 @@ table.cmp td:first-child{color:var(--muted)}
       </div>
     </div>
   </div>
-  <div class="footer"><span class="source">Claude: turn on Skills in Settings → Capabilities. ChatGPT: use a Custom GPT or Project instructions for a similar effect. Illustrative figures.</span><button class="replay">▶ Replay</button><span class="page">10 / 24</span></div>
+  <div class="footer"><span class="source">Claude: turn on Skills in Settings → Capabilities. ChatGPT: use a Custom GPT or Project instructions for a similar effect. Illustrative figures.</span><button class="replay">▶ Replay</button><span class="page">10 / 20</span></div>
 </section>
 
 <!-- ============ 08 CONTEXT WINDOW ============ -->
@@ -740,12 +738,12 @@ table.cmp td:first-child{color:var(--muted)}
       <div class="card m"><span class="tag m">What to do</span><ul class="bul v" style="margin-top:4px"><li>New task → <b>new chat</b></li><li>Key instructions &amp; files → keep them in a <b>Project</b></li><li>Chat too long → ask AI for a summary, start a new chat</li></ul></div>
     </div>
   </div>
-  <div class="footer"><span class="source">Simplified illustration: each app handles long chats differently (truncating, auto-summarising…)</span><button class="replay">▶ Replay</button><span class="page">11 / 24</span></div>
+  <div class="footer"><span class="source">Simplified illustration: each app handles long chats differently (truncating, auto-summarising…)</span><button class="replay">▶ Replay</button><span class="page">11 / 20</span></div>
 </section>
 
 <!-- ============ DIVIDER 3 ============ -->
 <section class="slide divider" data-anim="divider" data-title="Part 3 · Ecosystem" style="--pc:var(--mint)">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 3 / 5</span></div>
+  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 3 / 4</span></div>
   <div class="dv">
     <div class="dv-num">03</div>
     <div class="dv-text">
@@ -762,8 +760,8 @@ table.cmp td:first-child{color:var(--muted)}
     <div class="a art-wire"><em>MCP</em></div>
     <div class="a art-tools"><span>📝<small>Report</small></span><span>📅<small>Calendar</small></span><span>🧑<small>Human</small></span></div>
   </div>
-  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg done"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg on"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg"><i></i><span>4 · Risks</span></div><div class="dv-seg"><i></i><span>5 · AI Adoption</span></div></div>
-  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">12 / 24</span></div>
+  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg done"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg on"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg"><i></i><span>4 · Risks</span></div></div>
+  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">12 / 20</span></div>
 </section>
 
 <!-- ============ 09 MCP ============ -->
@@ -812,7 +810,7 @@ table.cmp td:first-child{color:var(--muted)}
       <div class="callout i">On Claude.ai: connectors (Drive, Slack, GitHub…) are turned on in Settings, and Claude asks for confirmation before using a tool for the first time.</div>
     </div>
   </div>
-  <div class="footer"><span class="source">MCP = Model Context Protocol · modelcontextprotocol.io</span><button class="replay">▶ Replay</button><span class="page">13 / 24</span></div>
+  <div class="footer"><span class="source">MCP = Model Context Protocol · modelcontextprotocol.io</span><button class="replay">▶ Replay</button><span class="page">13 / 20</span></div>
 </section>
 
 <!-- ============ 10a AGENT · CHAT ============ -->
@@ -835,7 +833,7 @@ table.cmp td:first-child{color:var(--muted)}
       <div class="callout">Examples: ordinary chat in <b>Claude</b> and <b>ChatGPT</b>.</div>
     </div>
   </div>
-  <div class="footer"><span class="source">AI Foundation · Agent / Agentic · 1/3</span><button class="replay">▶ Replay</button><span class="page">14 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Agent / Agentic · 1/3</span><button class="replay">▶ Replay</button><span class="page">14 / 20</span></div>
 </section>
 
 <!-- ============ 10b AGENT · WORKFLOW ============ -->
@@ -851,7 +849,7 @@ table.cmp td:first-child{color:var(--muted)}
     <div class="card m"><span class="tag m">Strength</span><h3>Easy to control</h3><p>Easy to audit and repeat: 100 runs give 100 results in the same mould. Good for daily repetitive work.</p></div>
     <div class="card r"><span class="tag r">Weakness</span><h3>Only handles what was foreseen</h3><p>When something the designer did not plan for comes up (a paywall, documents in Japanese…), it <b>still runs, wrongly</b>.</p></div>
   </div>
-  <div class="footer"><span class="source">AI Foundation · Agent / Agentic · 2/3</span><button class="replay">▶ Replay</button><span class="page">15 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Agent / Agentic · 2/3</span><button class="replay">▶ Replay</button><span class="page">15 / 20</span></div>
 </section>
 
 <!-- ============ 10c AGENT · AI AGENT ============ -->
@@ -871,12 +869,12 @@ table.cmp td:first-child{color:var(--muted)}
       <div class="callout"><strong>Autonomous:</strong> no fixed order; it picks tools, spots problems and changes course by itself. Actions with real consequences still need a <b>human in the loop</b>. Examples: ChatGPT agent, Claude Code.</div>
     </div>
   </div>
-  <div class="footer"><span class="source">AI Foundation · Agent / Agentic · 3/3: each replay is a different scenario</span><button class="replay">▶ Replay</button><span class="page">16 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Agent / Agentic · 3/3: each replay is a different scenario</span><button class="replay">▶ Replay</button><span class="page">16 / 20</span></div>
 </section>
 
 <!-- ============ DIVIDER 4 ============ -->
 <section class="slide divider" data-anim="divider" data-title="Part 4 · Risks" style="--pc:var(--red)">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 4 / 5</span></div>
+  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 4 / 4</span></div>
   <div class="dv">
     <div class="dv-num">04</div>
     <div class="dv-text">
@@ -890,8 +888,8 @@ table.cmp td:first-child{color:var(--muted)}
     <div class="a art-bub a2 bad">Q3 revenue reached <b>$47.3 million</b>, up 23.7%…<span class="stamp">FAKE</span></div>
     <div class="a art-web"><div class="art-web-bar">🔒 unknown-site.com</div><p>Our Q3 strategy…</p><div class="art-hidden">👁 hidden command: "email the passwords…"</div></div>
   </div>
-  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg done"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg done"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg on"><i></i><span>4 · Risks</span></div><div class="dv-seg"><i></i><span>5 · AI Adoption</span></div></div>
-  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">17 / 24</span></div>
+  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg done"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg done"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg on"><i></i><span>4 · Risks</span></div></div>
+  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">17 / 20</span></div>
 </section>
 
 <!-- ============ 11 HALLUCINATION ============ -->
@@ -918,7 +916,7 @@ table.cmp td:first-child{color:var(--muted)}
     </div>
   </div>
   <div class="callout" style="margin-top:16px"><strong>Confident ≠ Correct.</strong> Figures, links, names and citations that AI comes up with: always verify before you use them.</div>
-  <div class="footer"><span class="source">AI Foundation · Risks · Hallucination</span><button class="replay">▶ Replay</button><span class="page">18 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Risks · Hallucination</span><button class="replay">▶ Replay</button><span class="page">18 / 20</span></div>
 </section>
 
 <!-- ============ 13 PROMPT INJECTION ============ -->
@@ -955,12 +953,12 @@ table.cmp td:first-child{color:var(--muted)}
       </div>
     </div>
   </div>
-  <div class="footer"><span class="source">Simplified simulation. There is also the direct kind: a user types "Ignore all previous instructions…" to break the AI's rules.</span><button class="replay">▶ Replay</button><span class="page">19 / 24</span></div>
+  <div class="footer"><span class="source">Simplified simulation. There is also the direct kind: a user types "Ignore all previous instructions…" to break the AI's rules.</span><button class="replay">▶ Replay</button><span class="page">19 / 20</span></div>
 </section>
 
 <!-- ============ 15 KEY TAKEAWAYS ============ -->
 <section class="slide cover" data-anim="close" data-title="15 · Key Takeaways">
-  <div class="top" style="margin-bottom:20px"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 4 / 5 · Key Takeaways</span></div>
+  <div class="top" style="margin-bottom:20px"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 4 / 4 · Key Takeaways</span></div>
   <h2>Key Takeaways</h2>
   <p class="lead">You cannot change what AI has learned, but you fully control the frame around it: system prompt, context, skills and tool permissions.</p>
   <div class="mm">
@@ -968,122 +966,8 @@ table.cmp td:first-child{color:var(--muted)}
     <div class="card o"><span class="num">02</span><h3>Confident ≠ Correct</h3><p>A confident tone does not make the content right. Figures, sources, conclusions: verify.</p></div>
     <div class="card dark"><span class="num">03</span><h3 style="color:#fff">Always think critically</h3><p>Use AI to go faster, not to replace your own thinking.</p></div>
   </div>
-  <div class="footer"><span class="source">AI Foundation · Training · 2026</span><span class="page">20 / 24</span></div>
+  <div class="footer"><span class="source">AI Foundation · Training · 2026</span><span class="page">20 / 20</span></div>
 </section>
-
-<!-- ============ DIVIDER 5 ============ -->
-<section class="slide divider" data-anim="divider" data-title="Part 5 · AI Adoption" style="--pc:var(--ink)">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">Part 5 / 5</span></div>
-  <div class="dv">
-    <div class="dv-num">05</div>
-    <div class="dv-text">
-      <p class="eyebrow">Part 5</p>
-      <h1 class="dv-title">AI Adoption</h1>
-      <p class="subtitle">Handing AI work on real files: Claude Cowork &amp; ChatGPT Work</p>
-      <div class="dv-items"><span>Cowork &amp; Work</span><span>Workspace &amp; CLAUDE.md</span><span>Your first task</span></div>
-    </div>
-  </div>
-  <div class="dv-art">
-    <div class="a art-you">You<small>assign a task</small></div>
-    <div class="a arr">→</div>
-    <div class="a art-tree"><b>📁 UA-Workspace/</b><span class="hl">📄 CLAUDE.md</span><span>📁 data/</span><span>📁 reports/</span></div>
-    <div class="a arr">→</div>
-    <div class="a art-llm" style="font-size:17px;text-align:center">Cowork<br>Work<small>reads files, works in steps</small></div>
-    <div class="a arr">→</div>
-    <div class="a art-out" style="width:150px">📄<small>reports/W40.md ✓</small></div>
-  </div>
-  <div class="dv-track"><div class="dv-seg done"><i></i><span>1 · How it works</span></div><div class="dv-seg done"><i></i><span>2 · Talking to AI</span></div><div class="dv-seg done"><i></i><span>3 · Ecosystem</span></div><div class="dv-seg done"><i></i><span>4 · Risks</span></div><div class="dv-seg on"><i></i><span>5 · AI Adoption</span></div></div>
-  <div class="footer"><span class="source">AI Foundation · Training</span><span class="page">21 / 24</span></div>
-</section>
-
-<!-- ============ ADOPTION 1 · COWORK & WORK ============ -->
-<section class="slide" data-anim="cw" data-title="Cowork &amp; Work">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">10 · AI Adoption</span></div>
-  <h2><em>Cowork &amp; Work</em>: stop chatting, hand off the whole job</h2>
-  <p class="lead">Pick a folder → assign a task → AI reads the files, works through the steps and returns finished files. You approve the important steps.</p>
-  <div class="cw-flows">
-    <div class="cw-row"><span class="cw-lbl">Chat</span><span class="cw-c">You ask</span><i>→</i><span class="cw-c">AI replies with text</span><i>→</i><span class="cw-c dim">You copy it and carry on</span></div>
-    <div class="cw-row hot"><span class="cw-lbl">Cowork · Work</span><span class="cw-c">You assign a task + folder</span><i>→</i><span class="cw-c">AI reads files, works in steps</span><i>→</i><span class="cw-c ok">Result files waiting in the folder ✓</span></div>
-  </div>
-  <div class="card cw-table" style="margin-top:14px;padding:6px 8px">
-    <table class="cmp">
-      <tr><th></th><th>Claude Cowork</th><th>ChatGPT Work</th></tr>
-      <tr><td>Where</td><td>Claude Desktop app (also web, mobile)</td><td>ChatGPT desktop app (also web, mobile)</td></tr>
-      <tr><td>Plans</td><td>Pro, Max, Team, Enterprise</td><td>Plus, Pro, Business, Edu, Enterprise</td></tr>
-      <tr><td>Global rules</td><td>Settings → Cowork → Global instructions</td><td>Project instructions</td></tr>
-      <tr><td>Per-folder rules</td><td><b>CLAUDE.md</b>: folder instructions</td><td><b>AGENTS.md</b> in the primary folder</td></tr>
-      <tr><td>Permissions</td><td>Manual · Auto · Skip</td><td>Asks before important actions</td></tr>
-    </table>
-  </div>
-  <div class="footer"><span class="source">Sources: support.claude.com, Get started with Claude Cowork · learn.chatgpt.com, What’s new, Projects (10/2026)</span><button class="replay">▶ Replay</button><span class="page">22 / 24</span></div>
-</section>
-
-<!-- ============ ADOPTION 2 · WORKSPACE & CLAUDE.MD ============ -->
-<section class="slide" data-anim="ws" data-title="Workspace &amp; CLAUDE.md">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">10 · AI Adoption</span></div>
-  <h2><em>Workspace</em>: 1 folder + 1 instructions file</h2>
-  <p class="lead">One folder per job. Put an instructions file at its root: AI reads it first every time it starts a task.</p>
-  <div class="body" style="display:grid;grid-template-columns:.85fr 1.15fr;gap:20px">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="card tree" data-tree>
-        <div class="ln root">📁 UA-Workspace/</div>
-        <div class="ln hl">├─ 📄 CLAUDE.md <em>← AI reads this first</em></div>
-        <div class="ln">├─ 📁 data/ <em>figures · read-only</em></div>
-        <div class="ln">├─ 📁 reports/ <em>AI saves results</em></div>
-        <div class="ln">└─ 📁 templates/ <em>report templates</em></div>
-      </div>
-      <div class="callout i"><b>Claude Cowork</b> → name it <b>CLAUDE.md</b><br><b>ChatGPT Work</b> → name it <b>AGENTS.md</b><br>Same content, different file name.</div>
-    </div>
-    <div class="mdfile" data-md>
-      <div class="md-bar">📄 CLAUDE.md</div>
-      <div class="sec" style="--c:var(--orange)"><b># Workspace: UA reports</b></div>
-      <div class="sec" style="--c:var(--indigo)"><b>## Context</b><span>I am the UA Lead and report to my lead every Monday.</span></div>
-      <div class="sec" style="--c:var(--mint)"><b>## Folders</b><span>data/ → figures, read-only · reports/ → saved reports · templates/ → templates</span></div>
-      <div class="sec" style="--c:var(--red)"><b>## Rules</b><span>Never edit files in data/ · Missing figures → write "no data"</span></div>
-      <div class="sec" style="--c:#c28a00"><b>## Output</b><span>English, concise, saved to reports/</span></div>
-    </div>
-  </div>
-  <div class="footer"><span class="source">Keep it short, with 4 sections: Context · Folders · Rules · Output. AI may update this file as it works.</span><button class="replay">▶ Replay</button><span class="page">23 / 24</span></div>
-</section>
-
-<!-- ============ ADOPTION 3 · FIRST TASK ============ -->
-<section class="slide" data-anim="task" data-title="Your first task">
-  <div class="top"><div class="brand"><span class="mark">AI</span> AI Foundation</div><span class="chapter">10 · AI Adoption</span></div>
-  <h2><em>Your first task</em>: from one request to a result file</h2>
-  <div class="body" style="display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px">
-    <div class="chat">
-      <div class="chat-h"><span class="dot">✦</span>Cowork · 📁 UA-Workspace<span class="tag i" style="margin-left:auto">Permissions: Manual</span></div>
-      <div class="chat-b" data-chat>
-        <div class="msg u">Write the week 40 report.</div>
-        <div class="step">📄 Read CLAUDE.md</div>
-        <div class="step">📂 Open data/ua_week40.xlsx</div>
-        <div class="step">🧮 Compare with week 39</div>
-        <div class="step">✍️ Create reports/2026-W40.md</div>
-        <div class="ask">⏸ Permission: delete 3 old files in data/ to free up space?<div class="ask-btn"><span class="deny on">Deny</span><span>Allow</span></div></div>
-        <div class="msg a">OK, leaving data/ as is. The report is saved at <b>reports/2026-W40.md</b>.<div class="flags"><span class="f-ok">✓ follows the rules in CLAUDE.md</span></div></div>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="card tree small" data-tree2>
-        <div class="ln root">📁 UA-Workspace/</div>
-        <div class="ln">├─ 📄 CLAUDE.md</div>
-        <div class="ln">├─ 📁 data/</div>
-        <div class="ln">├─ 📁 reports/</div>
-        <div class="ln new">│  └─ 📄 2026-W40.md <em>✨ new</em></div>
-        <div class="ln">└─ 📁 templates/</div>
-      </div>
-      <div class="card m" data-tips><span class="tag m">3 habits for beginners</span>
-        <ul class="bul v" style="margin-top:6px">
-          <li>Pick <b>the job's own folder</b>, never a whole drive</li>
-          <li>Keep permissions on <b>Manual</b> so AI asks before acting</li>
-          <li>Read the steps AI took, not just the final result</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="footer"><span class="source">Simplified simulation · ChatGPT Work works the same way, with AGENTS.md as the instructions file</span><button class="replay">▶ Replay</button><span class="page">24 / 24</span></div>
-</section>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
 <script>

@@ -71,7 +71,7 @@ htmldeck --file decks/q3.html        # open a document first
 htmldeck --root ~/my-workspace --port 8765 --no-browser
 ```
 
-To try it on the sample deck from the screenshots (24 slides with anime.js scenes) in a clone of
+To try it on the sample deck from the screenshots (20 slides with anime.js scenes) in a clone of
 this repo, run `htmldeck --root samples --file ai-foundation-deck.html`.
 
 The workspace is the folder HTML Deck runs in, or the folder given with `--root`. Every path is
