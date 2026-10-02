@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- scenes fixture: a slide scene registered through the HtmlDeck FX queue (runtime enabled) -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Scenes fixture</title>
+<style>
+  body { margin: 0; }
+  .slide { width: 1280px; height: 720px; background: #fff; position: relative; }
+</style>
+</head>
+<body>
+<main class="deck">
+  <section class="slide"><h1 id="s1">Intro</h1></section>
+  <section class="slide" data-fx-scene="ticker"><p id="tick">0</p><button class="replay" type="button">Replay</button></section>
+  <section class="slide"><h2 id="s3">After</h2></section>
+</main>
+<script>
+  window.__ticks = 0;
+  (window.__htmldeckScenes = window.__htmldeckScenes || []).push(['ticker', async function (slide, ctx) {
+    var p = slide.querySelector('#tick');
+    ctx.animate(document.body, [{ outlineColor: 'red' }, { outlineColor: 'blue' }], { duration: 1000, iterations: Infinity });
+    for (var i = 1; ctx.alive(); i++) { p.textContent = String(i); window.__ticks++; await ctx.wait(60); }
+  }]);
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.replay');
+    if (b && window.__htmldeckFx) window.__htmldeckFx.replay(b.closest('.slide'));
+  });
+</script>
+</body>
+</html>

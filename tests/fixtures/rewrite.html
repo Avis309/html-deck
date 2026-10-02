@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset='utf-8'><title>Rewrite fixture</title></head>
+<body>
+<!-- the parser moves the <div> out in front of the table (foster parenting):
+     source order and DOM order no longer align, so edits cannot be patched in place -->
+<table><tr><td id="a">Cell alpha</td></tr><div class=box>Fostered block</div></table>
+<p id="b">Para beta</p>
+</body>
+</html>

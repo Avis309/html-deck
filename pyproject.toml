@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "htmldeck"
+version = "0.1.0"
+description = "Edit and present the HTML documents (decks, reports, pages) of a workspace — in place, without rewriting the file."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Avis", email = "anhnh8@vng.com.vn" }]
+dependencies = []   # standard library only
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+htmldeck = "htmldeck.server:main"
+htmldeck-notes = "htmldeck.notes:main"
+
+[tool.setuptools]
+packages = ["htmldeck"]
+
+[tool.setuptools.package-data]
+htmldeck = ["web/*.html", "web/css/*.css", "web/js/*.mjs", "web/js/*/*.mjs"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py311"
+extend-exclude = [".venv", "node_modules"]
+
+[tool.ruff.lint]
+# Real bugs only, no cosmetics (same policy as the workspace HtmlDeck came from).
+select = ["F", "E902", "E711", "E712", "E713", "E714", "E721", "E722", "W605", "B006", "B008", "B905", "PLW1508", "PLW1510"]

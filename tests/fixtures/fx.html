@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!-- FX fixture: plain deck for data-fx effects -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>FX fixture</title>
+<style>
+  body { margin: 0; }
+  .slide { width: 1280px; height: 720px; background: #fff; position: relative; }
+  .moved { transform: translateX(30px); }
+</style>
+</head>
+<body>
+<main class="deck">
+  <section class="slide"><h1 id="f1">First slide</h1></section>
+  <section class="slide">
+    <p id="f2" class="moved">Fade me</p>
+    <p id="num">1.250,5 ₫</p>
+    <ul id="list"><li>Alpha</li><li>Beta</li></ul>
+  </section>
+  <section class="slide"><p id="f3">Third words</p></section>
+</main>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!-- deck fixture: comments, entities, boolean attrs, void tags, svg -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Deck fixture</title>
+<style>
+  body { margin: 0; background: #111; }
+  .slide { width: 1280px; height: 720px; background: #fff; position: relative; }
+  .accent { color: var(--accent, #ff5a1f); }
+</style>
+</head>
+<body>
+<main class="deck">
+  <section class="slide" data-title="Mở đầu">
+    <h1 id="t1">Alpha title</h1>
+    <p class="lead">Tom &amp; Jerry &mdash; giá &lt;10$&gt;<br/>dòng hai</p>
+    <input type="checkbox" checked disabled>
+  </section>
+  <section class="slide">
+    <h2>Beta heading</h2>
+    <p class="accent">Gamma paragraph</p>
+    <svg viewBox="0 0 10 10" width="40"><circle cx="5" cy="5" r="4" fill="#0072e0"/></svg>
+  </section>
+  <section class="slide">
+    <h2>Delta heading</h2>
+    <ul><li>Một</li><li>Hai</li></ul>
+  </section>
+</main>
+<script>
+  window.__fixtureRan = true; // kept verbatim: no runtime mutation here
+</script>
+</body>
+</html>
