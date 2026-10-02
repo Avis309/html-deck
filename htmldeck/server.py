@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import argparse
 import contextlib
-import fcntl
 import http.server
 import json
 import os
@@ -42,6 +41,11 @@ import urllib.parse
 import webbrowser
 from collections import OrderedDict
 from pathlib import Path
+
+if os.name == "nt":
+    import msvcrt
+else:
+    import fcntl
 
 # The editor UI ships inside the package; the workspace is chosen at start (default: cwd).
 WEB_DIR = Path(__file__).resolve().parent / "web"
@@ -222,16 +226,37 @@ def _clean_note(raw: object) -> dict:
 
 
 @contextlib.contextmanager
+def _file_lock(path: Path):
+    """Exclusive lock on ``path`` shared with other processes: flock on POSIX, a one-byte lock on Windows."""
+    with open(path, "a+") as fh:
+        if os.name == "nt":
+            fh.seek(0)
+            while True:
+                try:
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_LOCK, 1)
+                    break
+                except OSError:   # LK_LOCK gives up after ~10 s; keep waiting, as flock does
+                    continue
+            try:
+                yield
+            finally:
+                fh.seek(0)
+                msvcrt.locking(fh.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            fcntl.flock(fh, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(fh, fcntl.LOCK_UN)
+
+
+@contextlib.contextmanager
 def _notes_lock(target: Path):
     """Cross-process lock: the editor and htmldeck-notes may both edit the same sidecar."""
     lock_dir = notes_path(target).parent
     lock_dir.mkdir(exist_ok=True)
-    with SAVE_LOCK, open(lock_dir / ".lock", "w") as fh:
-        fcntl.flock(fh, fcntl.LOCK_EX)
-        try:
-            yield
-        finally:
-            fcntl.flock(fh, fcntl.LOCK_UN)
+    with SAVE_LOCK, _file_lock(lock_dir / ".lock"):
+        yield
 
 
 def _write_notes_file(target: Path, notes: list[dict], root: Path) -> None:
@@ -607,6 +632,13 @@ def start_preview_origin(root: Path) -> http.server.ThreadingHTTPServer:
     return srv
 
 
+def utf8_stdio() -> None:
+    """Print Vietnamese/Chinese messages even through a pipe in a legacy code page (Windows cp1252)."""
+    for stream in (sys.stdout, sys.stderr):
+        with contextlib.suppress(AttributeError, ValueError):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def bind_server(start_port: int, attempts: int = 50) -> http.server.ThreadingHTTPServer:
     for port in range(start_port, start_port + attempts):
         try:
@@ -625,6 +657,7 @@ def main(argv: list[str] | None = None):
     parser.add_argument("--dry", action="store_true", help="Validate arguments and exit")
     parser.add_argument("--test-hooks", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    utf8_stdio()
 
     root = Path(args.root or ".").expanduser().resolve()
     if not root.is_dir():
@@ -665,6 +698,7 @@ def main(argv: list[str] | None = None):
     print(f"  Editor URL    : {url}")
     print(f"  Preview origin: {HTMLEditorHandler.preview_origin}  (trình chiếu, không có API)")
     print("============================================================")
+    print(f"HTMLDECK_URL={url}", flush=True)   # stable, untranslated: agents read the URL from this line
     if not args.no_browser:
         threading.Timer(0.8, lambda: webbrowser.open(url)).start()
     try:
