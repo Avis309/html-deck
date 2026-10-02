@@ -11,7 +11,7 @@ Author: Avis (hunganh.freeze@gmail.com).
 | Where | Command |
 |---|---|
 | Claude Code | `/plugin marketplace add Avis309/html-deck` then `/plugin install htmldeck@htmldeck` |
-| Codex | `codex plugin marketplace add Avis309/html-deck` then `codex plugin add htmldeck` |
+| Codex | `codex plugin marketplace add Avis309/html-deck` then `codex plugin add htmldeck@htmldeck` |
 | uv | `uvx htmldeck` (one-off) · `uv tool install htmldeck` |
 | pipx / pip | `pipx install htmldeck` · `pip install htmldeck` |
 | npm | `npx htmldeck` (one-off) · `npm i -g htmldeck` |
