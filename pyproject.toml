@@ -26,9 +26,9 @@ classifiers = [
 dependencies = []   # standard library only
 
 [project.urls]
-Homepage = "https://github.com/Avis309/html-deck"
-Repository = "https://github.com/Avis309/html-deck"
-Issues = "https://github.com/Avis309/html-deck/issues"
+Homepage = "https://github.com/avis309/html-deck"
+Repository = "https://github.com/avis309/html-deck"
+Issues = "https://github.com/avis309/html-deck/issues"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.5", "build>=1"]

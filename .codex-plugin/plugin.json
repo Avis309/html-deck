@@ -6,8 +6,8 @@
     "name": "Avis",
     "email": "hunganh.freeze@gmail.com"
   },
-  "homepage": "https://github.com/Avis309/html-deck",
-  "repository": "https://github.com/Avis309/html-deck",
+  "homepage": "https://github.com/avis309/html-deck",
+  "repository": "https://github.com/avis309/html-deck",
   "license": "MIT",
   "keywords": ["html", "slides", "presentation", "editor", "reveal.js", "review"],
   "skills": "./skills/",
@@ -18,7 +18,7 @@
     "developerName": "Avis",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
-    "websiteURL": "https://github.com/Avis309/html-deck",
+    "websiteURL": "https://github.com/avis309/html-deck",
     "defaultPrompt": [
       "Open this deck in HTML Deck.",
       "Apply the review notes I left on report.html.",

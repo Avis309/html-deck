@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "description": "Edit and present the HTML documents (decks, reports, pages) of a workspace — in place, without rewriting the file. Needs Python 3.11+.",
   "keywords": ["html", "slides", "presentation", "editor", "reveal.js", "claude-code", "codex"],
-  "homepage": "https://github.com/Avis309/html-deck",
+  "homepage": "https://github.com/avis309/html-deck",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Avis309/html-deck.git"
+    "url": "git+https://github.com/avis309/html-deck.git"
   },
-  "bugs": "https://github.com/Avis309/html-deck/issues",
+  "bugs": "https://github.com/avis309/html-deck/issues",
   "license": "MIT",
   "author": "Avis <hunganh.freeze@gmail.com>",
   "bin": {

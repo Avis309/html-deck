@@ -6,8 +6,8 @@
     "name": "Avis",
     "email": "hunganh.freeze@gmail.com"
   },
-  "homepage": "https://github.com/Avis309/html-deck",
-  "repository": "https://github.com/Avis309/html-deck",
+  "homepage": "https://github.com/avis309/html-deck",
+  "repository": "https://github.com/avis309/html-deck",
   "license": "MIT",
   "keywords": ["html", "slides", "presentation", "editor", "reveal.js", "review"]
 }

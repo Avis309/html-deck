@@ -8,13 +8,13 @@ you or by an AI agent.**
 Click text to edit it, restyle it, move blocks, add effects and present. The file is patched
 **only where you changed it**, so a save with no edits is byte-identical.
 
-[![CI](https://github.com/Avis309/html-deck/actions/workflows/ci.yml/badge.svg)](https://github.com/Avis309/html-deck/actions/workflows/ci.yml)
+[![CI](https://github.com/avis309/html-deck/actions/workflows/ci.yml/badge.svg)](https://github.com/avis309/html-deck/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/htmldeck)](https://pypi.org/project/htmldeck/)
 [![npm](https://img.shields.io/npm/v/htmldeck)](https://www.npmjs.com/package/htmldeck)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-<img src="https://raw.githubusercontent.com/Avis309/html-deck/main/.github/assets/edit.png" alt="Editing a slide title in HTML Deck" width="900">
+<img src="https://raw.githubusercontent.com/avis309/html-deck/main/.github/assets/edit.png" alt="Editing a slide title in HTML Deck" width="900">
 
 </div>
 
@@ -32,8 +32,8 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 
 <table>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/Avis309/html-deck/main/.github/assets/feedback.png" alt="AI Feedback panel with a pinned note"></td>
-    <td width="50%"><img src="https://raw.githubusercontent.com/Avis309/html-deck/main/.github/assets/present.png" alt="Presenting a deck"></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/avis309/html-deck/main/.github/assets/feedback.png" alt="AI Feedback panel with a pinned note"></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/avis309/html-deck/main/.github/assets/present.png" alt="Presenting a deck"></td>
   </tr>
   <tr>
     <td align="center"><b>AI Feedback</b>: pin notes for your agent</td>
@@ -45,8 +45,8 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 
 | Where | Command |
 |---|---|
-| Claude Code | `/plugin marketplace add Avis309/html-deck` then `/plugin install htmldeck@htmldeck` |
-| Codex | `codex plugin marketplace add Avis309/html-deck` then `codex plugin add htmldeck@htmldeck` |
+| Claude Code | `/plugin marketplace add avis309/html-deck` then `/plugin install htmldeck@htmldeck` |
+| Codex | `codex plugin marketplace add avis309/html-deck` then `codex plugin add htmldeck@htmldeck` |
 | uv | `uvx htmldeck` (one-off) · `uv tool install htmldeck` |
 | pipx / pip | `pipx install htmldeck` · `pip install htmldeck` |
 | npm | `npx htmldeck` (one-off) · `npm i -g htmldeck` |
