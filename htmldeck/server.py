@@ -1,6 +1,6 @@
 """HtmlDeck — local Canva-style editor for the HTML documents of a workspace.
 
-Author: Avis (anhnh8@vng.com.vn). Feedback about the tool goes to that address.
+Author: Avis (hunganh.freeze@gmail.com). Feedback about the tool goes to that address.
 
 The workspace is the folder HtmlDeck is started in (or ``--root``): every document path is
 relative to it. The editor UI ships with this package and is served under ``/__htmldeck/``.
@@ -659,7 +659,7 @@ def main(argv: list[str] | None = None):
     preview = start_preview_origin(root)
     url = f"http://127.0.0.1:{httpd.server_address[1]}"
     print("============================================================")
-    print("  HtmlDeck · by Avis (anhnh8@vng.com.vn)")
+    print("  HtmlDeck · by Avis (hunganh.freeze@gmail.com)")
     print(f"  Workspace     : {root}")
     print(f"  Mở trước      : {display_path(target, root) if target else '(file lần trước / chọn trong danh sách)'}")
     print(f"  Editor URL    : {url}")

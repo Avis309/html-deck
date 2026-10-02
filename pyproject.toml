@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,11 +8,30 @@ version = "0.1.0"
 description = "Edit and present the HTML documents (decks, reports, pages) of a workspace — in place, without rewriting the file."
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [{ name = "Avis", email = "anhnh8@vng.com.vn" }]
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Avis", email = "hunganh.freeze@gmail.com" }]
+keywords = ["html", "slides", "presentation", "editor", "reveal.js", "claude-code", "codex"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+]
 dependencies = []   # standard library only
 
+[project.urls]
+Homepage = "https://github.com/Avis309/html-deck"
+Repository = "https://github.com/Avis309/html-deck"
+Issues = "https://github.com/Avis309/html-deck/issues"
+
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.5", "build>=1"]
 
 [project.scripts]
 htmldeck = "htmldeck.server:main"
@@ -22,7 +41,7 @@ htmldeck-notes = "htmldeck.notes:main"
 packages = ["htmldeck"]
 
 [tool.setuptools.package-data]
-htmldeck = ["web/*.html", "web/css/*.css", "web/js/*.mjs", "web/js/*/*.mjs"]
+htmldeck = ["web/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -4,7 +4,7 @@ Local editor for the HTML documents of a workspace — slide decks, reports, pag
 people or AI agents. Click text to edit it, restyle, move blocks, add effects, present — and
 the file is patched **only where you changed it** (an unedited save is byte-identical).
 
-Author: Avis (anhnh8@vng.com.vn).
+Author: Avis (hunganh.freeze@gmail.com).
 
 ## Run
 
