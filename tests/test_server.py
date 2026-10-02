@@ -147,6 +147,13 @@ def _request(port, method, path, body=None, headers=None):
     return res.status, data
 
 
+def _symlink_or_skip(link, target):
+    try:
+        link.symlink_to(target, target_is_directory=True)
+    except OSError as exc:   # Windows without the symlink privilege
+        pytest.skip(f"symlinks not permitted: {exc}")
+
+
 def test_http_config_reports_whether_file_was_explicit(server):
     status, data = _request(server, "GET", "/api/config")
     assert status == 200
@@ -265,7 +272,7 @@ def test_preview_origin_serves_presented_documents_without_api(root):
 def test_http_does_not_follow_symlinks_out_of_root(server, root, tmp_path_factory):
     outside = tmp_path_factory.mktemp("secret")
     (outside / "id_rsa").write_text("KEY", encoding="utf-8")
-    (root / "output" / "link").symlink_to(outside, target_is_directory=True)
+    _symlink_or_skip(root / "output" / "link", outside)
     assert _request(server, "GET", "/output/link/id_rsa")[0] == 404
 
 
@@ -340,7 +347,7 @@ def test_note_ops_merge_against_disk_not_stale_client_copy(root):
 
 
 def test_http_symlink_into_hidden_dir_is_blocked(server, root):
-    (root / "output" / "alias").symlink_to(root / "output" / ".hidden", target_is_directory=True)
+    _symlink_or_skip(root / "output" / "alias", root / "output" / ".hidden")
     assert _request(server, "GET", "/output/alias/secret.html")[0] == 404
 
 

@@ -16,7 +16,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from htmldeck.server import EditorError, apply_note_ops, display_path, notes_path, read_notes
+from htmldeck.server import EditorError, apply_note_ops, display_path, notes_path, read_notes, utf8_stdio
 
 
 def current_line(source: str, note: dict) -> int | None:
@@ -60,6 +60,7 @@ def main(argv: list[str] | None = None):
     parser.add_argument("--all", action="store_true", help="Include notes already marked done")
     parser.add_argument("--done", metavar="ID", action="append", default=[], help="Mark a note as done (repeatable)")
     args = parser.parse_args(argv)
+    utf8_stdio()
 
     root = Path(args.root).expanduser().resolve()
     target = Path(args.file).expanduser()
