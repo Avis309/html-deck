@@ -6,10 +6,25 @@ the file is patched **only where you changed it** (an unedited save is byte-iden
 
 Author: Avis (hunganh.freeze@gmail.com).
 
+## Install
+
+| Where | Command |
+|---|---|
+| Claude Code | `/plugin marketplace add Avis309/html-deck` then `/plugin install htmldeck@htmldeck` |
+| Codex | `codex plugin marketplace add Avis309/html-deck` then `codex plugin add htmldeck` |
+| uv | `uvx htmldeck` (one-off) · `uv tool install htmldeck` |
+| pipx / pip | `pipx install htmldeck` · `pip install htmldeck` |
+| npm | `npx htmldeck` (one-off) · `npm i -g htmldeck` |
+
+Needs Python 3.11+ (the npm package and the plugins run it for you; no other dependency). Works on
+Linux, macOS and Windows.
+
+In Claude Code or Codex, ask the agent to "open slides/q3.html in HtmlDeck" (Claude Code also has
+`/htmldeck [file]`), pin review notes in the editor, then ask it to "apply my HtmlDeck notes".
+
 ## Run
 
 ```bash
-pip install -e ~/htmldeck            # or: python -m htmldeck from this repo
 cd ~/my-workspace
 htmldeck                             # workspace = current folder
 htmldeck --file decks/q3.html        # open a document first
@@ -72,10 +87,13 @@ npm run check        # eslint (editor modules) + pytest (server) + browser spec
   for). The source tokenizer follows the HTML parser's common repairs (implied html/head/body/
   tbody, stray `</p>` and `</br>`); if this share drops on real decks, a spec-complete
   tokenizer (parse5 with source locations) is the next step.
-- `docs/plans/` — design plans of each phase (written while the tool lived in another repo:
-  paths like `output/htmldeck/` there are `htmldeck/web/` here).
+- Plugin: `.claude-plugin/`, `.codex-plugin/`, `.agents/plugins/` (marketplaces), `skills/htmldeck/`,
+  `commands/`, `scripts/htmldeck-run[.cmd]` (runs this copy with any Python 3.11+).
+- npm wrapper: `packaging/npm/` (bundles `htmldeck/` at pack time, runs it with the user's Python).
+- Release: `python tools/bump_version.py X.Y.Z`, commit, tag `vX.Y.Z`, push the tag —
+  `.github/workflows/release.yml` publishes PyPI, then npm, then the GitHub Release.
 
 ## Roadmap
 
-Next: package as a plugin for Claude Code and Codex, working on the user's workspace.
-Optional extras from the plans: token swatches, Marp, single-file export, Slidev.
+Next: Homebrew tap, an MCP server for agents. Optional extras from the plans: token swatches,
+Marp, single-file export, Slidev.
