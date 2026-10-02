@@ -1,0 +1,17 @@
+{
+  "name": "htmldeck",
+  "owner": {
+    "name": "Avis",
+    "email": "hunganh.freeze@gmail.com"
+  },
+  "metadata": {
+    "description": "HtmlDeck — local visual editor for the HTML documents of a workspace."
+  },
+  "plugins": [
+    {
+      "name": "htmldeck",
+      "source": "./",
+      "description": "Edit and present workspace HTML decks, reports and pages; act on review notes."
+    }
+  ]
+}

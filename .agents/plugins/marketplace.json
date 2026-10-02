@@ -1,0 +1,20 @@
+{
+  "name": "htmldeck",
+  "interface": {
+    "displayName": "HtmlDeck"
+  },
+  "plugins": [
+    {
+      "name": "htmldeck",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
