@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!-- Reveal as an ES module: cannot be intercepted, so the edit view is read-only -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Reveal ESM fixture</title>
+<link rel="stylesheet" href="reveal/dist/reveal.css">
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+    <section><h1 id="m1">Module one</h1></section>
+    <section><h2 id="m2">Module two</h2></section>
+  </div>
+</div>
+<script type="module">
+  import Reveal from './reveal/dist/reveal.esm.js';
+  Reveal.initialize({ hash: false });
+</script>
+</body>
+</html>

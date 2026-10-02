@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!-- Reveal fixture: vertical stack, fragment, aside + data-notes, background, hidden, auto-animate, markdown -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Reveal fixture</title>
+<link rel="stylesheet" href="reveal/dist/reveal.css">
+<link rel="stylesheet" href="reveal/dist/theme/black.css">
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+    <section id="s1" data-background-color="#123456">
+      <h1 id="r1">Reveal one</h1>
+      <p class="fragment" id="frag">Frag text</p>
+      <aside class="notes">Note one</aside>
+    </section>
+    <section>
+      <section id="s2a"><h2 id="r2a">Down A</h2></section>
+      <section id="s2b" data-notes="Attr note"><h2 id="r2b">Down B</h2></section>
+    </section>
+    <section id="s3" data-visibility="hidden"><h2>Hidden slide</h2></section>
+    <section id="s4" data-auto-animate><div class="box" data-id="b1" style="padding:30px"><p id="aa">Auto box</p></div></section>
+    <section id="s5" data-markdown><textarea data-template>
+## Markdown slide
+---
+## Markdown page two
+</textarea><aside class="notes">MD note</aside></section>
+  </div>
+</div>
+<script src="reveal/dist/reveal.js"></script>
+<script src="reveal/plugin/markdown/markdown.js"></script>
+<script>Reveal.initialize({ hash: false, plugins: [RevealMarkdown] });</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+.venv/
+node_modules/
+.pytest_cache/
+.ruff_cache/
+# backups and review notes the editor writes beside documents
+.htmldeck_bak/
+# design plans and specs stay local
+docs/

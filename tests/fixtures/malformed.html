@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<!-- malformed fixture: stray end tags the HTML parser turns into elements -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Malformed fixture</title>
+</head>
+<body>
+<h1 id="m-title">Malformed page</h1>
+<div class="note"><b>Note:</b> stray paragraph end here.</p></div>
+<p id="m-after">Paragraph after the stray end tag</p>
+<div class="line">Line one</br>line two</div>
+<p id="m-last">Last paragraph</p>
+</body>
+</html>

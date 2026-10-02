@@ -1,0 +1,18 @@
+{
+  "name": "htmldeck-dev",
+  "private": true,
+  "description": "Dev tooling for HtmlDeck: lint of the editor's ES modules and the black-box browser spec.",
+  "scripts": {
+    "lint": "eslint \"htmldeck/web/js/**/*.mjs\"",
+    "spec": "node tests/spec/characterization.spec.mjs",
+    "check": "npm run lint && npm run test:py && npm run spec",
+    "align": "node tools/align-report.mjs",
+    "test:py": "P=.venv/bin/python; [ -x \"$P\" ] || P=python3; \"$P\" -m pytest -q"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0",
+    "playwright": "1.62.0",
+    "reveal.js": "^5.2.1"
+  }
+}

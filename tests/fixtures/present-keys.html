@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- present fixture: the deck records the keys it receives and has its own button -->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Present fixture</title>
+<style>
+  body { margin: 0; }
+  .slide { width: 1280px; height: 720px; background: #fff; position: relative; }
+</style>
+</head>
+<body>
+<main class="deck">
+  <section class="slide"><h1 id="p1">One</h1><button id="act" type="button">Act</button></section>
+  <section class="slide" style="display:none"><h2 id="p2">Two</h2></section>
+  <section class="slide"><h2 id="p3">Three</h2></section>
+</main>
+<script>
+  window.__ran = true;
+  window.__classAtRun = document.documentElement.className;
+  window.__keys = [];
+  window.__acts = 0;
+  document.addEventListener('keydown', function (e) { window.__keys.push(e.key); });
+  document.getElementById('act').addEventListener('click', function () { window.__acts++; });
+</script>
+</body>
+</html>
