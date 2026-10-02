@@ -71,6 +71,12 @@ def test_bump_writes_every_manifest(tmp_path):
         shutil.copy(REPO / rel, tmp_path / rel)
     bump.write_version("9.8.7", tmp_path)
     assert set(bump.manifest_versions(tmp_path).values()) == {"9.8.7"}
+    # Only the version line changes: inline arrays and line endings stay as written.
+    for rel in ("pyproject.toml", *bump.JSON_MANIFESTS):
+        before = (REPO / rel).read_bytes().splitlines()
+        after = (tmp_path / rel).read_bytes().splitlines()
+        assert len(before) == len(after), rel
+        assert sum(a != b for a, b in zip(before, after, strict=True)) == 1, rel
 
 
 def test_bump_check_reports_mismatch(capsys):

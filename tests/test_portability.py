@@ -8,6 +8,8 @@ import threading
 import time
 from pathlib import Path
 
+import pytest
+
 from htmldeck import server as ed
 
 REPO = Path(__file__).resolve().parent.parent
@@ -63,3 +65,32 @@ def test_banner_url_line_is_flushed_when_piped(tmp_path):
     finally:
         proc.terminate()
         proc.wait(timeout=10)
+
+
+def test_replace_retries_while_windows_holds_the_target_open(tmp_path, monkeypatch):
+    # Windows refuses to replace a file another process is reading (no FILE_SHARE_DELETE); that clears quickly.
+    src, dst = tmp_path / "new", tmp_path / "old"
+    src.write_text("new", encoding="utf-8")
+    dst.write_text("old", encoding="utf-8")
+    real, calls = os.replace, []
+
+    def busy_twice(a, b):
+        calls.append(a)
+        if len(calls) <= 2:
+            raise PermissionError(13, "in use")
+        real(a, b)
+
+    monkeypatch.setattr(ed, "_WINDOWS", True)
+    monkeypatch.setattr(ed.os, "replace", busy_twice)
+    ed._replace(src, dst)
+    assert dst.read_text(encoding="utf-8") == "new" and len(calls) == 3
+
+
+def test_replace_does_not_mask_errors_elsewhere(tmp_path, monkeypatch):
+    def denied(a, b):
+        raise PermissionError(13, "denied")
+
+    monkeypatch.setattr(ed, "_WINDOWS", False)
+    monkeypatch.setattr(ed.os, "replace", denied)
+    with pytest.raises(PermissionError):
+        ed._replace(tmp_path / "a", tmp_path / "b")

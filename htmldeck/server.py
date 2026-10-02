@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import errno
 import http.server
 import json
 import os
@@ -42,7 +43,8 @@ import webbrowser
 from collections import OrderedDict
 from pathlib import Path
 
-if os.name == "nt":
+_WINDOWS = os.name == "nt"
+if _WINDOWS:
     import msvcrt
 else:
     import fcntl
@@ -180,7 +182,7 @@ def _save_locked(target: Path, content: str, expected_mtime_ns: str | None, forc
         with open(tmp, "w", encoding="utf-8", newline="") as fh:
             fh.write(content)
         shutil.copymode(target, tmp)
-        os.replace(tmp, target)
+        _replace(tmp, target)
     finally:
         tmp.unlink(missing_ok=True)
 
@@ -225,18 +227,30 @@ def _clean_note(raw: object) -> dict:
     return note
 
 
+def _replace(src: Path, dst: Path) -> None:
+    """os.replace, retried briefly on Windows, which refuses while another process reads ``dst``."""
+    for _ in range(50 if _WINDOWS else 0):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            time.sleep(0.02)
+    os.replace(src, dst)
+
+
 @contextlib.contextmanager
 def _file_lock(path: Path):
     """Exclusive lock on ``path`` shared with other processes: flock on POSIX, a one-byte lock on Windows."""
     with open(path, "a+") as fh:
-        if os.name == "nt":
+        if _WINDOWS:
             fh.seek(0)
             while True:
                 try:
                     msvcrt.locking(fh.fileno(), msvcrt.LK_LOCK, 1)
                     break
-                except OSError:   # LK_LOCK gives up after ~10 s; keep waiting, as flock does
-                    continue
+                except OSError as exc:   # LK_LOCK gives up after ~10 s; keep waiting, as flock does
+                    if exc.errno != errno.EDEADLOCK:
+                        raise
             try:
                 yield
             finally:
@@ -264,7 +278,7 @@ def _write_notes_file(target: Path, notes: list[dict], root: Path) -> None:
     tmp = path.with_name(f".{path.name}.tmp.{secrets.token_hex(4)}")
     try:
         tmp.write_text(json.dumps({"file": display_path(target, root), "notes": notes}, ensure_ascii=False, indent=2), encoding="utf-8")
-        os.replace(tmp, path)
+        _replace(tmp, path)
     finally:
         tmp.unlink(missing_ok=True)
 

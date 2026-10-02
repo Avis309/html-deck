@@ -14,7 +14,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 JSON_MANIFESTS = (".claude-plugin/plugin.json", ".codex-plugin/plugin.json", "packaging/npm/package.json")
-PYPROJECT_VERSION = re.compile(r'^version = "([^"]+)"$', re.M)
+PYPROJECT_VERSION = re.compile(r'^version = "([^"]+)"', re.M)
+JSON_VERSION = re.compile(r'^(  "version": ")[^"]*(")', re.M)   # the top-level key, two-space indent
 SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 
 
@@ -25,15 +26,18 @@ def manifest_versions(root: Path = ROOT) -> dict[str, str]:
     return versions
 
 
+def _replace_in(path: Path, pattern: re.Pattern, repl: str) -> None:
+    # Bytes in, bytes out: only the version changes, never the layout or the line endings.
+    text, count = pattern.subn(repl, path.read_bytes().decode("utf-8"), count=1)
+    if count != 1:
+        raise SystemExit(f"{path}: no version field to replace")
+    path.write_bytes(text.encode("utf-8"))
+
+
 def write_version(version: str, root: Path = ROOT) -> None:
-    pyproject = root / "pyproject.toml"
-    pyproject.write_text(PYPROJECT_VERSION.sub(f'version = "{version}"', pyproject.read_text(encoding="utf-8"), count=1),
-                         encoding="utf-8")
+    _replace_in(root / "pyproject.toml", PYPROJECT_VERSION, f'version = "{version}"')
     for rel in JSON_MANIFESTS:
-        path = root / rel
-        data = json.loads(path.read_text(encoding="utf-8"))
-        data["version"] = version
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        _replace_in(root / rel, JSON_VERSION, rf"\g<1>{version}\g<2>")
 
 
 def main(argv: list[str] | None = None) -> int:
