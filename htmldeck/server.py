@@ -35,6 +35,7 @@ import json
 import os
 import secrets
 import shutil
+import socketserver
 import sys
 import threading
 import time
@@ -637,10 +638,19 @@ class PreviewOriginHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
-def start_preview_origin(root: Path) -> http.server.ThreadingHTTPServer:
+class LocalServer(http.server.ThreadingHTTPServer):
+    """ThreadingHTTPServer without the reverse DNS lookup (socket.getfqdn) in server_bind, which can
+    stall startup for seconds on macOS; the server only ever listens on 127.0.0.1."""
+
+    def server_bind(self):
+        socketserver.TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
+
+
+def start_preview_origin(root: Path) -> LocalServer:
     """Bind the preview origin on a free port and serve it in the background."""
     handler = type("PreviewOrigin", (PreviewOriginHandler,), {"root": root})
-    srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    srv = LocalServer(("127.0.0.1", 0), handler)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     HTMLEditorHandler.preview_origin = f"http://127.0.0.1:{srv.server_address[1]}"
     return srv
@@ -653,10 +663,10 @@ def utf8_stdio() -> None:
             stream.reconfigure(encoding="utf-8", errors="replace")
 
 
-def bind_server(start_port: int, attempts: int = 50) -> http.server.ThreadingHTTPServer:
+def bind_server(start_port: int, attempts: int = 50) -> LocalServer:
     for port in range(start_port, start_port + attempts):
         try:
-            return http.server.ThreadingHTTPServer(("127.0.0.1", port), HTMLEditorHandler)
+            return LocalServer(("127.0.0.1", port), HTMLEditorHandler)
         except OSError:
             continue
     raise SystemExit(f"Không tìm được cổng trống trong {start_port}-{start_port + attempts - 1}")

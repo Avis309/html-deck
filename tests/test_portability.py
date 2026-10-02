@@ -1,6 +1,7 @@
 """Behaviour that differs by OS: file locking, console encoding, output seen through a pipe."""
 import os
 import queue
+import socket
 import subprocess
 import sys
 import textwrap
@@ -94,3 +95,17 @@ def test_replace_does_not_mask_errors_elsewhere(tmp_path, monkeypatch):
     monkeypatch.setattr(ed.os, "replace", denied)
     with pytest.raises(PermissionError):
         ed._replace(tmp_path / "a", tmp_path / "b")
+
+
+def test_binding_skips_the_reverse_dns_lookup(tmp_path, monkeypatch):
+    # HTTPServer.server_bind calls socket.getfqdn, which can stall for seconds (macOS runners) before the URL prints.
+    def no_dns(*_):
+        raise AssertionError("getfqdn called")
+
+    monkeypatch.setattr(socket, "getfqdn", no_dns)
+    monkeypatch.setattr(ed.HTMLEditorHandler, "preview_origin", ed.HTMLEditorHandler.preview_origin)  # restored after
+    editor = ed.bind_server(0, attempts=1)
+    editor.server_close()
+    preview = ed.start_preview_origin(tmp_path)
+    preview.shutdown()
+    preview.server_close()
