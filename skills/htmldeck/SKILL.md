@@ -1,11 +1,11 @@
 ---
 name: htmldeck
-description: Open the HTML documents of the user's workspace (slide decks, Reveal.js decks, reports, pages) in the HtmlDeck visual editor to edit text, restyle, move blocks, add effects and present, saving in place; and act on the review notes ("AI Feedback") the user pinned there. Use when the user wants to edit, tweak, present or review an HTML deck/report/page visually, mentions HtmlDeck, or asks to apply the feedback or notes left on an HTML document.
+description: Open the HTML documents of the user's workspace (slide decks, Reveal.js decks, reports, pages) in the HTML Deck visual editor to edit text, restyle, move blocks, add effects and present, saving in place; and act on the review notes ("AI Feedback") the user pinned there. Use when the user wants to edit, tweak, present or review an HTML deck/report/page visually, mentions HTML Deck, or asks to apply the feedback or notes left on an HTML document.
 ---
 
-# HtmlDeck
+# HTML Deck
 
-HtmlDeck is a local editor for the workspace's HTML files. The user edits in the browser; you start
+HTML Deck is a local editor for the workspace's HTML files. The user edits in the browser; you start
 the editor and act on the notes they leave. A save patches the file only where it changed.
 
 ## The launcher

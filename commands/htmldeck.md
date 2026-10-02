@@ -1,9 +1,9 @@
 ---
-description: Open a workspace HTML document (deck, report, page) in the HtmlDeck editor
+description: Open a workspace HTML document (deck, report, page) in the HTML Deck editor
 argument-hint: "[file.html]"
 ---
 
-Open the HtmlDeck editor on the current workspace, following the `htmldeck` skill: start it in the
+Open the HTML Deck editor on the current workspace, following the `htmldeck` skill: start it in the
 background, read the `HTMLDECK_URL=` line and reply with the URL.
 
 Document to open first: $ARGUMENTS

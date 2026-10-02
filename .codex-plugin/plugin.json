@@ -12,7 +12,7 @@
   "keywords": ["html", "slides", "presentation", "editor", "reveal.js", "review"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "HtmlDeck",
+    "displayName": "HTML Deck",
     "shortDescription": "Visually edit and present the HTML decks and reports in your workspace.",
     "longDescription": "Opens a local editor on your workspace's HTML documents: click text to edit, restyle, move blocks, add effects and present. Files are patched only where you changed them. Review notes you pin in the editor are listed for the agent, which fixes the HTML and marks them done.",
     "developerName": "Avis",
@@ -20,7 +20,7 @@
     "capabilities": ["Read", "Write"],
     "websiteURL": "https://github.com/Avis309/html-deck",
     "defaultPrompt": [
-      "Open this deck in HtmlDeck.",
+      "Open this deck in HTML Deck.",
       "Apply the review notes I left on report.html.",
       "Present slides/q3.html."
     ],

@@ -1,6 +1,6 @@
 <div align="center">
 
-# HtmlDeck
+# HTML Deck
 
 **A visual editor for the HTML files in your workspace: slide decks, reports, and pages written by
 you or by an AI agent.**
@@ -14,17 +14,17 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-<img src="https://raw.githubusercontent.com/Avis309/html-deck/main/.github/assets/edit.png" alt="Editing a slide title in HtmlDeck" width="900">
+<img src="https://raw.githubusercontent.com/Avis309/html-deck/main/.github/assets/edit.png" alt="Editing a slide title in HTML Deck" width="900">
 
 </div>
 
 ## Why
 
-- **Edits stay minimal.** HtmlDeck patches the source text where you made a change and leaves
+- **Edits stay minimal.** HTML Deck patches the source text where you made a change and leaves
   everything else as it was, including formatting, comments and the agent's own markup. That keeps
   diffs small and reviewable.
 - **Works with your agent.** Pin a note on any element ("make this shorter"), then ask Claude Code
-  or Codex to apply your HtmlDeck notes. The agent reads them, edits the HTML and marks them done.
+  or Codex to apply your HTML Deck notes. The agent reads them, edits the HTML and marks them done.
 - **Presents the real thing.** Presentation runs the deck's own scripts and animations in a
   separate frame, so presenting never touches the document you are editing.
 - **Local and dependency-free.** One Python 3.11+ standard-library server on `127.0.0.1`. Nothing
@@ -51,16 +51,16 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 | pipx / pip | `pipx install htmldeck` · `pip install htmldeck` |
 | npm | `npx htmldeck` (one-off) · `npm i -g htmldeck` |
 
-HtmlDeck needs Python 3.11+ and nothing else. The npm package and the plugins find Python and run
+HTML Deck needs Python 3.11+ and nothing else. The npm package and the plugins find Python and run
 it for you. It works on Linux, macOS and Windows.
 
 ## Use it with an agent
 
 In Claude Code or Codex:
 
-1. Ask the agent to *"open slides/q3.html in HtmlDeck"*. Claude Code also has `/htmldeck [file]`.
+1. Ask the agent to *"open slides/q3.html in HTML Deck"*. Claude Code also has `/htmldeck [file]`.
 2. Edit in the browser, and pin **AI Feedback** notes where you want the agent to change something.
-3. Ask the agent to *"apply my HtmlDeck notes"*.
+3. Ask the agent to *"apply my HTML Deck notes"*.
 
 ## Run it yourself
 
@@ -71,7 +71,10 @@ htmldeck --file decks/q3.html        # open a document first
 htmldeck --root ~/my-workspace --port 8765 --no-browser
 ```
 
-The workspace is the folder HtmlDeck runs in, or the folder given with `--root`. Every path is
+To try it on the sample deck from the screenshots (24 slides with anime.js scenes) in a clone of
+this repo, run `htmldeck --root samples --file ai-foundation-deck.html`.
+
+The workspace is the folder HTML Deck runs in, or the folder given with `--root`. Every path is
 relative to it, and nothing outside it is served or written, except the file passed with `--file`.
 Each save keeps a timestamped backup in `.htmldeck_bak/` next to the document.
 
@@ -91,7 +94,7 @@ htmldeck-notes --file decks/q3.html --done ID  # mark one done
 - **Safe editing:** content that the page's own scripts create or change is locked, and the editor
   shows why. Animations are frozen while editing. You also get undo/redo and draft recovery.
 - **Effects:** set `data-fx` entrance effects (fade, zoom, slide, count-up) from the toolbar.
-  HtmlDeck also manages *scenes*, the document's own animation code. "Enable FX in the file" adds a
+  HTML Deck also manages *scenes*, the document's own animation code. "Enable FX in the file" adds a
   small inline runtime, so effects still run when the file is opened on its own.
 - **Isolation:** presentations run on a second origin that has no access to the editor's API. The
   edit view blocks remote scripts (from a CDN, for example) unless you trust the file. Workspace

@@ -1,7 +1,7 @@
 {
   "name": "htmldeck",
   "interface": {
-    "displayName": "HtmlDeck"
+    "displayName": "HTML Deck"
   },
   "plugins": [
     {

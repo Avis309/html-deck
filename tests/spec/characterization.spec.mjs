@@ -8,7 +8,8 @@
  *
  * Chạy: `npm run spec` hoặc `node tests/spec/characterization.spec.mjs [--fixtures-only | --real-only]`.
  * Fixture được chép vào một workspace tạm (thư mục tạm của hệ thống) và server chạy với
- * `--root` trỏ vào đó. Phần "file thật" chỉ chạy khi chỉ định một workspace và các file trong đó:
+ * `--root` trỏ vào đó. Phần "file thật" chạy trên deck mẫu `samples/ai-foundation-deck.html`
+ * (cần mạng: deck tải anime.js từ CDN), hoặc trên workspace khác:
  *   HTMLDECK_REAL_ROOT=~/vng_work HTMLDECK_REAL_FILES="output/a.html,docs/b.html" npm run spec
  * Python: biến PYTHON, mặc định .venv/bin/python của repo nếu có, không thì python3.
  */
@@ -22,9 +23,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const FIX = path.join(ROOT, 'tests/fixtures');
 const PY = process.env.PYTHON || (fs.existsSync(path.join(ROOT, '.venv/bin/python')) ? path.join(ROOT, '.venv/bin/python') : 'python3');
-// Real documents: another workspace's files, only when given.
-const REAL_ROOT = process.env.HTMLDECK_REAL_ROOT ? path.resolve(process.env.HTMLDECK_REAL_ROOT.replace(/^~(?=\/)/, os.homedir())) : '';
-const REAL_FILES = (process.env.HTMLDECK_REAL_FILES || '').split(',').map(x => x.trim()).filter(Boolean);
+// Real documents: the bundled sample deck by default, or another workspace's files.
+const REAL_ROOT = process.env.HTMLDECK_REAL_ROOT ? path.resolve(process.env.HTMLDECK_REAL_ROOT.replace(/^~(?=\/)/, os.homedir())) : path.join(ROOT, 'samples');
+const REAL_FILES = (process.env.HTMLDECK_REAL_FILES || (process.env.HTMLDECK_REAL_ROOT ? '' : 'ai-foundation-deck.html')).split(',').map(x => x.trim()).filter(Boolean);
 const args = new Set(process.argv.slice(2));
 if (args.has('--real-only') && args.has('--fixtures-only')) { console.error('Chọn một trong --real-only / --fixtures-only'); process.exit(2); }
 

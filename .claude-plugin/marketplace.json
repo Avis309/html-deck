@@ -5,7 +5,7 @@
     "email": "hunganh.freeze@gmail.com"
   },
   "metadata": {
-    "description": "HtmlDeck — local visual editor for the HTML documents of a workspace."
+    "description": "HTML Deck — local visual editor for the HTML documents of a workspace."
   },
   "plugins": [
     {

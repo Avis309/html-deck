@@ -43,7 +43,7 @@ def test_manifests_carry_author_and_license():
 def test_codex_manifest_points_at_the_skills():
     data = _json(".codex-plugin/plugin.json")
     assert (REPO / data["skills"] / "htmldeck" / "SKILL.md").is_file()
-    assert data["interface"]["displayName"] == "HtmlDeck"
+    assert data["interface"]["displayName"] == "HTML Deck"
 
 
 def test_skill_and_command_have_frontmatter():
