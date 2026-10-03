@@ -33,7 +33,7 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 
 <table>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/avis309/html-deck/main/.github/assets/feedback.png" alt="AI Feedback panel with a pinned note"></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/avis309/html-deck/main/.github/assets/feedback.png" alt="AI Feedback panel with a block note and a region note"></td>
     <td width="50%"><img src="https://raw.githubusercontent.com/avis309/html-deck/main/.github/assets/present.png" alt="Presenting a deck"></td>
   </tr>
   <tr>
