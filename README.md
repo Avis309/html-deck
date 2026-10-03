@@ -69,7 +69,7 @@ In Claude Code or Codex:
 cd ~/my-workspace
 htmldeck                             # workspace = current folder
 htmldeck --file decks/q3.html        # open a document first
-htmldeck --root ~/my-workspace --port 8765 --no-browser
+htmldeck --root ~/my-workspace --port 6789 --no-browser
 ```
 
 To try it on the sample deck from the screenshots (20 slides with anime.js scenes) in a clone of

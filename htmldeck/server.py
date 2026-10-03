@@ -21,7 +21,7 @@ can be read or written, dot-directories are never served, and requests must carr
 local Host header — so a web page open in the same browser cannot read or overwrite
 files through this server.
 
-Run (in the workspace): htmldeck [--file PATH] [--root DIR] [--port 8765]
+Run (in the workspace): htmldeck [--file PATH] [--root DIR] [--port 6789]
      or python -m htmldeck ...
 """
 
@@ -724,7 +724,7 @@ def main(argv: list[str] | None = None):
     parser = argparse.ArgumentParser(prog="htmldeck", description="Edit and present the HTML documents of a workspace")
     parser.add_argument("--root", help="Workspace folder (default: the current folder, or the folder of --file when it lies outside it)")
     parser.add_argument("--file", help="HTML file to open first (relative to the workspace, or absolute)")
-    parser.add_argument("--port", type=int, default=8765, help="First port to try")
+    parser.add_argument("--port", type=int, default=6789, help="First port to try")
     parser.add_argument("--no-browser", action="store_true", help="Do not open the browser")
     parser.add_argument("--dry", action="store_true", help="Validate arguments and exit")
     parser.add_argument("--test-hooks", action="store_true", help=argparse.SUPPRESS)
