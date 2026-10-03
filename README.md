@@ -74,8 +74,8 @@ htmldeck --root <folder> --port 6789 --no-browser
 
 `<file>.html` is any HTML document in your workspace: a deck, a report, a page.
 
-To try it on the sample deck (an 8-slide marketing report with effects and an animated chart) in
-a clone of this repo, run `htmldeck --root samples --file marketing-report.html`.
+To try it on the sample deck (a 17-slide quarterly marketing report with anime.js charts) in a
+clone of this repo, run `htmldeck --root samples --file marketing-report.html`.
 
 The workspace is the folder HTML Deck runs in, or the folder given with `--root`. Every path is
 relative to it, and nothing outside it is served or written, except the file passed with `--file`.
