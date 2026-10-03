@@ -55,9 +55,9 @@ export const I18N = {
     fb_copied: 'Đã sao chép yêu cầu — dán vào Claude / Codex',
     fb_nothing: 'Không có feedback nào đang mở để gửi',
     fb_whole_slide: 'cả slide',
-    fb_region: 'Khoanh vùng để feedback',
-    fb_region_title: 'Kéo chuột khoanh một vùng trên slide rồi viết feedback cho cả vùng',
-    fb_region_hint: 'Kéo chuột để khoanh vùng cần sửa · Esc để huỷ',
+    multi_count: 'Đã chọn {n}',
+    multi_note_title: 'AI Feedback cho các khối này (Ctrl+Shift+M)',
+    multi_del_title: 'Xoá các khối này (Delete)',
     fb_region_tag: 'vùng khoanh',
     fb_region_items: '{n} phần tử',
     fb_region_empty: 'không có phần tử (vùng trống)',
@@ -148,7 +148,7 @@ export const I18N = {
     layers_hint_bottom: 'Kéo một dòng để đổi vị trí khối: thả lên <b>vạch cam</b> để đặt trên/dưới, thả vào giữa dòng để đặt <b>vào trong</b>. Esc để huỷ.',
     
     // Review panel
-    review_hint: 'Chọn một khối rồi bấm <b>AI Feedback</b> trên thanh nổi để ghi chỗ cần AI sửa. Xong thì bấm nút dưới đây và dán vào Claude / Codex.',
+    review_hint: 'Chọn một khối rồi bấm <b>AI Feedback</b> trên thanh nổi để ghi chỗ cần AI sửa — hoặc kéo chuột từ nền slide để quét chọn nhiều khối và viết một feedback cho cả vùng. Xong thì bấm nút dưới đây và dán vào Claude / Codex.',
     copy_btn: 'Sao chép',
     cmd_copied: 'Đã sao chép lệnh',
     no_notes_yet: 'Chưa có ghi chú nào',
@@ -161,7 +161,7 @@ export const I18N = {
     color_hint: 'Bôi đen một phần chữ để chỉ tô màu phần đó; không bôi đen thì áp cho cả khối.',
     
     // Toolbar (ctx)
-    idle_hint: 'Nhấp vào chữ để sửa · giữ Alt khi nhấp để chọn cả khung (thẻ, cột…)',
+    idle_hint: 'Nhấp vào chữ để sửa · kéo từ nền để chọn nhiều khối · giữ Alt khi nhấp để chọn cả khung (thẻ, cột…)',
     font_title: 'Phông chữ',
     size_dn: 'Giảm cỡ',
     font_size: 'Cỡ chữ',
@@ -402,9 +402,9 @@ export const I18N = {
     fb_copied: '已复制请求 — 粘贴到 Claude / Codex',
     fb_nothing: '没有待处理的反馈可发送',
     fb_whole_slide: '整张幻灯片',
-    fb_region: '框选区域并反馈',
-    fb_region_title: '在幻灯片上拖动框选一个区域，然后为整个区域写反馈',
-    fb_region_hint: '拖动鼠标框选需要修改的区域 · Esc 取消',
+    multi_count: '已选 {n} 个',
+    multi_note_title: '为这些区块写 AI 反馈 (Ctrl+Shift+M)',
+    multi_del_title: '删除这些区块 (Delete)',
     fb_region_tag: '框选区域',
     fb_region_items: '{n} 个元素',
     fb_region_empty: '没有元素（空白区域）',
@@ -495,7 +495,7 @@ export const I18N = {
     layers_hint_bottom: '拖动单行可调整层级：拖至<b>橙色线</b>可置于上/下方，拖至行中可<b>嵌套至内部</b>。Esc 取消。',
 
     // Review panel
-    review_hint: '选中一个区块，点击悬浮栏上的 <b>AI 反馈</b> 写下需要 AI 修改的地方。完成后点击下方按钮并粘贴到 Claude / Codex。',
+    review_hint: '选中一个区块，点击悬浮栏上的 <b>AI 反馈</b> 写下需要 AI 修改的地方；也可以从幻灯片背景拖动框选多个区块，为整个区域写一条反馈。完成后点击下方按钮并粘贴到 Claude / Codex。',
     copy_btn: '复制',
     cmd_copied: '已复制命令',
     no_notes_yet: '暂无反馈记录',
@@ -508,7 +508,7 @@ export const I18N = {
     color_hint: '选中文本的一部分可仅对选区着色；未选中则应用于整个区块。',
 
     // Toolbar (ctx)
-    idle_hint: '点击文字进行编辑 · 按住 Alt 点击可选择外层容器（卡片、列…）',
+    idle_hint: '点击文字进行编辑 · 从背景拖动可框选多个区块 · 按住 Alt 点击可选择外层容器（卡片、列…）',
     font_title: '字体',
     size_dn: '缩小字号',
     font_size: '字号',
@@ -749,9 +749,9 @@ export const I18N = {
     fb_copied: 'Request copied — paste it into Claude / Codex',
     fb_nothing: 'No open feedback to send',
     fb_whole_slide: 'whole slide',
-    fb_region: 'Draw a region for feedback',
-    fb_region_title: 'Drag a box over the slide, then write feedback for that whole area',
-    fb_region_hint: 'Drag to mark the area to change · Esc to cancel',
+    multi_count: '{n} selected',
+    multi_note_title: 'AI Feedback for these blocks (Ctrl+Shift+M)',
+    multi_del_title: 'Delete these blocks (Delete)',
     fb_region_tag: 'region',
     fb_region_items: '{n} elements',
     fb_region_empty: 'no elements (empty area)',
@@ -842,7 +842,7 @@ export const I18N = {
     layers_hint_bottom: 'Drag a row to reorder: drop on <b>orange line</b> for above/below, drop into middle to place <b>inside</b>. Esc to cancel.',
     
     // Review panel
-    review_hint: 'Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix. Then click the button below and paste into Claude / Codex.',
+    review_hint: 'Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix — or drag from the slide background to sweep several blocks and write one note for the area. Then click the button below and paste into Claude / Codex.',
     copy_btn: 'Copy',
     cmd_copied: 'Command copied',
     no_notes_yet: 'No feedback notes yet',
@@ -855,7 +855,7 @@ export const I18N = {
     color_hint: 'Highlight text to color only that selection; otherwise applies to the entire block.',
     
     // Toolbar (ctx)
-    idle_hint: 'Click text to edit · hold Alt while clicking to select parent frame (card, column…)',
+    idle_hint: 'Click text to edit · drag from the background to select several blocks · hold Alt while clicking to select parent frame (card, column…)',
     font_title: 'Font family',
     size_dn: 'Decrease size',
     font_size: 'Font size',

@@ -157,7 +157,8 @@ html.ed-deck [data-ed-slide-anc] { transform: none !important; translate: none !
 ::selection { background: rgba(255,90,31,.24); }
 ::highlight(ed-find) { background-color: rgba(255,196,0,.45); }
 ::highlight(ed-find-cur) { background-color: #ff9a1f; color: #000; }
-[data-ed-overflow] { outline: 2px dashed #e5484d !important; outline-offset: 2px; }`;
+[data-ed-overflow] { outline: 2px dashed #e5484d !important; outline-offset: 2px; }
+html.ed-marquee, html.ed-marquee * { user-select: none !important; cursor: crosshair !important; }`;
 
 // Runs before the document's own scripts: keyboard goes to the editor, never to deck handlers.
 const FRAME_GUARD = `(function(){var P=window.parent;if(!P||P===window)return;
@@ -366,8 +367,8 @@ function resetState() {
   clearTimeout(S.draftTimer);
   S.liveById = new Map(); S.slides = []; S.sections = []; S.cur = 0; S.doc = null; S.win = null;
   S.layerScope = null; S.linkCtx = null; S.spacingDrag = false;
-  S.noteRegion = null; S.hoverRegion = null;
-  if (S.region) exitRegionMode();
+  S.noteRegion = null; S.hoverRegion = null; S.marquee = null;
+  clearMulti();
   S.find = null; S.overflows = []; clearTimeout(S.findTimer); clearTimeout(S.overflowTimer);
   $('#sb-overflow').hidden = true;
   S.thumbTimers.forEach(t => clearTimeout(t)); S.thumbTimers.clear();
@@ -627,17 +628,25 @@ function bindFrameEvents(doc, win) {
       return;
     }
     const img = t && t.closest('img');
+    const root = t && t.closest('[data-ed-edit]');
+    const hit = img && isOriginal(img) ? img : root && isOriginal(root) ? root : null;
+    if (hit && e.shiftKey && (S.sel || S.multi)) {
+      e.preventDefault();
+      toggleMulti(hit);
+      return;
+    }
+    if (!e.shiftKey) clearMulti();
     if (img && isOriginal(img)) {
       e.preventDefault();
       select(img, { edit: false });
       return;
     }
-    const root = t && t.closest('[data-ed-edit]');
     if (root && isOriginal(root)) {
       if (root !== S.sel || !S.editing) select(root, { edit: true });
       return;
     }
     if (S.sel) deselect();
+    startMarquee({ x: e.clientX, y: e.clientY }, e.shiftKey, false);
     // Text the user clicked that the editor will not touch: say why instead of doing nothing.
     if (t && t !== doc.body && !t.hasAttribute('data-ed-slide') && /\S/.test(t.textContent || '')) {
       const p = provenanceOf(t);
@@ -645,6 +654,9 @@ function bindFrameEvents(doc, win) {
     }
   }, true);
 
+  // A press held inside the frame keeps sending moves here, even outside it.
+  doc.addEventListener('pointermove', e => { if (S.marquee && !S.marquee.fromStage) moveMarquee({ x: e.clientX, y: e.clientY }); }, true);
+  doc.addEventListener('pointerup', e => { if (S.marquee && !S.marquee.fromStage) { moveMarquee({ x: e.clientX, y: e.clientY }); endMarquee(); } }, true);
   doc.addEventListener('click', e => {
     const a = e.target.closest?.('a[href]');
     if (a) {
@@ -709,6 +721,7 @@ function pickBlock(t) {
 // ================================================================ selection
 function select(node, { edit = true } = {}) {
   stopFxPreview();
+  clearMulti();
   if (S.crop && S.crop.img !== node) exitCrop();
   if (S.sel && S.sel !== node) deselect();
   S.sel = node;
@@ -2968,7 +2981,7 @@ function reanchorNotes(before) {
 const shq = v => `'${String(v).replace(/'/g, `'\\''`)}'`;
 const agentCmd = () => `htmldeck-notes --file ${shq(S.source.path)}`;   // run in the workspace
 // target: the selected block, or a whole slide / report section pinned from the panel.
-// region: { region, canvas, targets } of a box drawn on `target` (see drawRegion).
+// region: { region, canvas, targets } of an area on `target` (see feedbackMulti).
 function openNotePop(target = S.sel, region = null) {
   if (!target) return toast('Select a block before writing feedback');
   if (S.source?.kind !== 'server') return toast(t('note_workspace_only'), { err: true });
@@ -3022,37 +3035,26 @@ function addNoteFromPop() {
   } }]);
   toast('Feedback saved');
 }
-// ---------------------------------------------------------------- region feedback
-// One note about an area rather than one block (idea from slides-grab's bbox tool). The box is
-// drawn on a layer above the frame, so the drag never selects text or moves a block, and is
-// kept in CSS pixels of the slide (or report section) it was drawn on. The elements found in
-// it travel with the note as context for the agent, anchored like element notes.
-const REGION_MIN_PX = 6;      // screen px: a smaller drag is a click
-const REGION_COVER = 0.7;     // share of an element's box that must lie inside the region
+// ---------------------------------------------------------------- marquee selection
+// Drag from the slide background (or the grey stage around it) to sweep a box over several
+// blocks, as in a slide or design tool; a drag that starts on text still selects text. The
+// blocks swept become a group: one AI Feedback note about the area (a region note) or one
+// Delete for all of them. Shift+drag / Shift+click adds or removes blocks.
+// The idea of a region note with the elements found in it comes from slides-grab's bbox tool;
+// regions are kept in CSS pixels of the slide (or report section) they were drawn on, and the
+// elements are anchored like element notes, so the agent can find them.
+const MARQUEE_MIN_PX = 5;     // screen px: a smaller drag is a click
+const REGION_COVER = 0.7;     // share of what an element shows that must lie inside the box
+const REGION_MAX = 12;
 const REGION_SKIP = new Set(['script', 'style', 'noscript', 'template', 'link', 'meta', 'br', 'wbr', 'source', 'track']);
+const REGION_BOXED = new Set(['img', 'svg', 'video', 'canvas', 'picture', 'iframe', 'object', 'embed', 'input', 'select', 'textarea', 'button', 'hr', 'table']);
 // Frame-viewport rect of a region stored relative to its owner.
 function regionRect(owner, reg) {
   const o = owner.getBoundingClientRect();
   return new DOMRect(o.left + reg.x, o.top + reg.y, reg.width, reg.height);
 }
-function enterRegionMode() {
-  if (S.source?.kind !== 'server') return toast(t('note_workspace_only'), { err: true });
-  if (!S.doc || S.presenting) return;
-  if (S.region) return exitRegionMode();
-  if (S.editing) setEditing(false);
-  deselect();
-  closePopups();
-  showHoverBox(null);
-  S.region = { start: null, end: null };
-  $('#region-layer').hidden = false;
-  $('#fb-region').classList.add('on');
-  positionRegion();
-  toast(t('fb_region_hint'), { ms: 3500 });
-}
-function exitRegionMode() {
-  S.region = null;
-  $('#region-layer').hidden = true;
-  $('#fb-region')?.classList.remove('on');
+function spanRect(a, b) {
+  return new DOMRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(a.x - b.x), Math.abs(a.y - b.y));
 }
 // Pointer → frame-viewport coordinates (the sheet is scaled by S.scale), kept on the page.
 function framePoint(ev) {
@@ -3062,47 +3064,51 @@ function framePoint(ev) {
     y: clamp((ev.clientY - fr.top) / S.scale, 0, S.win.innerHeight),
   };
 }
-function spanRect(a, b) {
-  return new DOMRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+function startMarquee(pt, shift, fromStage) {
+  if (!S.doc || S.presenting || S.crop || S.readOnly) return;
+  S.marquee = { start: pt, end: pt, shift, fromStage, active: false, preview: [] };
 }
-function bindRegionLayer() {
-  const layer = $('#region-layer');
-  layer.addEventListener('pointerdown', ev => {
-    if (ev.button !== 0 || !S.region || !S.doc) return;
-    ev.preventDefault();
-    layer.setPointerCapture(ev.pointerId);
-    S.region.start = S.region.end = framePoint(ev);
-  });
-  layer.addEventListener('pointermove', ev => { if (S.region?.start) S.region.end = framePoint(ev); });
-  layer.addEventListener('pointerup', ev => {
-    if (!S.region?.start) return;
-    const r = spanRect(S.region.start, framePoint(ev));
-    S.region.start = null;
-    if (r.width * S.scale >= REGION_MIN_PX && r.height * S.scale >= REGION_MIN_PX) drawRegion(r);
-  });
-  layer.addEventListener('pointercancel', () => { if (S.region) S.region.start = null; });
-  // The layer sits over the scroller: let the wheel still scroll the document.
-  layer.addEventListener('wheel', ev => { el.scroller.scrollBy(ev.deltaX, ev.deltaY); S.win?.scrollBy(ev.deltaX, ev.deltaY); }, { passive: true });
+function moveMarquee(pt) {
+  const m = S.marquee;
+  if (!m) return;
+  m.end = { x: clamp(pt.x, 0, S.win.innerWidth), y: clamp(pt.y, 0, S.win.innerHeight) };
+  if (!m.active && Math.hypot(m.end.x - m.start.x, m.end.y - m.start.y) * S.scale >= MARQUEE_MIN_PX) {
+    m.active = true;
+    deselect();
+    if (!m.shift) clearMulti();
+    S.win.getSelection()?.removeAllRanges();
+    S.doc.documentElement.classList.add('ed-marquee');
+  }
+  if (m.active) m.preview = regionHit(spanRect(m.start, m.end))?.nodes || [];
 }
-// A finished drag: find what it was drawn on and what lies in it, then open the note popup.
-function drawRegion(r) {
+function endMarquee() {
+  const m = S.marquee;
+  S.marquee = null;
+  S.doc?.documentElement.classList.remove('ed-marquee');
+  if (!m?.active) return;
+  const hit = regionHit(spanRect(m.start, m.end));
+  if (!hit) return;
+  const nodes = m.shift && S.multi ? [...new Set([...S.multi.nodes, ...hit.nodes])] : hit.nodes;
+  setMulti(nodes, m.shift && S.multi ? null : hit);
+}
+// What a box drawn in frame coordinates is about: the slide (or section) it sits on, the box
+// clipped to it, and the blocks it covers.
+function regionHit(r) {
   const cx = r.x + r.width / 2, cy = r.y + r.height / 2;
   const inside = n => { const b = n.getBoundingClientRect(); return b.width && cx >= b.left && cx <= b.right && cy >= b.top && cy <= b.bottom; };
   const owner = S.mode === 'deck' ? S.slides[S.cur] : S.sections.find(inside) || S.doc.body;
-  if (!owner) return;
+  if (!owner) return null;
   const o = owner.getBoundingClientRect();
   const left = Math.max(r.left, o.left), top = Math.max(r.top, o.top);
   const right = Math.min(r.right, o.right), bottom = Math.min(r.bottom, o.bottom);
-  if (right - left < 1 || bottom - top < 1) return;
+  if (right - left < 1 || bottom - top < 1) return null;
   const box = new DOMRect(left, top, right - left, bottom - top);
-  exitRegionMode();
-  openNotePop(owner, {
+  return {
+    owner, nodes: regionElements(owner, box),
     region: { x: left - o.left, y: top - o.top, width: box.width, height: box.height },
     canvas: { width: o.width, height: o.height },
-    targets: regionTargets(owner, box),
-  });
+  };
 }
-const REGION_BOXED = new Set(['img', 'svg', 'video', 'canvas', 'picture', 'iframe', 'object', 'embed', 'input', 'select', 'textarea', 'button', 'hr', 'table']);
 // What the eye sees of an element. A block of text spans the whole line box although its words
 // may fill a third of it, so a box drawn around the words would never cover it: measure the text
 // instead. A block that shows its box (background, border, shadow, media) is its box.
@@ -3118,49 +3124,109 @@ function inkRect(n) {
   const t = range.getBoundingClientRect();
   return t.width && t.height ? t : r;
 }
-// The saved elements the box covers: each must lie mostly inside it, and a covered element
-// stands for its covered children (a card, not its title and text one by one). A box drawn
-// inside a single block names that block. Unsaved inserts are not in the file yet: left out.
-function regionTargets(owner, box) {
-  const saved = new Set([...S.pristine.querySelectorAll('[data-ed-id]')].map(n => n.getAttribute('data-ed-id')));
+// The blocks the box covers: each must lie mostly inside it, and a covered block stands for its
+// covered children (a card, not its title and text one by one), as a click picks one block.
+function regionElements(owner, box) {
   const area = r => r.width * r.height;
   const overlap = r => Math.max(0, Math.min(r.right, box.right) - Math.max(r.left, box.left)) * Math.max(0, Math.min(r.bottom, box.bottom) - Math.max(r.top, box.top));
   const covered = new Set();
-  let around = null, aroundArea = Infinity;
   for (const n of owner.querySelectorAll('*')) {
-    if (REGION_SKIP.has(n.localName) || n.ownerSVGElement || !isOriginal(n) || !saved.has(n.dataset.edId) || n.closest('.notes')) continue;
+    if (REGION_SKIP.has(n.localName) || n.ownerSVGElement || !isOriginal(n) || n.closest('.notes')) continue;
     const r = n.getBoundingClientRect();
     if (r.width < 1 || r.height < 1 || S.win.getComputedStyle(n).visibility === 'hidden') continue;
     const ink = inkRect(n);
     if (overlap(ink) >= REGION_COVER * area(ink)) covered.add(n);
-    else if (r.left <= box.left && r.top <= box.top && r.right >= box.right && r.bottom >= box.bottom && area(r) < aroundArea) { around = n; aroundArea = area(r); }
   }
-  let picked = [...covered].filter(n => !covered.has(n.parentElement));
-  if (!picked.length && around) picked = [around];
-  return picked.slice(0, 12).map(n => {
-    const id = n.dataset.edId, p = S.pristine.querySelector(`[data-ed-id="${id}"]`);
+  return [...covered].filter(n => !covered.has(n.parentElement));
+}
+// ---- the group
+function setMulti(nodes, hit) {
+  nodes = nodes.filter(n => n.isConnected && !nodes.some(o => o !== n && o.contains(n)));
+  if (!nodes.length) { clearMulti(); return; }
+  if (nodes.length === 1) { clearMulti(); select(nodes[0], { edit: false }); return; }
+  deselect();
+  S.multi = { nodes, hit };
+  $('#multi-count').textContent = t('multi_count').replace('{n}', nodes.length);
+}
+function toggleMulti(node) {
+  const nodes = S.multi ? [...S.multi.nodes] : S.sel ? [S.sel] : [];
+  const i = nodes.indexOf(node);
+  if (i >= 0) nodes.splice(i, 1); else nodes.push(node);
+  setMulti(nodes, null);
+}
+function clearMulti() {
+  if (!S.multi) return;
+  S.multi = null;
+  $('#multi-pill').classList.remove('show');
+}
+// One region note for the group: the area swept, or the blocks' bounding box when the group
+// was built with Shift+click. Unsaved inserts are not in the file yet and are left out.
+function feedbackMulti() {
+  const g = S.multi;
+  if (!g) return;
+  let hit = g.hit;
+  if (!hit) {
+    const rs = g.nodes.map(n => n.getBoundingClientRect());
+    const left = Math.min(...rs.map(r => r.left)), top = Math.min(...rs.map(r => r.top));
+    hit = regionHit(new DOMRect(left, top, Math.max(...rs.map(r => r.right)) - left, Math.max(...rs.map(r => r.bottom)) - top));
+    if (!hit) return;
+  }
+  const saved = n => S.pristine.querySelector(`[data-ed-id="${n.dataset.edId}"]`);
+  const targets = g.nodes.filter(saved).slice(0, REGION_MAX).map(n => {
+    const id = n.dataset.edId, p = saved(n);
     return { selector: cssPath(p), tag: p.localName, text: snippetOf(p), line: sourceLine(id) };
   });
+  clearMulti();
+  openNotePop(hit.owner, { region: hit.region, canvas: hit.canvas, targets });
 }
-// Each frame: the region layer covers the scroller, and the region box shows the drag in
-// progress, the region the popup is about, or the region of the hovered note.
-function positionRegion() {
-  const box = $('#region-box'), layer = $('#region-layer');
-  if (!S.doc) { box.hidden = true; return; }
-  const st = el.stage.getBoundingClientRect();
-  if (S.region) {
-    const sc = el.scroller.getBoundingClientRect();
-    Object.assign(layer.style, { left: sc.left - st.left + 'px', top: sc.top - st.top + 'px', width: sc.width + 'px', height: sc.height + 'px' });
+function deleteMulti() {
+  const nodes = (S.multi?.nodes || []).filter(n => n.isConnected);
+  if (!nodes.length || nodes.some(n => commandBlocked(n))) return;
+  clearMulti();
+  deselect();
+  // Removed one after the other, each remembering its place: undo puts them back in reverse.
+  const ops = [];
+  for (const node of nodes) {
+    const m = modelEl(node.dataset.edId);
+    if (!m) continue;
+    const op = { type: 'remove', label: 'Delete', ...nodeRefs(m, node) };
+    doRemove(op);
+    ops.push(op);
   }
+  if (!ops.length) return;
+  pushOp(ops.length === 1 ? ops[0] : { type: 'batch', ops, label: 'Delete' });
+  queueThumb(S.slides[S.cur]);
+  buildOutline();
+  if (layersVisible()) buildLayers();
+  toast('Deleted · Ctrl+Z to undo');
+}
+// Each frame: the swept box and the blocks it would take, the group with its toolbar, the region
+// a note popup is about, or the region of a hovered note.
+function positionRegion() {
+  const box = $('#region-box'), outlines = $('#multi-boxes'), pill = $('#multi-pill');
+  if (!S.doc) { box.hidden = true; outlines.replaceChildren(); pill.classList.remove('show'); return; }
+  const fr = el.frame.getBoundingClientRect(), st = el.stage.getBoundingClientRect();
+  const place = (n, r) => {
+    n.style.transform = `translate(${fr.left - st.left + r.left * S.scale}px, ${fr.top - st.top + r.top * S.scale}px)`;
+    n.style.width = r.width * S.scale + 'px';
+    n.style.height = r.height * S.scale + 'px';
+  };
+  const m = S.marquee?.active ? S.marquee : null;
   const note = S.noteRegion && !$('#pop-note').hidden && S.noteRegion.owner.isConnected ? S.noteRegion : S.hoverRegion;
-  const r = S.region?.start ? spanRect(S.region.start, S.region.end)
-    : note && note.owner.isConnected ? regionRect(note.owner, note.region) : null;
-  if (!r) { box.hidden = true; return; }
-  const fr = el.frame.getBoundingClientRect();
-  box.hidden = false;
-  box.style.transform = `translate(${fr.left - st.left + r.left * S.scale}px, ${fr.top - st.top + r.top * S.scale}px)`;
-  box.style.width = r.width * S.scale + 'px';
-  box.style.height = r.height * S.scale + 'px';
+  const r = m ? spanRect(m.start, m.end) : note && note.owner.isConnected ? regionRect(note.owner, note.region) : null;
+  box.hidden = !r;
+  if (r) place(box, r);
+  const group = (m ? m.preview : S.multi?.nodes || []).filter(n => n.isConnected);
+  while (outlines.children.length < group.length) outlines.appendChild(document.createElement('div')).className = 'multi-box';
+  while (outlines.children.length > group.length) outlines.lastChild.remove();
+  group.forEach((n, i) => place(outlines.children[i], n.getBoundingClientRect()));
+  if (!S.multi || m) { pill.classList.remove('show'); return; }
+  const rs = group.map(n => n.getBoundingClientRect());
+  if (!rs.length) { clearMulti(); return; }
+  pill.classList.add('show');
+  const right = Math.max(...rs.map(x => x.right)), top = Math.min(...rs.map(x => x.top));
+  const x = fr.left - st.left + right * S.scale - pill.offsetWidth, y = fr.top - st.top + top * S.scale - pill.offsetHeight - 10;
+  pill.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(60, y)}px)`;
 }
 // Hovering a note (pin or card) outlines what it is about: its block, or its region.
 function hoverNote(n, target) {
@@ -3251,7 +3317,6 @@ function renderNoteList() {
   $('#fb-copy').disabled = !server || !open;
   const whole = S.mode === 'deck' ? S.slides[S.cur] : S.sections[S.cur];
   $('#fb-slide').hidden = !server || !whole;
-  $('#fb-region').hidden = !server;
   $('#fb-slide-label').textContent = t(S.mode === 'deck' ? 'fb_slide' : 'fb_page');
   if (!notes.length) { box.innerHTML = `<div class="hint">${t('no_notes_yet')}</div>`; return; }
   const shown = (S.agentNotes || []).map((n, i) => [n, i]).filter(([n]) => n.status === filter && !isRemoving(n));
@@ -4048,9 +4113,10 @@ function onKey(e, fromFrame) {
   if (mod && k === '-') { e.preventDefault(); zoomBy(1 / 1.15); return; }
   if (mod && k === '0') { e.preventDefault(); fitZoom(); return; }
   if (mod && k === 'd' && S.sel) { e.preventDefault(); duplicateSel(); return; }
-  if (mod && e.shiftKey && k === 'm') { e.preventDefault(); openNotePop(); return; }
+  if (mod && e.shiftKey && k === 'm') { e.preventDefault(); if (S.multi) feedbackMulti(); else openNotePop(); return; }
   if (mod && !e.shiftKey && k === 'k' && S.sel) { e.preventDefault(); openLinkPop(); return; }
-  if (e.key === 'Escape' && S.region) { exitRegionMode(); return; }
+  if (e.key === 'Escape' && S.multi && $('#pop-note').hidden) { clearMulti(); return; }
+  if (S.multi && !S.editing && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); deleteMulti(); return; }
   if (e.key === 'Escape' && S.crop) { exitCrop(); return; }
   if (e.key === 'Escape') {
     if (!el.menu.hidden || !$('#pop-spacing').hidden || !$('#pop-opacity').hidden || !$('#pop-fx').hidden || !$('#pop-note').hidden || !$('#pop-link').hidden || !$('#pop-alt').hidden || !$('#pop-img').hidden) { closePopups(); return; }
@@ -4105,7 +4171,14 @@ function bindUI() {
   window.addEventListener('beforeunload', e => { flushPending(); if (S.model && isDirty()) { e.preventDefault(); e.returnValue = ''; } });
   el.scroller.addEventListener('wheel', e => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); zoomBy(e.deltaY < 0 ? 1.1 : 1 / 1.1); } }, { passive: false });
   el.scroller.addEventListener('scroll', () => { if (S.sel) positionOverlay(true); }, { passive: true });
-  el.scroller.addEventListener('pointerdown', e => { if (e.target === el.scroller || e.target === el.sizer) deselect(); });
+  el.scroller.addEventListener('pointerdown', e => {
+    if (e.target !== el.scroller && e.target !== el.sizer) return;
+    deselect();
+    if (!e.shiftKey) clearMulti();
+    if (e.button === 0 && S.doc) { e.preventDefault(); startMarquee(framePoint(e), e.shiftKey, true); }
+  });
+  window.addEventListener('pointermove', e => { if (S.marquee?.fromStage) moveMarquee(framePoint(e)); });
+  window.addEventListener('pointerup', e => { if (S.marquee?.fromStage) { moveMarquee(framePoint(e)); endMarquee(); } });
 
   // Keep the iframe's text selection alive while toolbar buttons are pressed.
   for (const zone of [el.ctx, el.pill, el.menu, $('#pop-spacing'), $('#pop-opacity'), $('#pop-fx'), $('#pop-note'), $('#pop-link'), $('#pop-alt'), $('#pop-img'), el.panel]) {
@@ -4265,8 +4338,8 @@ function bindUI() {
   $('#note-save').addEventListener('click', addNoteFromPop);
   $('#fb-copy').addEventListener('click', copyFeedbackRequest);
   $('#fb-slide').addEventListener('click', () => openNotePop(S.mode === 'deck' ? S.slides[S.cur] : S.sections[S.cur]));
-  $('#fb-region').addEventListener('click', enterRegionMode);
-  bindRegionLayer();
+  $('#multi-note').addEventListener('click', feedbackMulti);
+  $('#multi-del').addEventListener('click', deleteMulti);
   $('#fb-filter').addEventListener('click', e => {
     const f = e.target.closest('[data-f]')?.dataset.f;
     if (!f || f === S.noteFilter) return;

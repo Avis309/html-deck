@@ -350,11 +350,11 @@ details.more[open] summary::before { content: '▾ '; }
 .pin { position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 12px 12px 12px 3px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(94,27,9,.35); border: 2px solid #fff; pointer-events: auto; cursor: pointer; transition: transform .12s; }
 .pin:hover, .pin.hot { transform: scale(1.15); }
 .pin.done { background: #8a8a94; }
-/* Region feedback: the layer takes the pointer over the document while a box is drawn, so the
-   drag never selects text or moves a block; the box marks a drawn or hovered region. */
-.region-layer { position: absolute; z-index: 11; cursor: crosshair; touch-action: none; }
-.region-box { position: absolute; left: 0; top: 0; z-index: 9; pointer-events: none; border: 2px dashed var(--accent); border-radius: 3px; background: rgba(255,90,31,.08); }
-#fb-region.on { background: var(--accent-50); color: var(--accent-fg); box-shadow: inset 0 0 0 1.5px var(--accent); }
+/* Marquee selection: the swept box (also a hovered region note), each block of the group. */
+.region-box { position: absolute; left: 0; top: 0; z-index: 9; pointer-events: none; border: 1.5px dashed var(--accent); border-radius: 3px; background: rgba(255,90,31,.07); }
+.multi-boxes > .multi-box { position: absolute; left: 0; top: 0; z-index: 9; pointer-events: none; outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 2px; }
+.multi-pill { z-index: 12; }
+.multi-count { padding: 0 8px 0 6px; font-size: 12px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
 .note-pop { width: 320px; }
 .note-pop textarea { width: 100%; min-height: 86px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; outline: 0; line-height: 1.45; margin-bottom: 10px; }
 .note-pop textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-50); }

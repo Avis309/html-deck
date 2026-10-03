@@ -161,10 +161,9 @@
           <div id="fx-list"></div>
         </div>
         <div class="panel-body" data-view="review" hidden>
-          <div class="hint" data-i18n-html="review_hint">Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix. Then click the button below and paste into Claude / Codex.</div>
+          <div class="hint" data-i18n-html="review_hint">Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix — or drag from the slide background to sweep several blocks and write one note for the area. Then click the button below and paste into Claude / Codex.</div>
           <button class="btn-primary fb-copy" id="fb-copy"><svg class="icon sm"><use href="#i-copy"/></svg><span data-i18n="fb_copy">Copy request for AI</span></button>
-          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:8px"><svg class="icon sm"><use href="#i-comment"/></svg><span id="fb-slide-label"></span></button>
-          <button class="btn-soft" id="fb-region" style="width:100%;margin-bottom:12px" data-i18n-title="fb_region_title" title="Drag a box over the slide, then write feedback for that whole area"><svg class="icon sm"><use href="#i-box"/></svg><span data-i18n="fb_region">Draw a region for feedback</span></button>
+          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-comment"/></svg><span id="fb-slide-label"></span></button>
           <div class="seg fb-filter" id="fb-filter"><button data-f="open" class="on"></button><button data-f="done"></button></div>
           <div id="note-list"></div>
           <details class="agent-more"><summary data-i18n="fb_for_agent">For agents (command to read feedback)</summary>
@@ -185,7 +184,7 @@
     <div class="workspace">
       <main class="stage empty" id="stage">
         <div class="ctx idle" id="ctx">
-          <div class="idle-only"><svg class="icon sm"><use href="#i-pointer"/></svg><span id="idle-text">Click text to edit · hold Alt while clicking to select parent frame (card, column…)</span></div>
+          <div class="idle-only"><svg class="icon sm"><use href="#i-pointer"/></svg><span id="idle-text">Click text to edit · drag from the background to select several blocks · hold Alt while clicking to select parent frame (card, column…)</span></div>
           <select class="font-select needs-sel text-only" id="tb-font" data-i18n-title="font_title" title="Font family"></select>
           <div class="size-ctl needs-sel text-only"><button id="tb-size-dn" data-i18n-title="size_dn" title="Decrease size">−</button><input id="tb-size" inputmode="decimal" data-i18n-title="font_size" title="Font size"><button id="tb-size-up" data-i18n-title="size_up" title="Increase size">+</button></div>
           <div class="ctx-sep needs-sel text-only"></div>
@@ -272,7 +271,13 @@
 
         <div class="pins" id="pins"></div>
         <div class="region-box" id="region-box" hidden></div>
-        <div class="region-layer" id="region-layer" hidden></div>
+        <div class="multi-boxes" id="multi-boxes"></div>
+        <div class="pill multi-pill" id="multi-pill">
+          <span class="multi-count" id="multi-count"></span>
+          <span class="sep"></span>
+          <button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon"><use href="#i-comment"/></svg></button>
+          <button id="multi-del" class="danger" data-i18n-title="multi_del_title" title="Delete these blocks (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
+        </div>
         <div class="overlay" id="overlay">
           <div class="offset-box" id="offset-box"><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i></div>
           <div class="hover-box" id="hover-box"></div>

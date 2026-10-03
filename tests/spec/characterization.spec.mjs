@@ -436,7 +436,7 @@ async function structural(browser, url) {
 }
 
 async function regionFeedback(browser, url) {
-  section('region feedback');
+  section('marquee selection: sweep, Shift+click, group delete, region feedback');
   const f = 'deck.html';
   const original = disk(f);
   const side = path.join(WORK, '.htmldeck_notes', 'deck.html.json');
@@ -445,41 +445,66 @@ async function regionFeedback(browser, url) {
   await s.open(wpath(f));
   await s.page.click('.rail-item[data-panel="review"]');
   await s.page.waitForTimeout(400);   // the panel slides open and moves the stage
-  // Esc leaves the tool without a note; the document stays editable.
-  await s.page.click('#fb-region');
-  check('region: the button shows the drawing layer', await s.page.isVisible('#region-layer'));
-  await s.page.keyboard.press('Escape');
-  check('region: Esc cancels', !(await s.page.isVisible('#region-layer')) && !(await s.page.isVisible('#pop-note')));
-
-  // A box around the title and the lead paragraph, drawn from bottom-right to top-left.
+  const pill = () => s.page.locator('#multi-pill.show');
+  const fr = await s.page.locator('#frame').boundingBox();
   const h1 = await s.frame.locator('#t1').boundingBox(), lead = await s.frame.locator('p.lead').boundingBox();
-  await s.page.click('#fb-region');
-  await s.page.mouse.move(Math.max(h1.x + h1.width, lead.x + lead.width) + 8, lead.y + lead.height + 4);
-  await s.page.mouse.down();
-  await s.page.mouse.move(h1.x + 40, h1.y + 20, { steps: 4 });
-  await s.page.mouse.move(h1.x - 8, h1.y - 4, { steps: 4 });
-  await s.page.mouse.up();
-  check('region: releasing opens the feedback popup, 2 elements', await s.page.isVisible('#pop-note') && /2/.test(await s.page.textContent('#note-target')), await s.page.textContent('#note-target'));
+  // From the empty slide background below the lead paragraph, up past the title's top-left.
+  const sweep = async (from, to) => {
+    await s.page.mouse.move(from.x, from.y);
+    await s.page.mouse.down();
+    await s.page.mouse.move((from.x + to.x) / 2, (from.y + to.y) / 2, { steps: 4 });
+    await s.page.mouse.move(to.x, to.y, { steps: 4 });
+    await s.page.mouse.up();
+  };
+  const titleAndLead = () => sweep({ x: fr.x + fr.width * 0.6, y: lead.y + lead.height + 4 }, { x: fr.x + 2, y: h1.y - 6 });
+  await titleAndLead();
+  await pill().waitFor({ timeout: 3000 }).catch(() => {});
+  check('sweep from the background: title + lead become a group of 2', /^2\b/.test(await s.page.textContent('#multi-count')) && (await s.page.locator('#multi-boxes > .multi-box').count()) === 2,
+    await s.page.textContent('#multi-count'));
+  check('sweep: nothing written, not dirty, no single selection', (await s.content()) === original && !(await s.dirty()) && !(await s.page.isVisible('#sel-box')));
+  await s.page.keyboard.press('Delete');
+  check('Delete removes the whole group', (await s.frame.locator('#t1').count()) === 0 && (await s.frame.locator('p.lead').count()) === 0 && (await s.dirty()));
+  await s.undo();
+  check('one undo brings the whole group back', (await s.content()) === original && !(await s.dirty()));
+
+  await s.select('#t1');
+  await s.frame.locator('p.lead').click({ modifiers: ['Shift'] });
+  await pill().waitFor({ timeout: 3000 }).catch(() => {});
+  check('Shift+click adds a block to the selection', /^2\b/.test(await s.page.textContent('#multi-count')));
+  await s.page.keyboard.press('Escape');
+  await s.page.waitForTimeout(100);
+  check('Esc clears the group', !(await pill().isVisible()));
+
+  // A drag that starts on text still selects text.
+  await sweep({ x: lead.x + 4, y: lead.y + 8 }, { x: lead.x + 120, y: lead.y + 8 });
+  await s.page.waitForTimeout(100);
+  check('a drag starting on text makes no group', !(await pill().isVisible()));
+  await s.page.keyboard.press('Escape');
+
+  await titleAndLead();
+  await pill().waitFor({ timeout: 3000 }).catch(() => {});
+  await s.page.click('#multi-note');
+  check('group → AI Feedback: one region note for 2 elements', await s.page.isVisible('#pop-note') && /2/.test(await s.page.textContent('#note-target')), await s.page.textContent('#note-target'));
   await s.page.fill('#note-input', 'Merge the title and the lead');
   await s.page.click('#note-save');
   for (let i = 0; i < 50 && !readNotes().length; i++) await s.page.waitForTimeout(100);
-  let [n] = readNotes();
+  const [n] = readNotes();
   check('region in the sidecar: kind, slide coordinates, exactly 2 elements',
-    n?.kind === 'region' && n.slide === 0 && n.canvas.width === 1280 && Math.abs(n.region.x - (h1.x - lead.x)) < 20 && n.region.width > 100
+    n?.kind === 'region' && n.slide === 0 && n.canvas.width === 1280 && n.region.x < 20 && n.region.width > 100
       && n.targets.length === 2 && n.targets[0].selector === '#t1' && /p$/.test(n.targets[1].selector) && n.targets[1].text.startsWith('Tom & Jerry'),
     JSON.stringify(n));
-  check('region: HTML unchanged, not dirty, nothing selected', (await s.content()) === original && !(await s.dirty()) && !(await s.page.isVisible('#sel-box')));
+  check('region note: HTML unchanged, not dirty', (await s.content()) === original && !(await s.dirty()));
   check('region: the feedback card says "region"', /region/.test(await s.page.textContent('#note-list')));
 
   // Duplicating the title makes #t1 ambiguous: after the save the region's elements are
-  // re-anchored to the new structure; the drawn box itself stays as it was.
+  // re-anchored to the new structure; the area itself stays as it was.
   await s.select('#t1');
   await s.page.click('#pill-dup');
   await s.saveKey();
   await s.waitSaved();
   for (let i = 0; i < 50 && readNotes()[0]?.targets[0].selector === '#t1'; i++) await s.page.waitForTimeout(100);
   const moved = readNotes()[0];
-  check('after saving: the region\'s elements are re-anchored, the box is kept',
+  check('after saving: the region\'s elements are re-anchored, the area is kept',
     /h1:nth-of-type\(1\)$/.test(moved.targets[0].selector) && moved.targets[1].selector === n.targets[1].selector
       && JSON.stringify(moved.region) === JSON.stringify(n.region) && moved.status === 'open',
     JSON.stringify(moved));
