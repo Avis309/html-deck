@@ -28,6 +28,7 @@ button:disabled { cursor: default; opacity: .38; }
 .icon { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .icon.sm { width: 15px; height: 15px; }
 .icon.lg { width: 22px; height: 22px; }
+.icon.lg.ai { width: 26px; height: 26px; margin: -2px; }   /* the AI mark reads small at 22px */
 [hidden] { display: none !important; }
 
 /* ---------- app grid ---------- */
