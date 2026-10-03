@@ -8,8 +8,8 @@
  *
  * Run: `npm run spec` or `node tests/spec/characterization.spec.mjs [--fixtures-only | --real-only]`.
  * Fixtures are copied into a temporary workspace (the system temp folder) and the server runs
- * with `--root` on it. The "real files" part runs on the sample deck `samples/ai-foundation-deck.html`
- * (needs the network: the deck loads anime.js from a CDN), or on another workspace:
+ * with `--root` on it. The "real files" part runs on the sample deck `samples/marketing-report.html`,
+ * or on another workspace:
  *   HTMLDECK_REAL_ROOT=~/vng_work HTMLDECK_REAL_FILES="output/a.html,docs/b.html" npm run spec
  * Python: the PYTHON variable, else the repo's .venv/bin/python if present, else python3.
  */
@@ -25,7 +25,7 @@ const FIX = path.join(ROOT, 'tests/fixtures');
 const PY = process.env.PYTHON || (fs.existsSync(path.join(ROOT, '.venv/bin/python')) ? path.join(ROOT, '.venv/bin/python') : 'python3');
 // Real documents: the bundled sample deck by default, or another workspace's files.
 const REAL_ROOT = process.env.HTMLDECK_REAL_ROOT ? path.resolve(process.env.HTMLDECK_REAL_ROOT.replace(/^~(?=\/)/, os.homedir())) : path.join(ROOT, 'samples');
-const REAL_FILES = (process.env.HTMLDECK_REAL_FILES || (process.env.HTMLDECK_REAL_ROOT ? '' : 'ai-foundation-deck.html')).split(',').map(x => x.trim()).filter(Boolean);
+const REAL_FILES = (process.env.HTMLDECK_REAL_FILES || (process.env.HTMLDECK_REAL_ROOT ? '' : 'marketing-report.html')).split(',').map(x => x.trim()).filter(Boolean);
 const args = new Set(process.argv.slice(2));
 if (args.has('--real-only') && args.has('--fixtures-only')) { console.error('Pick one of --real-only / --fixtures-only'); process.exit(2); }
 
@@ -1319,16 +1319,16 @@ async function realFiles(browser) {
     const c = await s.content();
     const badge = await s.page.textContent('#mode-badge');
     check(`${f} [${badge}]: byte-identical, not dirty`, c === raw && !(await s.dirty()), firstDiff(c, raw));
-    if (f.endsWith('ai-foundation-deck.html')) {
-      // Its animations are scenes registered from its script: the effects panel lists them,
-      // even with the CDN script (anime.js) off in the edit view.
-      await s.page.click('#filmstrip .thumb >> nth=10');
+    if (f.endsWith('marketing-report.html')) {
+      // Its chart animates through a scene registered from its own script: the effects panel
+      // lists it on that slide.
+      await s.page.click('#filmstrip .thumb >> nth=3');
       await s.page.click('.rail-item[data-panel="effects"]');
       const list = await s.page.textContent('#fx-list');
-      check(`${f}: effects panel shows slide 11's scene (remote scripts off)`, /scene: ai-foundation/.test(list) && /presenting/.test(list), list.slice(0, 160));
+      check(`${f}: effects panel shows slide 4's scene`, /scene: bars/.test(list) && /presenting/.test(list), list.slice(0, 160));
       await s.page.click('.rail-item[data-panel="effects"]');
       await s.page.click('#filmstrip .thumb >> nth=0');
-      // The deck animates (anime.js) only while presenting: none of it may reach the edit side.
+      // The deck animates only while presenting: none of it may reach the edit side.
       await s.page.click('#btn-present');
       await s.page.waitForFunction(() => document.body.dataset.presentState === 'active', null, { timeout: 15000 });
       for (let i = 0; i < 3; i++) { await s.page.keyboard.press('ArrowRight'); await s.page.waitForTimeout(700); }
@@ -1336,20 +1336,21 @@ async function realFiles(browser) {
       await s.page.keyboard.press('Escape');
       await s.page.waitForFunction(() => !document.querySelector('.present-frame'), null, { timeout: 10000 });
       const after = await s.content();
-      // Opened on its own, the deck's scenes run through its FX runtime as the slides scroll in.
+      // Opened on its own, the embedded FX runtime plays the effects and scenes as slides scroll in.
       const ctx2 = await browser.newContext({ viewport: { width: 1400, height: 900 } });
       const pg = await ctx2.newPage();
       const errs = [];
       pg.on('pageerror', e => errs.push(e.message));
       await pg.goto(`${url}/${f}`);
       await pg.waitForTimeout(800);
-      const cover = await pg.evaluate(() => ({ fx: !!window.__htmldeckFx, running: window.anime ? window.anime.running.length : -1 }));
-      await pg.locator('.slide[data-anim]').nth(8).scrollIntoViewIfNeeded();
+      const orbs = () => pg.evaluate(() => document.getAnimations().filter(a => a.effect?.target?.classList?.contains('orb')).length);
+      const cover = { fx: await pg.evaluate(() => !!window.__htmldeckFx), orbs: await orbs() };
+      await pg.locator('.slide').nth(5).scrollIntoViewIfNeeded();
       await pg.waitForTimeout(900);
-      const away = await pg.evaluate(() => window.anime.running.filter(a => a.animatables.some(x => x.target.closest && x.target.closest('.slide') === document.querySelector('.slide[data-anim]'))).length);
-      check(`${f}: opened standalone → scene runs; leaving the cover → the cover's loop stops`, cover.fx && cover.running > 0 && away === 0 && !errs.length, JSON.stringify({ cover, away, errs }));
+      const away = await orbs();
+      check(`${f}: opened standalone → the cover scene runs; leaving the cover stops it`, cover.fx && cover.orbs > 0 && away === 0 && !errs.length, JSON.stringify({ cover, away, errs }));
       await ctx2.close();
-      check(`${f}: present 3 animated slides then leave → back on slide 4, still byte-identical`,
+      check(`${f}: present 3 slides then leave → back on slide 4, still byte-identical`,
         idx === '3' && (await s.page.textContent('#page-count')).trim().startsWith('4 /') && after === raw && !(await s.dirty()), `idx=${idx} ${firstDiff(after, raw)}`);
     }
     await s.close();
