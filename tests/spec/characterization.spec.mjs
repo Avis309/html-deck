@@ -513,6 +513,28 @@ async function regionFeedback(browser, url) {
   fs.rmSync(side, { force: true });
 }
 
+async function serverDown(browser, url) {
+  section('server stopped: a message an end user can act on');
+  const s = await new Session(browser, url).start();
+  await s.open(wpath('deck.html'));
+  // No server answering makes fetch() reject, exactly as aborting the request does.
+  await s.page.route('**/api/**', r => r.abort('connectionrefused'));
+  await s.page.click('#btn-present');
+  await s.page.waitForFunction(() => /not running/.test(document.querySelector('#toast').textContent), null, { timeout: 15000 }).catch(() => {});
+  const msg = await s.page.textContent('#toast');
+  check('present with the server stopped: says HTML Deck is not running, not "Failed to fetch"', /HTML Deck is not running — start it again/.test(msg) && !/Failed to fetch/.test(msg), msg);
+  await s.page.click('#btn-lang');
+  await s.page.click('#pop-lang .lang-opt[data-lang="vi"]');
+  await s.page.click('#btn-present');
+  await s.page.waitForFunction(() => /đã tắt/.test(document.querySelector('#toast').textContent), null, { timeout: 15000 }).catch(() => {});
+  const vi = await s.page.textContent('#toast');
+  check('… in Vietnamese too, inside the translated toast', /^Không mở được chế độ trình chiếu: HTML Deck đã tắt/.test(vi), vi);
+  await s.page.unroute('**/api/**');
+  await s.page.click('#btn-lang');
+  await s.page.click('#pop-lang .lang-opt[data-lang="en"]');
+  await s.close();
+}
+
 async function conflict(browser, url) {
   section('saving when the file changed on disk (409)');
   const f = 'crlf.html';
@@ -1344,7 +1366,7 @@ try {
   server = await startServer(['--test-hooks']);
   browser = await chromium.launch();
   if (!args.has('--real-only')) {
-    for (const scenario of [detection, textColourHistory, modeSwitch, structural, regionFeedback, conflict, rewriteFallback, saveInFlight, failedStep, failedSingleStep, draftRestore, language, mutating, present, reveal, effects, motion, scenesSpec, remoteScriptsSpec, malformed]) {
+    for (const scenario of [detection, textColourHistory, modeSwitch, structural, regionFeedback, serverDown, conflict, rewriteFallback, saveInFlight, failedStep, failedSingleStep, draftRestore, language, mutating, present, reveal, effects, motion, scenesSpec, remoteScriptsSpec, malformed]) {
       try { await scenario(browser, server.url); }
       catch (e) { failures.push(`${scenario.name} stopped half way: ${e.message.split('\n')[0]}`); console.log(`  ✖ ${scenario.name} stopped half way: ${e.message.split('\n')[0]}`); }
     }

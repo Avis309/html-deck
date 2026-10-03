@@ -1226,10 +1226,17 @@ export function layerName(lang, tag) {
 export function translate(lang, key, fallback = '') {
   return (I18N[lang] && I18N[lang][key]) || (I18N.en && I18N.en[key]) || fallback || key;
 }
+// Messages that arrive inside another toast ("Save failed: …"), translated wherever they appear.
+export const TOAST_PHRASES = [
+  ['HTML Deck is not running — start it again, then reload this page',
+    { vi: 'HTML Deck đã tắt — hãy mở lại HTML Deck rồi tải lại trang này', zh: 'HTML Deck 未在运行 — 请重新启动 HTML Deck，然后刷新此页面' }],
+];
 // Toasts are written in English at the call site; VI/ZH are matched by pattern.
 export function translateToastFor(lang, msg) {
   if (typeof msg !== 'string') return String(msg);
   const table = lang === 'vi' ? TOAST_VI_PATTERNS : lang === 'zh' ? TOAST_ZH_PATTERNS : null;
-  if (table) for (const [pattern, rep] of table) if (pattern.test(msg)) return msg.replace(pattern, rep);
+  if (!table) return msg;
+  for (const [en, tr] of TOAST_PHRASES) if (tr[lang]) msg = msg.split(en).join(tr[lang]);
+  for (const [pattern, rep] of table) if (pattern.test(msg)) return msg.replace(pattern, rep);
   return msg;
 }
