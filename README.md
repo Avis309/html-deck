@@ -59,7 +59,7 @@ it for you. It works on Linux, macOS and Windows.
 
 In Claude Code or Codex:
 
-1. Ask the agent to *"open slides/q3.html in HTML Deck"*. Claude Code also has `/htmldeck [file]`.
+1. Ask the agent to *"open q3.html in HTML Deck"*. Claude Code also has `/htmldeck [file]`.
 2. Edit in the browser, and pin **AI Feedback** notes where you want the agent to change something.
 3. Ask the agent to *"apply my HTML Deck notes"*.
 
@@ -67,8 +67,8 @@ In Claude Code or Codex:
 
 ```bash
 cd ~/my-workspace
-htmldeck                             # workspace = current folder
-htmldeck --file decks/q3.html        # open a document first
+htmldeck                 # workspace = current folder
+htmldeck --file q3.html  # open a document first
 htmldeck --root ~/my-workspace --port 6789 --no-browser
 ```
 
@@ -83,9 +83,9 @@ Review notes live beside each document in `.htmldeck_notes/<name>.json`. Scripts
 and resolve them with:
 
 ```bash
-htmldeck-notes --file decks/q3.html            # list open notes
-htmldeck-notes --file decks/q3.html --prompt   # the same, as a request ready to paste to an agent
-htmldeck-notes --file decks/q3.html --done ID  # mark one done
+htmldeck-notes --file q3.html            # list open notes
+htmldeck-notes --file q3.html --prompt   # the same, as a request ready to paste to an agent
+htmldeck-notes --file q3.html --done ID  # mark one done
 ```
 
 A region note (drag from the slide background to select several blocks, then **AI Feedback** on
