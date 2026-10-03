@@ -3692,7 +3692,7 @@ async function exportSingleFile() {
     if (left) console.warn('HtmlDeck export: kept as links', { missing: res.missing, remote: res.remote });
   } catch (e) { toast('Export failed: ' + e.message, { err: true, ms: 6000 }); }
 }
-// PDF: the browser's own print to PDF, of a print copy of the document (one page per slide,
+// PDF: the browser's own print to PDF, of a print copy of the document (a deck: one page per slide;
 // no motion). Opened in its own tab, which is asked for inside the click: pop-up blockers only
 // let a user gesture open one.
 async function exportPDF() {
