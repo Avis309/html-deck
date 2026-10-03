@@ -32,6 +32,7 @@ import contextlib
 import errno
 import http.server
 import json
+import math
 import os
 import secrets
 import shutil
@@ -65,6 +66,7 @@ NOTES_DIR_NAME = ".htmldeck_notes"
 NOTE_FIELDS = {"id": str, "note": str, "status": str, "created": str, "selector": str, "tag": str, "text": str}
 NOTE_STATUSES = {"open", "done"}
 MAX_NOTES = 500
+MAX_NOTE_TARGETS = 12
 MAX_BODY_BYTES = 64 * 1024 * 1024
 PREVIEW_PREFIX = "__edpreview-"
 # Content-Security-Policy, enforced by the browser (the document's own CSP cannot loosen it):
@@ -223,9 +225,53 @@ def _clean_note(raw: object) -> dict:
     if note["status"] not in NOTE_STATUSES:
         raise EditorError(400, "status phải là open hoặc done")
     for key in ("line", "slide"):
-        value = raw.get(key)
-        note[key] = value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+        note[key] = _line(raw.get(key))
+    # A region note: one request about an area drawn on a slide. The top-level anchor is the
+    # slide (so older readers still see a whole-slide note); the area and the elements found
+    # in it ride along. Element notes carry none of these keys.
+    if "kind" in raw:
+        if raw["kind"] != "region":
+            raise EditorError(400, "kind chỉ nhận region")
+        note["kind"] = "region"
+        note["region"] = _box(raw.get("region"), ("x", "y", "width", "height"))
+        note["canvas"] = _box(raw.get("canvas"), ("width", "height"))
+        targets = raw.get("targets", [])
+        if not isinstance(targets, list) or len(targets) > MAX_NOTE_TARGETS:
+            raise EditorError(400, "targets không hợp lệ")
+        note["targets"] = [_clean_target(t) for t in targets]
     return note
+
+
+def _line(value: object) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _box(raw: object, keys: tuple[str, ...]) -> dict:
+    """Finite numbers in CSS pixels; width and height must be positive."""
+    if not isinstance(raw, dict):
+        raise EditorError(400, "Thiếu toạ độ vùng")
+    box = {}
+    for key in keys:
+        value = raw.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            raise EditorError(400, f"Toạ độ {key} không hợp lệ")
+        if key in ("width", "height") and value <= 0:
+            raise EditorError(400, f"{key} phải lớn hơn 0")
+        box[key] = round(value, 2)
+    return box
+
+
+def _clean_target(raw: object) -> dict:
+    if not isinstance(raw, dict):
+        raise EditorError(400, "target phải là object")
+    target = {}
+    for key in ("selector", "tag", "text"):
+        value = raw.get(key, "")
+        if not isinstance(value, str):
+            raise EditorError(400, f"target.{key} không hợp lệ")
+        target[key] = value[:4000]
+    target["line"] = _line(raw.get("line"))
+    return target
 
 
 def _replace(src: Path, dst: Path) -> None:
@@ -296,7 +342,9 @@ def write_notes(target: Path, notes: object, root: Path) -> dict:
     return {"success": True, "count": len(cleaned), "notes_file": display_path(notes_path(target), root)}
 
 
-NOTE_PATCH_FIELDS = {"status", "note", "selector", "line", "text", "tag"}
+# The drawn region is a capture snapshot: re-anchoring after a save moves the anchors
+# (selector, line, targets), never the area.
+NOTE_PATCH_FIELDS = {"status", "note", "selector", "line", "text", "tag", "targets"}
 
 
 def apply_note_ops(target: Path, ops: object, root: Path) -> dict:

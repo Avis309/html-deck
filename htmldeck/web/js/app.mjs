@@ -366,6 +366,8 @@ function resetState() {
   clearTimeout(S.draftTimer);
   S.liveById = new Map(); S.slides = []; S.sections = []; S.cur = 0; S.doc = null; S.win = null;
   S.layerScope = null; S.linkCtx = null; S.spacingDrag = false;
+  S.noteRegion = null; S.hoverRegion = null;
+  if (S.region) exitRegionMode();
   S.find = null; S.overflows = []; clearTimeout(S.findTimer); clearTimeout(S.overflowTimer);
   $('#sb-overflow').hidden = true;
   S.thumbTimers.forEach(t => clearTimeout(t)); S.thumbTimers.clear();
@@ -2880,7 +2882,7 @@ function cssPath(m) {
     const same = [...n.parentElement.children].filter(c => c.localName === n.localName);
     parts.unshift(same.length > 1 ? `${n.localName}:nth-of-type(${same.indexOf(n) + 1})` : n.localName);
   }
-  return parts.join(' > ');
+  return parts.join(' > ') || m.localName;   // body: a region drawn on a page without sections
 }
 function sourceLine(id) {
   if (S.lineMapText !== S.sourceText) { S.lineMap = alignTokens(tokenize(S.sourceText), S.pristine); S.lineMapText = S.sourceText; }
@@ -2935,34 +2937,51 @@ async function noteOps(ops) {
   renderNoteList();
   renderPins();
 }
-// After a save the file structure changed: re-anchor notes to the new structure.
-function reanchorNotes(beforeIds) {
-  const ops = [];
-  (S.agentNotes || []).forEach((n, i) => {
-    const id = beforeIds[i];
+// Before a save: which element each note (and each element of a region note) points at, keyed
+// by note id, since the list may be reloaded while the request is in flight.
+function noteAnchorIds() {
+  return new Map((S.agentNotes || []).map(n => [n.id, { owner: noteTargetId(n), targets: n.kind === 'region' ? n.targets.map(noteTargetId) : null }]));
+}
+// After a save the file structure changed: re-anchor notes to the new structure. A region keeps
+// the elements it was drawn over (never re-collected by geometry); one that is gone stays as it
+// was, so the agent still gets its last known place.
+function reanchorNotes(before) {
+  const anchor = id => {
     const p = id && S.pristine.querySelector(`[data-ed-id="${id}"]`);
-    if (!p) return;
-    const selector = cssPath(p), line = sourceLine(id);
-    if (selector !== n.selector || line !== n.line) ops.push({ op: 'update', id: n.id, patch: { selector, line } });
-  });
+    return p ? { selector: cssPath(p), line: sourceLine(id) } : null;
+  };
+  const ops = [];
+  for (const n of S.agentNotes || []) {
+    const b = before.get(n.id);
+    if (!b) continue;
+    const patch = {}, a = anchor(b.owner);
+    if (a && (a.selector !== n.selector || a.line !== n.line)) Object.assign(patch, a);
+    if (b.targets && b.targets.length === n.targets?.length) {
+      const targets = n.targets.map((t, k) => ({ ...t, ...anchor(b.targets[k]) }));
+      if (targets.some((t, k) => t.selector !== n.targets[k].selector || t.line !== n.targets[k].line)) patch.targets = targets;
+    }
+    if (Object.keys(patch).length) ops.push({ op: 'update', id: n.id, patch });
+  }
   if (ops.length) noteOps(ops);
 }
 // Single-quoted for the shell: paths may hold spaces or glob characters like [PTGSEA].
 const shq = v => `'${String(v).replace(/'/g, `'\\''`)}'`;
 const agentCmd = () => `htmldeck-notes --file ${shq(S.source.path)}`;   // run in the workspace
 // target: the selected block, or a whole slide / report section pinned from the panel.
-function openNotePop(target = S.sel) {
+// region: { region, canvas, targets } of a box drawn on `target` (see drawRegion).
+function openNotePop(target = S.sel, region = null) {
   if (!target) return toast('Chọn một khối trước khi viết feedback');
   if (S.source?.kind !== 'server') return toast(t('note_workspace_only'), { err: true });
   if (S.editing) setEditing(false);
   const pop = $('#pop-note');
   closePopups();
   S.noteTarget = target;
-  const whole = target === S.slides[S.cur] || S.sections.includes(target);
-  $('#note-target').textContent = whole ? `${stripLabel(target)} · ${t('fb_whole_slide')}` : `“${snippetOf(target).slice(0, 70)}”`;
+  S.noteRegion = region && { owner: target, ...region };
+  const whole = !region && (target === S.slides[S.cur] || S.sections.includes(target));
+  $('#note-target').textContent = region ? regionLabel(target, region.targets) : whole ? `${stripLabel(target)} · ${t('fb_whole_slide')}` : `“${snippetOf(target).slice(0, 70)}”`;
   $('#note-input').value = '';
   // Beside the target when there is room, so the block being described stays visible.
-  const r = target.getBoundingClientRect(), fr = el.frame.getBoundingClientRect(), st = el.stage.getBoundingClientRect();
+  const r = region ? regionRect(target, region.region) : target.getBoundingClientRect(), fr = el.frame.getBoundingClientRect(), st = el.stage.getBoundingClientRect();
   const L = fr.left - st.left + r.left * S.scale, R = fr.left - st.left + r.right * S.scale;
   const T = fr.top - st.top + r.top * S.scale, B = fr.top - st.top + r.bottom * S.scale;
   const W = Math.min(330, st.width - 16), H = 210;
@@ -2979,7 +2998,13 @@ function openNotePop(target = S.sel) {
 }
 function stripLabel(node) {
   const i = stripItems().indexOf(node);
+  if (i < 0) return '';
   return S.mode === 'deck' ? `Slide ${i + 1}` : `${t('fb_section')} ${i + 1}`;
+}
+// "Slide 2 · region · 3 elements: “Growth”, <img>"
+function regionLabel(owner, targets) {
+  const what = targets.length ? t('fb_region_items').replace('{n}', targets.length) + ': ' + targets.slice(0, 3).map(x => x.text ? `“${x.text.slice(0, 24)}”` : `<${x.tag}>`).join(', ') : t('fb_region_empty');
+  return [stripLabel(owner), t('fb_region_tag'), what].filter(Boolean).join(' · ');
 }
 function addNoteFromPop() {
   const text = $('#note-input').value.trim(), target = S.noteTarget;
@@ -2987,13 +3012,163 @@ function addNoteFromPop() {
   const id = target.dataset.edId, p = S.pristine.querySelector(`[data-ed-id="${id}"]`);
   if (!p) return toast('Khối này chưa có trong file — bấm Lưu trước rồi viết feedback', { err: true, ms: 4000 });
   const slide = S.slides.indexOf(target.closest('[data-ed-slide]'));
+  const reg = S.noteRegion?.owner === target ? S.noteRegion : null;
   $('#pop-note').hidden = true;
+  S.noteRegion = null;
   noteOps([{ op: 'add', note: {
     id: Math.random().toString(36).slice(2, 10), note: text, status: 'open', created: new Date().toISOString(),
     selector: cssPath(p), tag: p.localName, text: snippetOf(p), line: sourceLine(id), slide: slide >= 0 ? slide : null,
+    ...(reg && { kind: 'region', region: reg.region, canvas: reg.canvas, targets: reg.targets }),
   } }]);
   toast('Đã lưu feedback');
 }
+// ---------------------------------------------------------------- region feedback
+// One note about an area rather than one block (idea from slides-grab's bbox tool). The box is
+// drawn on a layer above the frame, so the drag never selects text or moves a block, and is
+// kept in CSS pixels of the slide (or report section) it was drawn on. The elements found in
+// it travel with the note as context for the agent, anchored like element notes.
+const REGION_MIN_PX = 6;      // screen px: a smaller drag is a click
+const REGION_COVER = 0.7;     // share of an element's box that must lie inside the region
+const REGION_SKIP = new Set(['script', 'style', 'noscript', 'template', 'link', 'meta', 'br', 'wbr', 'source', 'track']);
+// Frame-viewport rect of a region stored relative to its owner.
+function regionRect(owner, reg) {
+  const o = owner.getBoundingClientRect();
+  return new DOMRect(o.left + reg.x, o.top + reg.y, reg.width, reg.height);
+}
+function enterRegionMode() {
+  if (S.source?.kind !== 'server') return toast(t('note_workspace_only'), { err: true });
+  if (!S.doc || S.presenting) return;
+  if (S.region) return exitRegionMode();
+  if (S.editing) setEditing(false);
+  deselect();
+  closePopups();
+  showHoverBox(null);
+  S.region = { start: null, end: null };
+  $('#region-layer').hidden = false;
+  $('#fb-region').classList.add('on');
+  positionRegion();
+  toast(t('fb_region_hint'), { ms: 3500 });
+}
+function exitRegionMode() {
+  S.region = null;
+  $('#region-layer').hidden = true;
+  $('#fb-region')?.classList.remove('on');
+}
+// Pointer → frame-viewport coordinates (the sheet is scaled by S.scale), kept on the page.
+function framePoint(ev) {
+  const fr = el.frame.getBoundingClientRect();
+  return {
+    x: clamp((ev.clientX - fr.left) / S.scale, 0, S.win.innerWidth),
+    y: clamp((ev.clientY - fr.top) / S.scale, 0, S.win.innerHeight),
+  };
+}
+function spanRect(a, b) {
+  return new DOMRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+}
+function bindRegionLayer() {
+  const layer = $('#region-layer');
+  layer.addEventListener('pointerdown', ev => {
+    if (ev.button !== 0 || !S.region || !S.doc) return;
+    ev.preventDefault();
+    layer.setPointerCapture(ev.pointerId);
+    S.region.start = S.region.end = framePoint(ev);
+  });
+  layer.addEventListener('pointermove', ev => { if (S.region?.start) S.region.end = framePoint(ev); });
+  layer.addEventListener('pointerup', ev => {
+    if (!S.region?.start) return;
+    const r = spanRect(S.region.start, framePoint(ev));
+    S.region.start = null;
+    if (r.width * S.scale >= REGION_MIN_PX && r.height * S.scale >= REGION_MIN_PX) drawRegion(r);
+  });
+  layer.addEventListener('pointercancel', () => { if (S.region) S.region.start = null; });
+  // The layer sits over the scroller: let the wheel still scroll the document.
+  layer.addEventListener('wheel', ev => { el.scroller.scrollBy(ev.deltaX, ev.deltaY); S.win?.scrollBy(ev.deltaX, ev.deltaY); }, { passive: true });
+}
+// A finished drag: find what it was drawn on and what lies in it, then open the note popup.
+function drawRegion(r) {
+  const cx = r.x + r.width / 2, cy = r.y + r.height / 2;
+  const inside = n => { const b = n.getBoundingClientRect(); return b.width && cx >= b.left && cx <= b.right && cy >= b.top && cy <= b.bottom; };
+  const owner = S.mode === 'deck' ? S.slides[S.cur] : S.sections.find(inside) || S.doc.body;
+  if (!owner) return;
+  const o = owner.getBoundingClientRect();
+  const left = Math.max(r.left, o.left), top = Math.max(r.top, o.top);
+  const right = Math.min(r.right, o.right), bottom = Math.min(r.bottom, o.bottom);
+  if (right - left < 1 || bottom - top < 1) return;
+  const box = new DOMRect(left, top, right - left, bottom - top);
+  exitRegionMode();
+  openNotePop(owner, {
+    region: { x: left - o.left, y: top - o.top, width: box.width, height: box.height },
+    canvas: { width: o.width, height: o.height },
+    targets: regionTargets(owner, box),
+  });
+}
+const REGION_BOXED = new Set(['img', 'svg', 'video', 'canvas', 'picture', 'iframe', 'object', 'embed', 'input', 'select', 'textarea', 'button', 'hr', 'table']);
+// What the eye sees of an element. A block of text spans the whole line box although its words
+// may fill a third of it, so a box drawn around the words would never cover it: measure the text
+// instead. A block that shows its box (background, border, shadow, media) is its box.
+function inkRect(n) {
+  const r = n.getBoundingClientRect();
+  if (REGION_BOXED.has(n.localName) || n.namespaceURI !== 'http://www.w3.org/1999/xhtml') return r;
+  const cs = S.win.getComputedStyle(n);
+  const border = ['Top', 'Right', 'Bottom', 'Left'].some(k => parseFloat(cs[`border${k}Width`]) > 0 && cs[`border${k}Style`] !== 'none');
+  if (border || cs.backgroundImage !== 'none' || cs.boxShadow !== 'none' || !/^(transparent|rgba\(.*,\s*0\))$/.test(cs.backgroundColor)) return r;
+  if ([...n.children].some(c => !S.win.getComputedStyle(c).display.startsWith('inline'))) return r;
+  const range = S.doc.createRange();
+  range.selectNodeContents(n);
+  const t = range.getBoundingClientRect();
+  return t.width && t.height ? t : r;
+}
+// The saved elements the box covers: each must lie mostly inside it, and a covered element
+// stands for its covered children (a card, not its title and text one by one). A box drawn
+// inside a single block names that block. Unsaved inserts are not in the file yet: left out.
+function regionTargets(owner, box) {
+  const saved = new Set([...S.pristine.querySelectorAll('[data-ed-id]')].map(n => n.getAttribute('data-ed-id')));
+  const area = r => r.width * r.height;
+  const overlap = r => Math.max(0, Math.min(r.right, box.right) - Math.max(r.left, box.left)) * Math.max(0, Math.min(r.bottom, box.bottom) - Math.max(r.top, box.top));
+  const covered = new Set();
+  let around = null, aroundArea = Infinity;
+  for (const n of owner.querySelectorAll('*')) {
+    if (REGION_SKIP.has(n.localName) || n.ownerSVGElement || !isOriginal(n) || !saved.has(n.dataset.edId) || n.closest('.notes')) continue;
+    const r = n.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1 || S.win.getComputedStyle(n).visibility === 'hidden') continue;
+    const ink = inkRect(n);
+    if (overlap(ink) >= REGION_COVER * area(ink)) covered.add(n);
+    else if (r.left <= box.left && r.top <= box.top && r.right >= box.right && r.bottom >= box.bottom && area(r) < aroundArea) { around = n; aroundArea = area(r); }
+  }
+  let picked = [...covered].filter(n => !covered.has(n.parentElement));
+  if (!picked.length && around) picked = [around];
+  return picked.slice(0, 12).map(n => {
+    const id = n.dataset.edId, p = S.pristine.querySelector(`[data-ed-id="${id}"]`);
+    return { selector: cssPath(p), tag: p.localName, text: snippetOf(p), line: sourceLine(id) };
+  });
+}
+// Each frame: the region layer covers the scroller, and the region box shows the drag in
+// progress, the region the popup is about, or the region of the hovered note.
+function positionRegion() {
+  const box = $('#region-box'), layer = $('#region-layer');
+  if (!S.doc) { box.hidden = true; return; }
+  const st = el.stage.getBoundingClientRect();
+  if (S.region) {
+    const sc = el.scroller.getBoundingClientRect();
+    Object.assign(layer.style, { left: sc.left - st.left + 'px', top: sc.top - st.top + 'px', width: sc.width + 'px', height: sc.height + 'px' });
+  }
+  const note = S.noteRegion && !$('#pop-note').hidden && S.noteRegion.owner.isConnected ? S.noteRegion : S.hoverRegion;
+  const r = S.region?.start ? spanRect(S.region.start, S.region.end)
+    : note && note.owner.isConnected ? regionRect(note.owner, note.region) : null;
+  if (!r) { box.hidden = true; return; }
+  const fr = el.frame.getBoundingClientRect();
+  box.hidden = false;
+  box.style.transform = `translate(${fr.left - st.left + r.left * S.scale}px, ${fr.top - st.top + r.top * S.scale}px)`;
+  box.style.width = r.width * S.scale + 'px';
+  box.style.height = r.height * S.scale + 'px';
+}
+// Hovering a note (pin or card) outlines what it is about: its block, or its region.
+function hoverNote(n, target) {
+  const shown = target && (S.mode !== 'deck' || target.closest('[data-ed-slide]') === S.slides[S.cur]);
+  if (n.kind === 'region') { S.hoverRegion = shown ? { owner: target, region: n.region } : null; return; }
+  showHoverBox(shown ? target : null);
+}
+function unhoverNote() { S.hoverRegion = null; showHoverBox(null); }
 function renderPins() {
   const box = $('#pins');
   box.innerHTML = '';
@@ -3011,10 +3186,10 @@ function renderPins() {
     pin.textContent = i + 1;
     pin.title = n.note;
     pin.addEventListener('click', () => focusNote(i));
-    pin.addEventListener('mouseenter', () => showHoverBox(target));
-    pin.addEventListener('mouseleave', () => showHoverBox(null));
+    pin.addEventListener('mouseenter', () => hoverNote(n, target));
+    pin.addEventListener('mouseleave', unhoverNote);
     box.appendChild(pin);
-    S.pinEls.push({ pin, target });
+    S.pinEls.push({ pin, target, region: n.kind === 'region' ? n.region : null });
   });
   // Filmstrip: how many open notes each slide / section still has.
   [...el.filmstrip.children].forEach((b, k) => {
@@ -3031,19 +3206,20 @@ function renderPins() {
 function positionPins() {
   if (!S.pinEls?.length || !S.doc) return;
   const fr = el.frame.getBoundingClientRect(), st = el.stage.getBoundingClientRect(), sc = el.scroller.getBoundingClientRect();
-  for (const { pin, target } of S.pinEls) {
-    const r = target.isConnected ? target.getBoundingClientRect() : null;
+  for (const { pin, target, region } of S.pinEls) {
+    const r = !target.isConnected ? null : region ? regionRect(target, region) : target.getBoundingClientRect();
     const onSlide = S.mode !== 'deck' || target.closest('[data-ed-slide]') === S.slides[S.cur];
     if (!r || !r.width || !onSlide) { pin.style.display = 'none'; continue; }
-    // A whole-slide / section note sits just inside its top-right corner, not off the page.
-    const whole = stripItems().includes(target);
+    // A whole-slide / section note sits just inside its top-right corner, not off the page;
+    // a region note sits on its region's corner, like a block note.
+    const whole = !region && stripItems().includes(target);
     const x = fr.left - st.left + r.right * S.scale + (whole ? -34 : 8), y = fr.top - st.top + Math.max(r.top, 0) * S.scale + (whole ? 10 : -26);
     const visible = y > sc.top - st.top - 10 && y < sc.bottom - st.top;
     pin.style.display = visible ? '' : 'none';
     pin.style.transform = `translate(${x}px, ${y}px)`;
   }
 }
-function pinLoop() { positionPins(); requestAnimationFrame(pinLoop); }
+function pinLoop() { positionPins(); positionRegion(); requestAnimationFrame(pinLoop); }
 function focusNote(i) {
   const n = S.agentNotes[i], target = n && noteTarget(n);
   if (!el.panel.classList.contains('open') || el.panel.dataset.view !== 'review') openPanel('review');
@@ -3052,6 +3228,14 @@ function focusNote(i) {
   if (!target) return toast('Không còn tìm thấy phần tử của feedback này');
   const slideIdx = S.slides.indexOf(target.closest('[data-ed-slide]'));
   if (slideIdx >= 0 && slideIdx !== S.cur) showSlide(slideIdx);
+  if (n.kind === 'region') {
+    // Nothing to select: bring the region into view and outline it for a moment.
+    deselect();
+    if (S.mode === 'page') { const r = regionRect(target, n.region); S.win.scrollBy({ top: r.top + r.height / 2 - S.win.innerHeight / 2, behavior: 'smooth' }); }
+    const hot = S.hoverRegion = { owner: target, region: n.region };
+    setTimeout(() => { if (S.hoverRegion === hot) S.hoverRegion = null; }, 1800);
+    return;
+  }
   if (S.mode === 'page') target.scrollIntoView({ block: 'center', behavior: 'smooth' });
   setTimeout(() => select(target, { edit: false }), S.mode === 'page' ? 300 : 0);
 }
@@ -3067,6 +3251,7 @@ function renderNoteList() {
   $('#fb-copy').disabled = !server || !open;
   const whole = S.mode === 'deck' ? S.slides[S.cur] : S.sections[S.cur];
   $('#fb-slide').hidden = !server || !whole;
+  $('#fb-region').hidden = !server;
   $('#fb-slide-label').textContent = t(S.mode === 'deck' ? 'fb_slide' : 'fb_page');
   if (!notes.length) { box.innerHTML = `<div class="hint">${t('no_notes_yet')}</div>`; return; }
   const shown = (S.agentNotes || []).map((n, i) => [n, i]).filter(([n]) => n.status === filter && !isRemoving(n));
@@ -3084,17 +3269,19 @@ function renderNoteList() {
       : `<button class="nc-check" data-a="toggle" title="${doneLabel}" aria-label="${doneLabel}"><span class="ring"><svg class="icon"><use href="#i-check"/></svg></span></button>`}<button class="nc-x" data-a="del" title="${t('note_del')}" aria-label="${t('note_del')}"><svg class="icon sm"><use href="#i-x"/></svg></button></div><div class="nc-snip nc-quote"></div><div class="nc-text" data-a="edit" title="${t('fb_edit_hint')}"></div>`;
     const target = S.doc && noteTarget(n);
     const where = target ? stripItems().findIndex(s => s === target || s.contains(target)) : -1;
-    const whole = target && stripItems()[where] === target;
-    c.querySelector('.nc-where').textContent = where >= 0 ? (S.mode === 'deck' ? `Slide ${where + 1}` : `${t('fb_section')} ${where + 1}`) + (whole ? ' · ' + t('fb_whole_slide') : '')
-      : n.slide != null ? `Slide ${n.slide + 1}` : '';
+    const region = n.kind === 'region';
+    const whole = !region && target && stripItems()[where] === target;
+    c.querySelector('.nc-where').textContent = (where >= 0 ? (S.mode === 'deck' ? `Slide ${where + 1}` : `${t('fb_section')} ${where + 1}`) + (whole ? ' · ' + t('fb_whole_slide') : '')
+      : n.slide != null ? `Slide ${n.slide + 1}` : '') + (region ? (where >= 0 || n.slide != null ? ' · ' : '') + t('fb_region_tag') : '');
     // Line and tag are for agents; keep them out of sight but available on hover.
     c.querySelector('.nc-where').title = [n.line ? `line ${n.line}` : '', n.tag ? `<${n.tag}>` : ''].filter(Boolean).join(' · ');
     c.querySelector('.nc-text').textContent = n.note;
     const q = c.querySelector('.nc-quote');
-    if (n.text && !whole) q.textContent = n.text; else q.remove();
+    if (region) q.textContent = n.targets.length ? n.targets.map(x => x.text ? `“${x.text.slice(0, 40)}”` : `<${x.tag}>`).join(', ') : t('fb_region_empty');
+    else if (n.text && !whole) q.textContent = n.text; else q.remove();
     if (!target && S.doc) c.insertAdjacentHTML('beforeend', `<div class="nc-lost">${t('fb_lost')}</div>`);
-    c.addEventListener('mouseenter', () => showHoverBox(target && (S.mode !== 'deck' || target.closest('[data-ed-slide]') === S.slides[S.cur]) ? target : null));
-    c.addEventListener('mouseleave', () => showHoverBox(null));
+    c.addEventListener('mouseenter', () => hoverNote(n, target));
+    c.addEventListener('mouseleave', unhoverNote);
     c.addEventListener('click', e => {
       if (e.target.closest('.nc-edit')) return;
       const a = e.target.closest('[data-a]')?.dataset.a;
@@ -3190,9 +3377,12 @@ function copyFeedbackRequest() {
   for (const [n, i] of notes) {
     const target = noteTarget(n);
     const k = target ? stripItems().findIndex(s => s === target || s.contains(target)) : -1;
-    const whole = k >= 0 && stripItems()[k] === target;
-    const where = (k >= 0 ? (S.mode === 'deck' ? `Slide ${k + 1}` : `${t('fb_section')} ${k + 1}`) : n.slide != null ? `Slide ${n.slide + 1}` : '') + (whole ? ` · ${t('fb_whole_slide')}` : '');
-    const quote = n.text && !whole ? '“' + n.text.slice(0, 80) + '” → ' : '';
+    const region = n.kind === 'region';
+    const whole = !region && k >= 0 && stripItems()[k] === target;
+    const where = [(k >= 0 ? (S.mode === 'deck' ? `Slide ${k + 1}` : `${t('fb_section')} ${k + 1}`) : n.slide != null ? `Slide ${n.slide + 1}` : ''),
+      whole ? t('fb_whole_slide') : '', region ? t('fb_region_tag') : ''].filter(Boolean).join(' · ');
+    const quote = region ? (n.targets.length ? n.targets.slice(0, 4).map(x => x.text ? `“${x.text.slice(0, 40)}”` : `<${x.tag}>`).join(', ') : t('fb_region_empty')) + ' → '
+      : n.text && !whole ? '“' + n.text.slice(0, 80) + '” → ' : '';
     lines.push(`${i + 1}. ${where ? '[' + where + '] ' : ''}${quote}${n.note}`);
   }
   lines.push('', t('fb_prompt_read'), agentCmd(), '', t('fb_prompt_done'), agentCmd() + ' --done <id>');
@@ -3338,7 +3528,7 @@ async function save({ force = false, rewriteOk = false } = {}) {
   // Edits made while the request is in flight belong to the next save.
   const snapshot = S.model.cloneNode(true), touchedAtSave = S.touched;
   S.inFlightSeq = seqAtSave;
-  const noteIds = (S.agentNotes || []).map(noteTargetId);
+  const noteIds = noteAnchorIds();
   S.touched = new Set();
   // Still differs from pristine until the request lands: a download meanwhile must patch it too.
   S.touchedInFlight = touchedAtSave;
@@ -3860,6 +4050,7 @@ function onKey(e, fromFrame) {
   if (mod && k === 'd' && S.sel) { e.preventDefault(); duplicateSel(); return; }
   if (mod && e.shiftKey && k === 'm') { e.preventDefault(); openNotePop(); return; }
   if (mod && !e.shiftKey && k === 'k' && S.sel) { e.preventDefault(); openLinkPop(); return; }
+  if (e.key === 'Escape' && S.region) { exitRegionMode(); return; }
   if (e.key === 'Escape' && S.crop) { exitCrop(); return; }
   if (e.key === 'Escape') {
     if (!el.menu.hidden || !$('#pop-spacing').hidden || !$('#pop-opacity').hidden || !$('#pop-fx').hidden || !$('#pop-note').hidden || !$('#pop-link').hidden || !$('#pop-alt').hidden || !$('#pop-img').hidden) { closePopups(); return; }
@@ -4074,6 +4265,8 @@ function bindUI() {
   $('#note-save').addEventListener('click', addNoteFromPop);
   $('#fb-copy').addEventListener('click', copyFeedbackRequest);
   $('#fb-slide').addEventListener('click', () => openNotePop(S.mode === 'deck' ? S.slides[S.cur] : S.sections[S.cur]));
+  $('#fb-region').addEventListener('click', enterRegionMode);
+  bindRegionLayer();
   $('#fb-filter').addEventListener('click', e => {
     const f = e.target.closest('[data-f]')?.dataset.f;
     if (!f || f === S.noteFilter) return;

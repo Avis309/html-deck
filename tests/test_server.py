@@ -346,6 +346,72 @@ def test_note_ops_merge_against_disk_not_stale_client_copy(root):
         ed.apply_note_ops(target, [{"op": "add", "note": _note(id="B")}], root)
 
 
+def _region(**over):
+    base = _note(id="r1", selector="section:nth-of-type(2)", tag="section", text="Q3", line=40, slide=1)
+    base.update(kind="region", region={"x": 80, "y": 120.25, "width": 600, "height": 240}, canvas={"width": 1280, "height": 720},
+                targets=[{"selector": "#h2", "tag": "h2", "text": "Growth", "line": 42}, {"selector": "#img", "tag": "img", "text": "", "line": None}])
+    base.update(over)
+    return base
+
+
+def test_region_note_roundtrip_keeps_geometry_and_targets(root):
+    target = root / "output/deck/a.html"
+    ed.write_notes(target, [_region(), _note()], root)
+    region, legacy = ed.read_notes(target)
+    assert region["kind"] == "region" and region["region"] == {"x": 80, "y": 120.25, "width": 600, "height": 240}
+    assert region["canvas"] == {"width": 1280, "height": 720}
+    assert [t["selector"] for t in region["targets"]] == ["#h2", "#img"] and region["targets"][1]["line"] is None
+    # an element note stays exactly as before: no new keys appear
+    assert set(legacy) == set(_note())
+
+
+@pytest.mark.parametrize("bad", [
+    _region(kind="box"),
+    _region(region=None),
+    _region(region={"x": 0, "y": 0, "width": 0, "height": 10}),
+    _region(region={"x": 0, "y": 0, "width": float("nan"), "height": 10}),
+    _region(region={"x": True, "y": 0, "width": 5, "height": 10}),
+    _region(canvas={"width": -1, "height": 720}),
+    _region(targets="x"),
+    _region(targets=[{"selector": 5}]),
+    _region(targets=[{"selector": "#a", "tag": "p", "text": "", "line": None}] * 13),
+])
+def test_region_note_rejects_invalid_geometry_and_targets(root, bad):
+    with pytest.raises(ed.EditorError):
+        ed.write_notes(root / "output/deck/a.html", [bad], root)
+
+
+def test_region_note_reanchor_patch_keeps_concurrent_done(root):
+    target = root / "output/deck/a.html"
+    ed.apply_note_ops(target, [{"op": "add", "note": _region()}], root)
+    ed.apply_note_ops(target, [{"op": "update", "id": "r1", "patch": {"status": "done"}}], root)
+    moved = [{"selector": "#h2b", "tag": "h2", "text": "Growth", "line": 50}]
+    res = ed.apply_note_ops(target, [{"op": "update", "id": "r1", "patch": {"selector": "section:nth-of-type(3)", "line": 48, "targets": moved, "region": {"x": 1, "y": 1, "width": 1, "height": 1}}}], root)
+    (note,) = res["notes"]
+    assert note["status"] == "done" and note["selector"] == "section:nth-of-type(3)" and note["targets"] == moved
+    assert note["region"]["x"] == 80   # the drawn region is a capture snapshot: not patchable
+
+
+def test_list_notes_prints_region_and_targets(root):
+    from htmldeck import notes as ln
+    target = root / "output/deck/a.html"
+    target.write_text("<section>\n<h2 id=h2>Growth</h2>\n</section>", encoding="utf-8")
+    out = ln.format_notes(target, [_region(), _region(id="r2", targets=[])], show_all=False)
+    assert "vùng x=80 y=120 rộng 600 cao 240" in out and "slide 1280×720" in out
+    assert "1) <h2> #h2 · dòng 2 · \"Growth\"" in out and "2) <img> #img" in out
+    assert "không có phần tử nào" in out
+
+
+def test_notes_prompt_is_ready_to_paste(root):
+    from htmldeck import notes as ln
+    target = root / "output/deck/a b.html"
+    target.write_text("<h1>Game Growth</h1>", encoding="utf-8")
+    out = ln.format_prompt(target, [_note(), _region(), _note(id="n9", status="done")], root)
+    assert out.startswith("Sửa output/deck/a b.html theo 2 ghi chú")
+    assert "n9" not in out and "id=r1" in out and "#h2" in out
+    assert "htmldeck-notes --file 'output/deck/a b.html' --done <id>" in out
+
+
 def test_http_symlink_into_hidden_dir_is_blocked(server, root):
     _symlink_or_skip(root / "output" / "alias", root / "output" / ".hidden")
     assert _request(server, "GET", "/output/alias/secret.html")[0] == 404

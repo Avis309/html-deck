@@ -163,7 +163,8 @@
         <div class="panel-body" data-view="review" hidden>
           <div class="hint" data-i18n-html="review_hint">Chọn một khối rồi bấm <b>AI Feedback</b> trên thanh nổi để ghi chỗ cần AI sửa. Xong thì bấm nút dưới đây và dán vào Claude / Codex.</div>
           <button class="btn-primary fb-copy" id="fb-copy"><svg class="icon sm"><use href="#i-copy"/></svg><span data-i18n="fb_copy">Sao chép yêu cầu cho AI</span></button>
-          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-comment"/></svg><span id="fb-slide-label"></span></button>
+          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:8px"><svg class="icon sm"><use href="#i-comment"/></svg><span id="fb-slide-label"></span></button>
+          <button class="btn-soft" id="fb-region" style="width:100%;margin-bottom:12px" data-i18n-title="fb_region_title" title="Kéo chuột khoanh một vùng trên slide rồi viết feedback cho cả vùng"><svg class="icon sm"><use href="#i-box"/></svg><span data-i18n="fb_region">Khoanh vùng để feedback</span></button>
           <div class="seg fb-filter" id="fb-filter"><button data-f="open" class="on"></button><button data-f="done"></button></div>
           <div id="note-list"></div>
           <details class="agent-more"><summary data-i18n="fb_for_agent">Dành cho agent (lệnh đọc feedback)</summary>
@@ -270,6 +271,8 @@
         </div>
 
         <div class="pins" id="pins"></div>
+        <div class="region-box" id="region-box" hidden></div>
+        <div class="region-layer" id="region-layer" hidden></div>
         <div class="overlay" id="overlay">
           <div class="offset-box" id="offset-box"><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i></div>
           <div class="hover-box" id="hover-box"></div>

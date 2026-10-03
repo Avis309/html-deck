@@ -36,10 +36,14 @@ it prints.
 
 ## Act on review notes
 
-Notes the user pins to elements live in `.htmldeck_notes/<name>.json` beside the document.
+Notes the user pins to elements, or to a region drawn on a slide, live in
+`.htmldeck_notes/<name>.json` beside the document.
 
 1. List open notes: `RUN notes --root "<workspace>" --file "<doc>"` — each shows an id, the current
-   line, a CSS selector, a text snippet and what the user wants.
+   line, a CSS selector, a text snippet and what the user wants. A region note ("vùng khoanh") also
+   gives the area in CSS pixels of its slide (or section) and the elements found in it, each with
+   a selector and line: the request applies to that whole area. `--prompt` prints the same notes as
+   one ready-made request.
 2. Edit the HTML source there yourself, keeping the change minimal.
 3. Mark each one done: `RUN notes --root "<workspace>" --file "<doc>" --done <id>` (`--done` repeats).
 4. If the document is open in the editor, ask the user to reload it: the editor refuses to save over

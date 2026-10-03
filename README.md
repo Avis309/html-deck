@@ -23,8 +23,9 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 - **Edits stay minimal.** HTML Deck patches the source text where you made a change and leaves
   everything else as it was, including formatting, comments and the agent's own markup. That keeps
   diffs small and reviewable.
-- **Works with your agent.** Pin a note on any element ("make this shorter"), then ask Claude Code
-  or Codex to apply your HTML Deck notes. The agent reads them, edits the HTML and marks them done.
+- **Works with your agent.** Pin a note on any element ("make this shorter"), or draw a box around
+  an area of a slide and describe the change, then ask Claude Code or Codex to apply your HTML Deck
+  notes. The agent reads them, edits the HTML and marks them done.
 - **Presents the real thing.** Presentation runs the deck's own scripts and animations in a
   separate frame, so presenting never touches the document you are editing.
 - **Local and dependency-free.** One Python 3.11+ standard-library server on `127.0.0.1`. Nothing
@@ -83,8 +84,13 @@ and resolve them with:
 
 ```bash
 htmldeck-notes --file decks/q3.html            # list open notes
+htmldeck-notes --file decks/q3.html --prompt   # the same, as a request ready to paste to an agent
 htmldeck-notes --file decks/q3.html --done ID  # mark one done
 ```
+
+A region note (**Draw a region for feedback** in the AI Feedback panel) also records the area in CSS
+pixels of its slide or section and the elements found in it. Versions before 0.1.1 read it as a
+note on the whole slide, and drop the region if they rewrite the notes file.
 
 ## What it supports
 

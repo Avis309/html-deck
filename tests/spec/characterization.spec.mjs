@@ -435,6 +435,59 @@ async function structural(browser, url) {
   await s.close();
 }
 
+async function regionFeedback(browser, url) {
+  section('feedback theo vùng khoanh');
+  const f = 'deck.html';
+  const original = disk(f);
+  const side = path.join(WORK, '.htmldeck_notes', 'deck.html.json');
+  const readNotes = () => fs.existsSync(side) ? JSON.parse(fs.readFileSync(side, 'utf8')).notes : [];
+  const s = await new Session(browser, url).start();
+  await s.open(wpath(f));
+  await s.page.click('.rail-item[data-panel="review"]');
+  await s.page.waitForTimeout(400);   // the panel slides open and moves the stage
+  // Esc leaves the tool without a note; the document stays editable.
+  await s.page.click('#fb-region');
+  check('khoanh vùng: bấm nút thì lớp vẽ hiện', await s.page.isVisible('#region-layer'));
+  await s.page.keyboard.press('Escape');
+  check('khoanh vùng: Esc huỷ', !(await s.page.isVisible('#region-layer')) && !(await s.page.isVisible('#pop-note')));
+
+  // A box around the title and the lead paragraph, drawn from bottom-right to top-left.
+  const h1 = await s.frame.locator('#t1').boundingBox(), lead = await s.frame.locator('p.lead').boundingBox();
+  await s.page.click('#fb-region');
+  await s.page.mouse.move(Math.max(h1.x + h1.width, lead.x + lead.width) + 8, lead.y + lead.height + 4);
+  await s.page.mouse.down();
+  await s.page.mouse.move(h1.x + 40, h1.y + 20, { steps: 4 });
+  await s.page.mouse.move(h1.x - 8, h1.y - 4, { steps: 4 });
+  await s.page.mouse.up();
+  check('khoanh vùng: thả chuột thì mở ô feedback, báo 2 phần tử', await s.page.isVisible('#pop-note') && /2/.test(await s.page.textContent('#note-target')), await s.page.textContent('#note-target'));
+  await s.page.fill('#note-input', 'Gộp tiêu đề và đoạn dẫn');
+  await s.page.click('#note-save');
+  for (let i = 0; i < 50 && !readNotes().length; i++) await s.page.waitForTimeout(100);
+  let [n] = readNotes();
+  check('vùng khoanh vào sidecar: kind, toạ độ trong slide, đúng 2 phần tử',
+    n?.kind === 'region' && n.slide === 0 && n.canvas.width === 1280 && Math.abs(n.region.x - (h1.x - lead.x)) < 20 && n.region.width > 100
+      && n.targets.length === 2 && n.targets[0].selector === '#t1' && /p$/.test(n.targets[1].selector) && n.targets[1].text.startsWith('Tom & Jerry'),
+    JSON.stringify(n));
+  check('vùng khoanh: HTML không đổi, không dirty, không có gì được chọn', (await s.content()) === original && !(await s.dirty()) && !(await s.page.isVisible('#sel-box')));
+  check('vùng khoanh: thẻ feedback ghi "vùng khoanh"', /vùng khoanh/.test(await s.page.textContent('#note-list')));
+
+  // Duplicating the title makes #t1 ambiguous: after the save the region's elements are
+  // re-anchored to the new structure; the drawn box itself stays as it was.
+  await s.select('#t1');
+  await s.page.click('#pill-dup');
+  await s.saveKey();
+  await s.waitSaved();
+  for (let i = 0; i < 50 && readNotes()[0]?.targets[0].selector === '#t1'; i++) await s.page.waitForTimeout(100);
+  const moved = readNotes()[0];
+  check('lưu xong: phần tử của vùng được neo lại, khung vùng giữ nguyên',
+    /h1:nth-of-type\(1\)$/.test(moved.targets[0].selector) && moved.targets[1].selector === n.targets[1].selector
+      && JSON.stringify(moved.region) === JSON.stringify(n.region) && moved.status === 'open',
+    JSON.stringify(moved));
+  await s.close();
+  fs.writeFileSync(path.join(WORK, f), original);
+  fs.rmSync(side, { force: true });
+}
+
 async function conflict(browser, url) {
   section('lưu khi file đã đổi trên đĩa (409)');
   const f = 'crlf.html';
@@ -1258,7 +1311,7 @@ try {
   server = await startServer(['--test-hooks']);
   browser = await chromium.launch();
   if (!args.has('--real-only')) {
-    for (const scenario of [detection, textColourHistory, modeSwitch, structural, conflict, rewriteFallback, saveInFlight, failedStep, failedSingleStep, draftRestore, language, mutating, present, reveal, effects, motion, scenesSpec, remoteScriptsSpec, malformed]) {
+    for (const scenario of [detection, textColourHistory, modeSwitch, structural, regionFeedback, conflict, rewriteFallback, saveInFlight, failedStep, failedSingleStep, draftRestore, language, mutating, present, reveal, effects, motion, scenesSpec, remoteScriptsSpec, malformed]) {
       try { await scenario(browser, server.url); }
       catch (e) { failures.push(`${scenario.name} dừng giữa chừng: ${e.message.split('\n')[0]}`); console.log(`  ✖ ${scenario.name} dừng giữa chừng: ${e.message.split('\n')[0]}`); }
     }
