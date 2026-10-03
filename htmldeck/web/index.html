@@ -163,7 +163,7 @@
         <div class="panel-body" data-view="review" hidden>
           <div class="hint" data-i18n-html="review_hint">Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix — or drag from the slide background to sweep several blocks and write one note for the area. Then click the button below and paste into Claude / Codex.</div>
           <button class="btn-primary fb-copy" id="fb-copy"><svg class="icon sm"><use href="#i-copy"/></svg><span data-i18n="fb_copy">Copy request for AI</span></button>
-          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-ai"/></svg><span id="fb-slide-label"></span></button>
+          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm ai"><use href="#i-ai"/></svg><span id="fb-slide-label"></span></button>
           <div class="seg fb-filter" id="fb-filter"><button data-f="open" class="on"></button><button data-f="done"></button></div>
           <div id="note-list"></div>
           <details class="agent-more"><summary data-i18n="fb_for_agent">For agents (command to read feedback)</summary>
@@ -275,7 +275,7 @@
         <div class="pill multi-pill" id="multi-pill">
           <span class="multi-count" id="multi-count"></span>
           <span class="sep"></span>
-          <button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon"><use href="#i-ai"/></svg></button>
+          <button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon ai"><use href="#i-ai"/></svg></button>
           <button id="multi-del" class="danger" data-i18n-title="multi_del_title" title="Delete these blocks (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
         </div>
         <div class="overlay" id="overlay">
@@ -291,7 +291,7 @@
             <button class="move" data-h="move" data-i18n-title="drag_move" title="Drag to move"><svg class="icon"><use href="#i-move"/></svg></button>
             <span class="sep"></span>
             <button id="pill-parent" data-i18n-title="select_parent" title="Select parent frame"><svg class="icon"><use href="#i-parent"/></svg></button>
-            <button id="pill-note" data-i18n-title="feedback_pill_title" title="AI Feedback (Ctrl+Shift+M)"><svg class="icon"><use href="#i-ai"/></svg></button>
+            <button id="pill-note" data-i18n-title="feedback_pill_title" title="AI Feedback (Ctrl+Shift+M)"><svg class="icon ai"><use href="#i-ai"/></svg></button>
             <button id="pill-dup" data-i18n-title="dup_title" title="Duplicate (Ctrl+D)"><svg class="icon"><use href="#i-copy"/></svg></button>
             <button id="pill-del" class="danger" data-i18n-title="del_title" title="Delete (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
             <button id="pill-more" data-i18n-title="more_title" title="More options"><svg class="icon"><use href="#i-more"/></svg></button>
