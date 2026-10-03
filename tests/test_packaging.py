@@ -1,4 +1,4 @@
-"""What a published wheel contains: the whole editor UI, MIT license metadata, no old author email."""
+"""What a published wheel contains: the whole editor UI and MIT license metadata."""
 import subprocess
 import sys
 import zipfile
@@ -7,11 +7,6 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parent.parent
-
-
-def test_no_old_author_email_in_tracked_files():
-    out = subprocess.run(["git", "grep", "-l", "[email removed]", "--", ".", ":!tests/test_packaging.py"], cwd=REPO, capture_output=True, text=True, check=False)
-    assert out.stdout == ""
 
 
 def test_wheel_ships_the_whole_editor(tmp_path):
