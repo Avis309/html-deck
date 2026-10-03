@@ -32,6 +32,7 @@ button:disabled { cursor: default; opacity: .38; }
 .icon.ai { width: 22px; height: 22px; margin: -2px; }
 .icon.sm.ai { width: 18px; height: 18px; margin: -1.5px; }
 .icon.lg.ai { width: 26px; height: 26px; margin: -2px; }
+#pill-parent .icon { width: 20px; height: 20px; margin: -1px; }   /* its arrow is drawn small */
 [hidden] { display: none !important; }
 
 /* ---------- app grid ---------- */
