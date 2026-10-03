@@ -2526,7 +2526,7 @@ function positionOverlay(force) {
   if (!el.menu.hidden) placeMenu();
 }
 function placeMenu() {
-  const p = el.pill.getBoundingClientRect(), st = el.stage.getBoundingClientRect();
+  const p = $('#pill-more').getBoundingClientRect(), st = el.stage.getBoundingClientRect();
   el.menu.style.left = clamp(p.right - st.left - 210, 8, st.width - 218) + 'px';
   el.menu.style.top = (p.bottom - st.top + 6) + 'px';
 }

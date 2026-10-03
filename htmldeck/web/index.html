@@ -273,10 +273,12 @@
         <div class="region-box" id="region-box" hidden></div>
         <div class="multi-boxes" id="multi-boxes"></div>
         <div class="pill multi-pill" id="multi-pill">
-          <span class="multi-count" id="multi-count"></span>
-          <span class="sep"></span>
-          <button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon ai"><use href="#i-ai"/></svg></button>
-          <button id="multi-del" class="danger" data-i18n-title="multi_del_title" title="Delete these blocks (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
+          <div class="pill-group">
+            <span class="multi-count" id="multi-count"></span>
+            <span class="sep"></span>
+            <button id="multi-del" class="danger" data-i18n-title="multi_del_title" title="Delete these blocks (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
+          </div>
+          <div class="pill-group pill-ai"><button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon ai"><use href="#i-ai"/></svg></button></div>
         </div>
         <div class="overlay" id="overlay">
           <div class="offset-box" id="offset-box"><i class="m"></i><i class="m"></i><i class="m"></i><i class="m"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i></div>
@@ -288,13 +290,15 @@
             <span class="size-tip" id="size-tip"></span>
           </div>
           <div class="pill" id="pill">
-            <button class="move" data-h="move" data-i18n-title="drag_move" title="Drag to move"><svg class="icon"><use href="#i-move"/></svg></button>
-            <span class="sep"></span>
-            <button id="pill-parent" data-i18n-title="select_parent" title="Select parent frame"><svg class="icon"><use href="#i-parent"/></svg></button>
-            <button id="pill-note" data-i18n-title="feedback_pill_title" title="AI Feedback (Ctrl+Shift+M)"><svg class="icon ai"><use href="#i-ai"/></svg></button>
-            <button id="pill-dup" data-i18n-title="dup_title" title="Duplicate (Ctrl+D)"><svg class="icon"><use href="#i-copy"/></svg></button>
-            <button id="pill-del" class="danger" data-i18n-title="del_title" title="Delete (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
-            <button id="pill-more" data-i18n-title="more_title" title="More options"><svg class="icon"><use href="#i-more"/></svg></button>
+            <div class="pill-group">
+              <button class="move" data-h="move" data-i18n-title="drag_move" title="Drag to move"><svg class="icon"><use href="#i-move"/></svg></button>
+              <span class="sep"></span>
+              <button id="pill-parent" data-i18n-title="select_parent" title="Select parent frame"><svg class="icon"><use href="#i-parent"/></svg></button>
+              <button id="pill-dup" data-i18n-title="dup_title" title="Duplicate (Ctrl+D)"><svg class="icon"><use href="#i-copy"/></svg></button>
+              <button id="pill-del" class="danger" data-i18n-title="del_title" title="Delete (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
+              <button id="pill-more" data-i18n-title="more_title" title="More options"><svg class="icon"><use href="#i-more"/></svg></button>
+            </div>
+            <div class="pill-group pill-ai"><button id="pill-note" data-i18n-title="feedback_pill_title" title="AI Feedback (Ctrl+Shift+M)"><svg class="icon ai"><use href="#i-ai"/></svg></button></div>
           </div>
           <div class="menu" id="pill-menu" hidden>
             <button id="m-alt" class="img-menu" data-i18n="m_alt"><svg class="icon sm"><use href="#i-type"/></svg>Image alt text</button>

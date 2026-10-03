@@ -181,7 +181,13 @@ button:disabled { cursor: default; opacity: .38; }
 .sel-box.small .hd.w, .sel-box.small .hd.e { display: none; }
 .size-tip { position: absolute; left: 50%; bottom: -34px; transform: translateX(-50%); padding: 3px 8px; border-radius: 6px; background: var(--ink); color: #fff; font-size: 11px; font-weight: 600; white-space: nowrap; display: none; }
 .sel-box.dragging .size-tip { display: block; }
-.pill { position: absolute; left: 0; top: 0; display: none; align-items: center; gap: 2px; padding: 4px; background: #fff; border-radius: 10px; box-shadow: var(--shadow-md); pointer-events: auto; }
+/* Two separate boxes: the block's tools, then AI Feedback on its own a gap away, so it is never
+   hit by mistake for Duplicate / Delete. */
+.pill { position: absolute; left: 0; top: 0; display: none; align-items: center; gap: 8px; pointer-events: none; }
+.pill-group { display: flex; align-items: center; gap: 2px; padding: 4px; background: #fff; border-radius: 10px; box-shadow: var(--shadow-md); pointer-events: auto; }
+/* Its own box with a thin accent outline, so it reads as the AI action. */
+.pill-group.pill-ai { box-shadow: var(--shadow-md), inset 0 0 0 1.5px var(--accent); }
+.pill-ai button:hover { background: var(--accent-50); }
 .pill.show { display: flex; }
 .pill button { width: 32px; height: 32px; border-radius: 7px; display: grid; place-items: center; color: var(--ink-2); }
 .pill button:hover { background: var(--hover); color: var(--ink); }
