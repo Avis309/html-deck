@@ -9,8 +9,8 @@ Click text to edit it, restyle it, move blocks, add effects and present. The fil
 **only where you changed it**, so a save with no edits is byte-identical.
 
 [![CI](https://github.com/avis309/html-deck/actions/workflows/ci.yml/badge.svg)](https://github.com/avis309/html-deck/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/htmldeck)](https://pypi.org/project/htmldeck/)
-[![npm](https://img.shields.io/npm/v/@avis309/htmldeck)](https://www.npmjs.com/package/@avis309/htmldeck)
+[![PyPI](https://img.shields.io/pypi/v/htmldeck?label=pypi)](https://pypi.org/project/htmldeck/)
+[![npm](https://img.shields.io/npm/v/@avis309/htmldeck?label=npm)](https://www.npmjs.com/package/@avis309/htmldeck)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
