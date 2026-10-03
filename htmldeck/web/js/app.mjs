@@ -15,6 +15,7 @@ import { fxRuntime, fxScriptSource, FX_VERSION } from './fx/runtime.mjs';
 import { neuterScripts } from './core/sanitize.mjs';
 import { editFreeze } from './runtime/freeze.mjs';
 import { renderPresentHTML } from './present/render.mjs';
+import { renderPrintHTML } from './present/print.mjs';
 import { NS as PRESENT_NS, VERSION as PRESENT_V, newSessionId, createPresentSession } from './present/session.mjs';
 import { setStyleAttr, setAttrs, nodeRefs, doRemove } from './core/operations.mjs';
 
@@ -3663,6 +3664,72 @@ function download(content, name) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
+// ---------------------------------------------------------------- export
+function openExportMenu() {
+  const pop = $('#pop-export');
+  if (pop.classList.toggle('show')) {
+    const r = $('#btn-export').getBoundingClientRect();
+    pop.style.left = Math.max(8, r.right - pop.offsetWidth) + 'px';
+    pop.style.top = r.bottom + 8 + 'px';
+  }
+}
+// One self-contained file: the server embeds what the document loads (it knows the folder the
+// relative paths start from), from the editor's current text, unsaved edits included.
+async function exportSingleFile() {
+  if (!S.model) return;
+  flushPending();
+  // A file dropped in (not from the workspace): nothing tells which folder its links start
+  // from, so it downloads as edited.
+  if (S.source?.kind !== 'server') return download(contentForSave().content, S.source.name);
+  const remote = $('#export-remote').checked;
+  toast(remote ? 'Preparing the file (downloading web files)…' : 'Preparing the file…', { ms: 20000 });
+  try {
+    const res = await postJSON('/api/export', { path: S.source.path, content: contentForSave().content, remote });
+    download(res.html, S.source.name);
+    const left = res.missing.length + res.remote.length;
+    toast(`Downloaded · ${fmtSize(new Blob([res.html]).size)} · ${res.embedded} files embedded` + (left ? ` · ${left} kept as links` : ''), { ms: 6000 });
+    if (left) console.warn('HtmlDeck export: kept as links', { missing: res.missing, remote: res.remote });
+  } catch (e) { toast('Export failed: ' + e.message, { err: true, ms: 6000 }); }
+}
+// PDF: the browser's own print to PDF, of a print copy of the document (one page per slide,
+// no motion). Opened in its own tab, which is asked for inside the click: pop-up blockers only
+// let a user gesture open one.
+async function exportPDF() {
+  if (!S.model) return;
+  flushPending();
+  const mode = S.mode === 'deck' && S.slides.length ? 'deck' : 'page';
+  const reveal = S.format?.format === 'reveal';
+  let html;
+  try {
+    html = renderPrintHTML(S.model, S.doctype, {
+      mode, slideIds: mode === 'deck' ? S.slides.map(s => s.dataset.edId) : [], displays: mode === 'deck' ? S.slides.map(s => s.dataset.edDisplay) : [],
+      deckW: S.deckW, deckH: S.deckH, title: S.source.name.replace(/\.html?$/i, ''),
+      extraCSS: reveal && mode === 'deck' ? Reveal.editCSS() + Reveal.backgroundCSS(Reveal.leaves(S.model), '[data-ed-slide]') : '',
+      bodyClass: reveal && mode === 'deck' ? 'reveal-viewport' : '',
+    });
+  } catch (e) { toast('Export failed: ' + e.message, { err: true }); return; }
+  const w = window.open('', '_blank');
+  if (!w) return toast('The browser blocked the print tab — allow pop-ups for this page', { err: true, ms: 6000 });
+  w.document.write('<!doctype html><meta charset="utf-8"><title>PDF</title><p style="font:15px system-ui;padding:32px;color:#555">Preparing the PDF…</p>');
+  try {
+    const res = await postJSON('/api/preview', { path: S.source.kind === 'server' ? S.source.path : null, content: html });
+    w.location.replace(res.url);
+    const t0 = Date.now();
+    await new Promise(done => (function wait() {
+      let ready = false;
+      try { ready = w.location.pathname === new URL(res.url, location.href).pathname && w.document.readyState === 'complete'; } catch { ready = false; }
+      if (ready || w.closed || Date.now() - t0 > 30000) return done();
+      setTimeout(wait, 100);
+    })());
+    if (w.closed) return;
+    await w.document.fonts?.ready;
+    await Promise.all([...w.document.images].map(i => i.decode?.().catch(() => {})));
+    w.addEventListener('afterprint', () => w.close());
+    toast('In the print dialog, choose “Save as PDF”', { ms: 6000 });
+    w.focus();
+    w.print();
+  } catch (e) { w.close(); toast('Export failed: ' + e.message, { err: true, ms: 6000 }); }
+}
 function showConflict(content) {
   const m = $('#modal-conflict');
   m.classList.add('show');
@@ -4212,6 +4279,15 @@ function bindUI() {
       if (pop) pop.classList.remove('show');
     }
   });
+  $('#btn-export').addEventListener('click', e => { e.stopPropagation(); openExportMenu(); });
+  $$('#pop-export .lang-opt').forEach(btn => btn.addEventListener('click', () => {
+    $('#pop-export').classList.remove('show');
+    if (btn.dataset.x === 'single') exportSingleFile();
+    else if (btn.dataset.x === 'pdf') exportPDF();
+  }));
+  try { $('#export-remote').checked = localStorage.getItem('htmldeck_export_remote') !== '0'; } catch { /* storage blocked */ }
+  $('#export-remote').addEventListener('change', e => { try { localStorage.setItem('htmldeck_export_remote', e.target.checked ? '1' : '0'); } catch { /* storage blocked */ } });
+  window.addEventListener('click', e => { if (!e.target.closest('#pop-export') && !e.target.closest('#btn-export')) $('#pop-export').classList.remove('show'); });
   $('#btn-present').addEventListener('click', togglePresent);
   $('#rail-keys').addEventListener('click', () => $('#modal-keys').classList.add('show'));
   $('#sb-help').addEventListener('click', () => $('#modal-keys').classList.add('show'));

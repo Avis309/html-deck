@@ -136,7 +136,8 @@ class Session {
   async content({ retry = this.downloads > 0 } = {}) {
     for (let attempt = 0; ; attempt++) {
       const got = this.page.waitForEvent('download', { timeout: retry && !attempt ? 5000 : 30000 }).catch(e => { if (!retry || attempt) throw e; return null; });
-      await this.page.click('#btn-download');
+      // The document exactly as edited (no files embedded): the hidden hook behind Save ▾ → HTML.
+      await this.page.evaluate(() => document.querySelector('#btn-download').click());
       const dl = await got;
       if (dl) { this.downloads++; return fs.readFileSync(await dl.path(), 'utf8'); }
       console.log('  · download dropped by Chromium, clicking once more');
@@ -533,6 +534,39 @@ async function serverDown(browser, url) {
   await s.page.click('#btn-lang');
   await s.page.click('#pop-lang .lang-opt[data-lang="en"]');
   await s.close();
+}
+
+async function exportSpec(browser, url) {
+  section('Save ▾ → single file and PDF');
+  const s = await new Session(browser, url).start();
+  await s.open(wpath('struct.html'));
+  const original = disk('struct.html');
+  await s.page.click('#btn-export');
+  const got = s.page.waitForEvent('download');
+  await s.page.click('#pop-export [data-x="single"]');
+  const dl = await got;
+  const single = fs.readFileSync(await dl.path(), 'utf8');
+  check('Save ▾ → HTML: one file with the image embedded, same name, the file on disk untouched',
+    dl.suggestedFilename() === 'struct.html' && /src="data:image\/svg\+xml;base64,/.test(single) && !/src="pic\.svg"/.test(single) && disk('struct.html') === original,
+    dl.suggestedFilename());
+  await s.close();
+
+  // PDF: the print copy opens in its own tab and asks to print; one page per slide.
+  const ctx = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
+  await ctx.addInitScript(() => { window.print = () => { window.__printed = true; }; window.close = () => {}; });
+  const pg = await ctx.newPage();
+  await pg.goto(`${url}/?file=${encodeURIComponent(wpath('deck.html'))}`);
+  await pg.waitForFunction(() => document.body.dataset.docState === 'ready');
+  await pg.click('#btn-export');
+  const tab = ctx.waitForEvent('page');
+  await pg.click('#pop-export [data-x="pdf"]');
+  const pdfTab = await tab;
+  const printed = await pdfTab.waitForFunction(() => window.__printed === true, null, { timeout: 20000 }).then(() => true, () => false);
+  const pdf = (await pdfTab.pdf({ preferCSSPageSize: true, printBackground: true })).toString('latin1');
+  const pages = (pdf.match(/\/Type\s*\/Page[^s]/g) || []).length;
+  check('PDF: print tab asks to print, 3 slides → 3 pages, no script left in the print copy',
+    printed && pages === 3 && (await pdfTab.title()) === 'deck' && !(await pdfTab.evaluate(() => window.__fixtureRan)), `printed=${printed} pages=${pages}`);
+  await ctx.close();
 }
 
 async function conflict(browser, url) {
@@ -1367,7 +1401,7 @@ try {
   server = await startServer(['--test-hooks']);
   browser = await chromium.launch();
   if (!args.has('--real-only')) {
-    for (const scenario of [detection, textColourHistory, modeSwitch, structural, regionFeedback, serverDown, conflict, rewriteFallback, saveInFlight, failedStep, failedSingleStep, draftRestore, language, mutating, present, reveal, effects, motion, scenesSpec, remoteScriptsSpec, malformed]) {
+    for (const scenario of [detection, textColourHistory, modeSwitch, structural, regionFeedback, serverDown, exportSpec, conflict, rewriteFallback, saveInFlight, failedStep, failedSingleStep, draftRestore, language, mutating, present, reveal, effects, motion, scenesSpec, remoteScriptsSpec, malformed]) {
       try { await scenario(browser, server.url); }
       catch (e) { failures.push(`${scenario.name} stopped half way: ${e.message.split('\n')[0]}`); console.log(`  ✖ ${scenario.name} stopped half way: ${e.message.split('\n')[0]}`); }
     }

@@ -12,6 +12,8 @@ Serves the editor UI plus a small JSON API bound to 127.0.0.1:
 - ``POST /api/preview``   stage the editor's render of a document next to its source,
   so relative assets and the page's own scripts resolve exactly as they do on disk
 - ``POST /api/save``      atomic write with a timestamped backup
+- ``POST /api/export``    the editor's text as one self-contained file (images, styles, scripts
+                          embedded; files on the web only when asked)
 - ``GET/POST /api/notes`` review notes pinned to elements, stored beside the document in
   ``.htmldeck_notes/<name>.json`` (never inside the HTML) so an agent can pick them up with
   ``htmldeck-notes`` (``python -m htmldeck.notes``)
@@ -197,6 +199,15 @@ def _save_locked(target: Path, content: str, expected_mtime_ns: str | None, forc
         "mtime_ns": str(target.stat().st_mtime_ns),
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
+
+
+def export_html(target: Path, content: object, root: Path, fetch_remote: bool) -> dict:
+    """The editor's current text of `target` as one self-contained file (see htmldeck.export)."""
+    from htmldeck.export import single_file
+    if not isinstance(content, str) or not content:
+        raise EditorError(400, "Missing content")
+    html, report = single_file(content, target, root, fetch_remote)
+    return {"success": True, "html": html, **report}
 
 
 def notes_path(target: Path) -> Path:
@@ -517,7 +528,8 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
             self._send_json({"error": "Invalid Origin"}, 403)
             return
         parsed = urllib.parse.urlparse(self.path)
-        route = {"/api/save": self._api_save, "/api/preview": self._api_preview, "/api/notes": self._api_notes_post}.get(parsed.path)
+        route = {"/api/save": self._api_save, "/api/preview": self._api_preview, "/api/notes": self._api_notes_post,
+                 "/api/export": self._api_export}.get(parsed.path)
         if route is None:
             self.send_error(404, "Endpoint not found")
             return
@@ -605,6 +617,11 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
         payload = self._read_json()
         target = resolve_html_path(payload.get("path"), self.root, self._allowed_extra())
         return save_html(target, payload.get("content"), payload.get("mtime_ns"), bool(payload.get("force")), self.root)
+
+    def _api_export(self, parsed):
+        payload = self._read_json()
+        target = resolve_html_path(payload.get("path"), self.root, self._allowed_extra())
+        return export_html(target, payload.get("content"), self.root, bool(payload.get("remote")))
 
     def _send_json(self, data: dict, status_code: int = 200):
         body = json.dumps(data, ensure_ascii=False).encode("utf-8")

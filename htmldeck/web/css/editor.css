@@ -66,6 +66,18 @@ button:disabled { cursor: default; opacity: .38; }
 #btn-present { margin-right: 6px; }
 
 .btn-download:hover { background: rgba(255,255,255,.16); }
+/* Save | ▾ : the caret opens the download menu (HTML, single file, PDF). */
+.save-split { display: inline-flex; align-items: stretch; }
+.save-split #btn-save { border-radius: 8px 0 0 8px; }
+.save-split .save-more { padding: 0 9px; border-radius: 0 8px 8px 0; margin-left: 1px; }
+.save-split .save-more .icon { margin: 0; }
+.lang-menu.export-menu { width: 380px; }
+.export-menu .lang-opt { align-items: flex-start; }
+.export-menu .lang-opt .icon { margin-top: 2px; flex: none; }
+.export-menu .name b { display: block; font-size: 13px; }
+.export-menu .name small { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 500; color: var(--muted); line-height: 1.35; }
+.export-remote { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0 2px; padding: 8px 10px 4px; border-top: 1px solid var(--line-2); font-size: 11.5px; color: var(--muted); line-height: 1.35; cursor: pointer; }
+.export-remote input { margin-top: 1px; accent-color: var(--accent); }
 .btn-save { height: 38px; padding: 0 16px; border-radius: 8px; background: #fff; color: var(--accent-600); font-weight: 800; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 2px 8px rgba(94,27,9,.22); transition: transform .12s, box-shadow .12s; margin-left: 6px; }
 .btn-save:hover { box-shadow: 0 4px 14px rgba(94,27,9,.3); }
 .btn-save:active { transform: translateY(1px); }
