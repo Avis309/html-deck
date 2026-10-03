@@ -45,7 +45,7 @@
   <symbol id="i-parent" viewBox="0 0 24 24"><path d="M7 17V7h10"/><path d="M17 17 7 7"/></symbol>
   <symbol id="i-brush" viewBox="0 0 24 24"><path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/><path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17l14-8.5z" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+  <symbol id="i-ai" viewBox="0 0 24 24"><path d="M13 6.5H4.5a2 2 0 0 0-2 2V22l4.2-3.2h9.8a2 2 0 0 0 2-2V12"/><path d="m5.6 16.3 2.2-5.6 2.2 5.6M6.4 14.4h2.8" stroke-width="1.7"/><path d="M13.8 12.6v3.7" stroke-width="1.7"/><circle cx="13.8" cy="10.4" r=".9" fill="currentColor" stroke="none"/><path d="M20 .7c.4 1.9 1.3 2.8 3.2 3.2-1.9.4-2.8 1.3-3.2 3.2-.4-1.9-1.3-2.8-3.2-3.2 1.9-.4 2.8-1.3 3.2-3.2z" style="fill:var(--accent);stroke:var(--accent)" stroke-width="1"/><path d="M15.4.6c.2.9.6 1.3 1.5 1.5-.9.2-1.3.6-1.5 1.5-.2-.9-.6-1.3-1.5-1.5.9-.2 1.3-.6 1.5-1.5z" style="fill:var(--accent);stroke:var(--accent)" stroke-width=".8"/></symbol>
   <symbol id="i-crop" viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></symbol>
   <symbol id="i-flip" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="m16 7 4 5-4 5z"/><path d="m8 7-4 5 4 5z"/></symbol>
   <symbol id="i-box" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><rect x="7.5" y="7.5" width="9" height="9" rx="1.5" stroke-dasharray="2 2"/></symbol>
@@ -90,7 +90,7 @@
       <button class="rail-item" data-panel="outline" data-i18n="rail_outline"><span class="ic"><svg class="icon lg"><use href="#i-pages"/></svg></span>Outline</button>
       <button class="rail-item" data-panel="effects" data-i18n="rail_effects"><span class="ic"><svg class="icon lg"><use href="#i-play"/></svg></span>Effects</button>
       <button class="rail-item" data-panel="colors" data-i18n="rail_colors"><span class="ic"><svg class="icon lg"><use href="#i-palette"/></svg></span>Colors</button>
-      <button class="rail-item" data-panel="review" data-i18n="rail_review"><span class="ic"><svg class="icon lg"><use href="#i-comment"/></svg></span>AI Feedback<span class="badge-count" id="note-count" hidden></span></button>
+      <button class="rail-item" data-panel="review" data-i18n="rail_review"><span class="ic"><svg class="icon lg"><use href="#i-ai"/></svg></span>AI Feedback<span class="badge-count" id="note-count" hidden></span></button>
       <div class="grow"></div>
       <button class="rail-item" id="btn-lang" data-i18n-title="lang_btn_title" title="Switch language / Chuyển ngôn ngữ (VI / EN)"><span class="ic"><svg class="icon lg"><use href="#i-globe"/></svg></span><span id="lang-indicator" style="font-weight:700">VI</span></button>
       <button class="rail-item" id="rail-keys" data-i18n="rail_keys"><span class="ic"><svg class="icon lg"><use href="#i-keyboard"/></svg></span>Shortcuts</button>
@@ -163,7 +163,7 @@
         <div class="panel-body" data-view="review" hidden>
           <div class="hint" data-i18n-html="review_hint">Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix — or drag from the slide background to sweep several blocks and write one note for the area. Then click the button below and paste into Claude / Codex.</div>
           <button class="btn-primary fb-copy" id="fb-copy"><svg class="icon sm"><use href="#i-copy"/></svg><span data-i18n="fb_copy">Copy request for AI</span></button>
-          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-comment"/></svg><span id="fb-slide-label"></span></button>
+          <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-ai"/></svg><span id="fb-slide-label"></span></button>
           <div class="seg fb-filter" id="fb-filter"><button data-f="open" class="on"></button><button data-f="done"></button></div>
           <div id="note-list"></div>
           <details class="agent-more"><summary data-i18n="fb_for_agent">For agents (command to read feedback)</summary>
@@ -275,7 +275,7 @@
         <div class="pill multi-pill" id="multi-pill">
           <span class="multi-count" id="multi-count"></span>
           <span class="sep"></span>
-          <button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon"><use href="#i-comment"/></svg></button>
+          <button id="multi-note" data-i18n-title="multi_note_title" title="AI Feedback for these blocks (Ctrl+Shift+M)"><svg class="icon"><use href="#i-ai"/></svg></button>
           <button id="multi-del" class="danger" data-i18n-title="multi_del_title" title="Delete these blocks (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
         </div>
         <div class="overlay" id="overlay">
@@ -291,7 +291,7 @@
             <button class="move" data-h="move" data-i18n-title="drag_move" title="Drag to move"><svg class="icon"><use href="#i-move"/></svg></button>
             <span class="sep"></span>
             <button id="pill-parent" data-i18n-title="select_parent" title="Select parent frame"><svg class="icon"><use href="#i-parent"/></svg></button>
-            <button id="pill-note" data-i18n-title="feedback_pill_title" title="Feedback cho AI Agent (Ctrl+Shift+M)"><svg class="icon"><use href="#i-comment"/></svg></button>
+            <button id="pill-note" data-i18n-title="feedback_pill_title" title="AI Feedback (Ctrl+Shift+M)"><svg class="icon"><use href="#i-ai"/></svg></button>
             <button id="pill-dup" data-i18n-title="dup_title" title="Duplicate (Ctrl+D)"><svg class="icon"><use href="#i-copy"/></svg></button>
             <button id="pill-del" class="danger" data-i18n-title="del_title" title="Delete (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
             <button id="pill-more" data-i18n-title="more_title" title="More options"><svg class="icon"><use href="#i-more"/></svg></button>
