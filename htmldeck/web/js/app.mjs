@@ -3815,7 +3815,7 @@ function runFind(keep) {
   }
   let i = -1;
   if (hits.length) {
-    if (keep && S.find) i = Math.min(S.find.i, hits.length - 1);
+    if (keep && S.find) i = clamp(S.find.i, 0, hits.length - 1);   // -1 when the last search found nothing
     else if (S.mode === 'deck') i = Math.max(0, hits.findIndex(h => S.slides[S.cur]?.contains(h.root)));
     else i = 0;
   }
