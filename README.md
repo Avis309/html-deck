@@ -83,10 +83,12 @@ Each save keeps a timestamped backup in `.htmldeck_bak/` next to the document.
 
 **Save ▾** downloads the document to share it:
 
-- **HTML**: one file with its images, styles, scripts and fonts inside, so it opens anywhere,
-  even offline. Files from the web (a CDN script, web fonts) are embedded too unless you untick
-  that option; nothing else leaves your machine. From a terminal: `python -m htmldeck.export --file <file>.html --remote`.
-- **PDF**: one page per slide, each in its final state, through the browser's "Save as PDF".
+- **HTML**: a single file that includes all its images, styles, scripts and fonts, so it opens
+  anywhere, even offline. Resources loaded from the web (a CDN script, web fonts) are included
+  too, unless you clear that option. From a terminal, run
+  `python -m htmldeck.export --file <file>.html --remote`.
+- **PDF**: one page per slide, each in its final state. In the print dialog, choose
+  "Save as PDF".
 
 Review notes live beside each document in `.htmldeck_notes/<name>.json`. Scripts and agents read
 and resolve them with:

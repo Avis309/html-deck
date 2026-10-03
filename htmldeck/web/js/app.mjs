@@ -3687,7 +3687,8 @@ async function exportSingleFile() {
     const res = await postJSON('/api/export', { path: S.source.path, content: contentForSave().content, remote });
     download(res.html, S.source.name);
     const left = res.missing.length + res.remote.length;
-    toast(`Downloaded · ${fmtSize(new Blob([res.html]).size)} · ${res.embedded} files embedded` + (left ? ` · ${left} kept as links` : ''), { ms: 6000 });
+    const files = n => `${n} file${n === 1 ? '' : 's'}`;
+    toast(`Downloaded · ${fmtSize(new Blob([res.html]).size)} · ${files(res.embedded)} embedded` + (left ? ` · ${files(left)} kept as link${left === 1 ? '' : 's'}` : ''), { ms: 6000 });
     if (left) console.warn('HtmlDeck export: kept as links', { missing: res.missing, remote: res.remote });
   } catch (e) { toast('Export failed: ' + e.message, { err: true, ms: 6000 }); }
 }
@@ -3709,7 +3710,7 @@ async function exportPDF() {
     });
   } catch (e) { toast('Export failed: ' + e.message, { err: true }); return; }
   const w = window.open('', '_blank');
-  if (!w) return toast('The browser blocked the print tab — allow pop-ups for this page', { err: true, ms: 6000 });
+  if (!w) return toast('The browser blocked the print tab. Allow pop-ups for this page and try again.', { err: true, ms: 6000 });
   w.document.write('<!doctype html><meta charset="utf-8"><title>PDF</title><p style="font:15px system-ui;padding:32px;color:#555">Preparing the PDF…</p>');
   try {
     const res = await postJSON('/api/preview', { path: S.source.kind === 'server' ? S.source.path : null, content: html });
@@ -3725,7 +3726,7 @@ async function exportPDF() {
     await w.document.fonts?.ready;
     await Promise.all([...w.document.images].map(i => i.decode?.().catch(() => {})));
     w.addEventListener('afterprint', () => w.close());
-    toast('In the print dialog, choose “Save as PDF”', { ms: 6000 });
+    toast('In the print dialog, choose “Save as PDF”.', { ms: 6000 });
     w.focus();
     w.print();
   } catch (e) { w.close(); toast('Export failed: ' + e.message, { err: true, ms: 6000 }); }

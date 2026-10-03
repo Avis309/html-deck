@@ -80,7 +80,7 @@
     <button class="btn-download" id="btn-present" data-i18n="present" data-i18n-title="present_title" title="Fullscreen presentation (F)"><svg class="icon sm"><use href="#i-play"/></svg>Present</button>
     <div class="save-split">
       <button class="btn-save" id="btn-save" data-i18n="save" data-i18n-title="save_title" title="Save (Ctrl+S)"><span class="dot"></span><svg class="icon sm"><use href="#i-save"/></svg>Save</button>
-      <button class="btn-save save-more" id="btn-export" data-i18n-title="export_title" title="Download: HTML or PDF"><svg class="icon sm"><use href="#i-caret-down"/></svg></button>
+      <button class="btn-save save-more" id="btn-export" data-i18n-title="export_title" title="Download as HTML or PDF"><svg class="icon sm"><use href="#i-caret-down"/></svg></button>
     </div>
   </header>
 
@@ -427,9 +427,9 @@
 <button id="btn-download" hidden aria-hidden="true" tabindex="-1"></button>
 <div class="lang-menu export-menu" id="pop-export" role="menu">
   <div class="lang-title" data-i18n="export_menu_title">Download</div>
-  <button class="lang-opt" data-x="single"><svg class="icon sm"><use href="#i-code"/></svg><span class="name"><b data-i18n="export_single">HTML</b><small data-i18n="export_single_sub">One file with its images, styles and scripts inside: share it, open it anywhere</small></span></button>
-  <button class="lang-opt" data-x="pdf"><svg class="icon sm"><use href="#i-file"/></svg><span class="name"><b data-i18n="export_pdf">PDF</b><small data-i18n="export_pdf_sub">One page per slide, final state of each — choose “Save as PDF”</small></span></button>
-  <label class="export-remote"><input type="checkbox" id="export-remote" checked> <span data-i18n="export_remote">Also embed files from the web (CDN scripts, fonts) — needs internet</span></label>
+  <button class="lang-opt" data-x="single"><svg class="icon sm"><use href="#i-code"/></svg><span class="name"><b data-i18n="export_single">HTML</b><small data-i18n="export_single_sub">A single file with all images, styles and scripts included. Share it and open it anywhere.</small></span></button>
+  <button class="lang-opt" data-x="pdf"><svg class="icon sm"><use href="#i-file"/></svg><span class="name"><b data-i18n="export_pdf">PDF</b><small data-i18n="export_pdf_sub">One page per slide. In the print dialog, choose “Save as PDF”.</small></span></button>
+  <label class="export-remote"><input type="checkbox" id="export-remote" checked> <span data-i18n="export_remote">Include online resources (scripts and fonts loaded from the web). Requires an internet connection.</span></label>
 </div>
 <div class="lang-menu" id="pop-lang" role="menu">
   <div class="lang-title" data-i18n="lang_select_title">Select Language</div>
