@@ -87,8 +87,7 @@ Each save keeps a timestamped backup in `.htmldeck_bak/` next to the document.
   anywhere, even offline. Resources loaded from the web (a CDN script, web fonts) are included
   too, unless you clear that option. From a terminal, run
   `python -m htmldeck.export --file <file>.html --remote`.
-- **PDF**: one page per slide, each in its final state. In the print dialog, choose
-  "Save as PDF".
+- **PDF**: one page per slide, each in its final state.
 
 Review notes live beside each document in `.htmldeck_notes/<name>.json`. Scripts and agents read
 and resolve them with:

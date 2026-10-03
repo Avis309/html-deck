@@ -3726,7 +3726,6 @@ async function exportPDF() {
     await w.document.fonts?.ready;
     await Promise.all([...w.document.images].map(i => i.decode?.().catch(() => {})));
     w.addEventListener('afterprint', () => w.close());
-    toast('In the print dialog, choose “Save as PDF”.', { ms: 6000 });
     w.focus();
     w.print();
   } catch (e) { w.close(); toast('Export failed: ' + e.message, { err: true, ms: 6000 }); }

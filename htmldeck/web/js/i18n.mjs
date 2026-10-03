@@ -62,7 +62,7 @@ export const I18N = {
     export_single_sub: 'Một file duy nhất, đã gồm toàn bộ hình ảnh, định dạng và script. Gửi đi và mở ở bất kỳ đâu.',
     export_remote: 'Gồm cả tài nguyên trực tuyến (script và font tải từ web). Cần có kết nối internet.',
     export_pdf: 'PDF',
-    export_pdf_sub: 'Mỗi slide một trang. Trong hộp thoại in, chọn “Lưu dưới dạng PDF”.',
+    export_pdf_sub: 'Mỗi slide một trang.',
     multi_note_title: 'AI Feedback cho các khối này (Ctrl+Shift+M)',
     multi_del_title: 'Xoá các khối này (Delete)',
     fb_region_tag: 'vùng khoanh',
@@ -416,7 +416,7 @@ export const I18N = {
     export_single_sub: '单个文件，已包含所有图片、样式和脚本。可直接分享，在任何地方打开。',
     export_remote: '包含在线资源（从网络加载的脚本和字体）。需要连接互联网。',
     export_pdf: 'PDF',
-    export_pdf_sub: '每张幻灯片一页。请在打印对话框中选择“另存为 PDF”。',
+    export_pdf_sub: '每张幻灯片一页。',
     multi_note_title: '为这些区块写 AI 反馈 (Ctrl+Shift+M)',
     multi_del_title: '删除这些区块 (Delete)',
     fb_region_tag: '框选区域',
@@ -770,7 +770,7 @@ export const I18N = {
     export_single_sub: 'A single file with all images, styles and scripts included. Share it and open it anywhere.',
     export_remote: 'Include online resources (scripts and fonts loaded from the web). Requires an internet connection.',
     export_pdf: 'PDF',
-    export_pdf_sub: 'One page per slide. In the print dialog, choose “Save as PDF”.',
+    export_pdf_sub: 'One page per slide.',
     multi_note_title: 'AI Feedback for these blocks (Ctrl+Shift+M)',
     multi_del_title: 'Delete these blocks (Delete)',
     fb_region_tag: 'region',
@@ -1104,7 +1104,6 @@ export const LAYER_NAMES = {
 
 export const TOAST_VI_PATTERNS = [
   // Vietnamese
-  [/^In the print dialog, choose “Save as PDF”\.$/, 'Trong hộp thoại in, chọn “Lưu dưới dạng PDF”.'],
   [/^The browser blocked the print tab\. Allow pop-ups for this page and try again\.$/, 'Trình duyệt đã chặn tab in. Hãy cho phép cửa sổ bật lên cho trang này rồi thử lại.'],
   [/^Preparing the file \(downloading web files\)…$/, 'Đang chuẩn bị file (đang tải file trên mạng)…'],
   [/^Preparing the file…$/, 'Đang chuẩn bị file…'],
@@ -1175,7 +1174,6 @@ export const TOAST_VI_PATTERNS = [
 
 export const TOAST_ZH_PATTERNS = [
   // Simplified Chinese
-  [/^In the print dialog, choose “Save as PDF”\.$/, '请在打印对话框中选择“另存为 PDF”。'],
   [/^The browser blocked the print tab\. Allow pop-ups for this page and try again\.$/, '浏览器拦截了打印标签页。请允许此页面弹出窗口后重试。'],
   [/^Preparing the file \(downloading web files\)…$/, '正在准备文件（正在下载网络文件）…'],
   [/^Preparing the file…$/, '正在准备文件…'],
