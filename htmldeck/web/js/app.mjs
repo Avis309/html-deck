@@ -137,9 +137,9 @@ const FONTS = [
 ];
 const DEFAULT_COLORS = ['#0e0e11', '#3a3a42', '#55555e', '#8a8a94', '#dcdce2', '#ffffff', '#ff5a1f', '#e94209', '#b73108', '#ffe0d3', '#ec7f00', '#ffe7be', '#2e8a36', '#d1edcf', '#0072e0', '#cee5fe', '#da1e28', '#ffdad5', '#007995', '#e0f7fe', '#db41a5', '#ffe9f4', '#8e4ec6', '#f5eeff', '#44a948', '#5553e8', '#20a578'];
 const PRESETS = {
-  heading: { tag: 'h2', text: 'Thêm tiêu đề', css: { 'font-size': '56px', 'font-weight': '800', 'line-height': '1.05' }, top: 250 },
-  subheading: { tag: 'h3', text: 'Thêm tiêu đề phụ', css: { 'font-size': '30px', 'font-weight': '700', 'line-height': '1.15' }, top: 330 },
-  body: { tag: 'p', text: 'Thêm một đoạn văn bản', css: { 'font-size': '18px', 'font-weight': '400', 'line-height': '1.5' }, top: 380 },
+  heading: { tag: 'h2', text: 'Add a heading', css: { 'font-size': '56px', 'font-weight': '800', 'line-height': '1.05' }, top: 250 },
+  subheading: { tag: 'h3', text: 'Add a subheading', css: { 'font-size': '30px', 'font-weight': '700', 'line-height': '1.15' }, top: 330 },
+  body: { tag: 'p', text: 'Add a paragraph', css: { 'font-size': '18px', 'font-weight': '400', 'line-height': '1.5' }, top: 380 },
 };
 
 // Editor CSS injected into the rendered document only (never into the saved model).
@@ -317,7 +317,7 @@ async function openServerFile(path) {
   } catch (e) {
     setLoading(false);
     docState('error');
-    toast('Không mở được file: ' + e.message, { err: true, ms: 5000 });
+    toast('Cannot open file: ' + e.message, { err: true, ms: 5000 });
     return false;
   }
 }
@@ -334,18 +334,18 @@ async function pickLocalFile() {
     await openFromHandle(handle);
   } catch (e) {
     setLoading(false);
-    if (e.name !== 'AbortError') toast('Không mở được file: ' + e.message, { err: true });
+    if (e.name !== 'AbortError') toast('Cannot open file: ' + e.message, { err: true });
   }
 }
 async function openUpload(file) {
   setLoading(true);
   try { await openDocument(await file.text(), { kind: 'upload', name: file.name, size: file.size }); }
-  catch (e) { setLoading(false); toast('Không đọc được file: ' + e.message, { err: true }); }
+  catch (e) { setLoading(false); toast('Cannot read file: ' + e.message, { err: true }); }
 }
 function confirmDiscard() {
   flushPending();
   if (!isDirty()) return true;
-  const ok = confirm(S.lang === 'zh' ? '文档有未保存的更改。是否放弃这些更改？' : (S.lang === 'en' ? 'Document has unsaved changes. Discard changes?' : 'Tài liệu có thay đổi chưa lưu. Bỏ các thay đổi đó?'));
+  const ok = confirm(S.lang === 'zh' ? '文档有未保存的更改。是否放弃这些更改？' : S.lang === 'vi' ? 'Tài liệu có thay đổi chưa lưu. Bỏ các thay đổi đó?' : 'Document has unsaved changes. Discard changes?');
   if (ok) clearDraft();
   return ok;
 }
@@ -393,7 +393,7 @@ async function openDocument(html, source) {
     loadAgentNotes();
     if (!source.restored) offerDraft(html, source).catch(() => {});
   } catch (e) {
-    if (e.status === 404) e.message = 'server đang chạy là bản cũ — tắt (Ctrl+C) rồi chạy lại htmldeck';
+    if (e.status === 404) e.message = 'the running server is an older version — stop it (Ctrl+C) and run htmldeck again';
     // Never leave the previous document on screen bound to a half-built model.
     S.model = null; S.source = null;
     el.frame.onload = null;
@@ -453,20 +453,20 @@ async function mountModel(token) {
 // replaced, so undo history cannot survive; unsaved edits are kept in the model.
 async function rerender({ force = false, dirty: knownDirty } = {}) {
   if (!S.model) return false;
-  if (S.saving) { toast('Đang lưu — đợi lưu xong rồi đổi cách hiển thị'); return false; }
+  if (S.saving) { toast('Saving — please wait before switching display mode'); return false; }
   if (!force) flushPending();
-  if (!force && (S.undo.length || S.redo.length) && !confirm(S.lang === 'zh' ? '切换显示模式将清空撤销历史（更改仍将保留）。是否继续？' : (S.lang === 'en' ? 'Switching display mode will clear undo history (changes will remain). Continue?' : 'Đổi cách hiển thị sẽ xoá lịch sử hoàn tác (các thay đổi vẫn giữ nguyên). Tiếp tục?'))) return false;
+  if (!force && (S.undo.length || S.redo.length) && !confirm(S.lang === 'zh' ? '切换显示模式将清空撤销历史（更改仍将保留）。是否继续？' : S.lang === 'vi' ? 'Đổi cách hiển thị sẽ xoá lịch sử hoàn tác (các thay đổi vẫn giữ nguyên). Tiếp tục?' : 'Switching display mode will clear undo history (changes will remain). Continue?')) return false;
   const dirty = knownDirty ?? isDirty(), token = ++S.loadToken;
   resetState();
   S.savedSeq = dirty ? -1 : 0;
   setLoading(true);
   try { await mountModel(token); }
-  catch (e) { setLoading(false); toast('Không dựng lại được: ' + e.message, { err: true }); return false; }
+  catch (e) { setLoading(false); toast('Cannot rebuild: ' + e.message, { err: true }); return false; }
   return true;
 }
 function onFrameReady() {
   const doc = el.frame.contentDocument, win = el.frame.contentWindow;
-  if (!doc || !doc.body) { setLoading(false); toast('Không dựng được tài liệu', { err: true }); return; }
+  if (!doc || !doc.body) { setLoading(false); toast('Cannot render document', { err: true }); return; }
   S.doc = doc; S.win = win;
   S.liveOriginal = new WeakSet();
   S.liveAmbiguous = new WeakSet();
@@ -486,7 +486,7 @@ function onFrameReady() {
     S.mode = 'page';
     S.forceMode = null;
     $('#sb-mode').value = 'auto';
-    toast('Tài liệu không có khối .slide nào — giữ dạng trang web', { ms: 4000 });
+    toast('Document has no .slide blocks — keeping web page mode', { ms: 4000 });
   }
   if (S.mode === 'page') slides.length = 0;
   for (const s of slides) {
@@ -526,7 +526,7 @@ function onFrameReady() {
   renderTrustChip();
   if (S.readOnly) toast(t(S.readOnly), { ms: 6000 });
   else if (!$('#sb-trust').hidden && !S.mountedTrust) toast(t('trust_toast'), { ms: 8000, action: { label: t('trust_action'), fn: () => setTrust(true) } });
-  else toast(`Đã mở ${S.source.name} · ${S.mode === 'deck' ? S.slides.length + ' slide' : 'trang web'} · ${n} khối chữ sửa được`);
+  else toast(`Opened ${S.source.name} · ${S.mode === 'deck' ? S.slides.length + ' slides' : 'web page'} · ${n} editable text blocks`);
   if (S.afterReady) { const f = S.afterReady; S.afterReady = null; f(); }
 }
 // A deck is a group of ≥2 sibling `.slide` blocks at presentation width; a carousel of small
@@ -654,7 +654,7 @@ function bindFrameEvents(doc, win) {
         const target = doc.getElementById(decodeURIComponent(href.slice(1)));
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (!a.closest('[data-ed-edit]')) {
-        toast('Liên kết được tắt khi đang chỉnh sửa');
+        toast('Links are disabled while editing');
       }
     }
     if (e.target.closest?.('form') && e.target.closest('[type=submit]')) e.preventDefault();
@@ -895,7 +895,7 @@ function commitText() {
   if (before === after) { updateChrome(); return; }
   m.innerHTML = after;
   markOriginals(node, m);
-  pushOp({ type: 'html', id, before, after, label: 'Sửa chữ' });
+  pushOp({ type: 'html', id, before, after, label: 'Edit text' });
   queueThumb(node);
 }
 // Does an inline declaration lose to a stylesheet `!important` rule (Tailwind `important: true`,
@@ -961,7 +961,7 @@ function buildStyleOp(node, props) {
   }
   if (raised) { after = m.getAttribute('style'); setStyleAttr(node, after); }
   claimOwn();
-  return before === after ? null : { type: 'style', id, before, after, label: 'Định dạng' };
+  return before === after ? null : { type: 'style', id, before, after, label: 'Format' };
 }
 function styleEdit(node, props, key) {
   commitText();
@@ -1055,13 +1055,13 @@ function deleteSel() {
   const m = modelEl(node.dataset.edId);
   deselect();
   if (!m) return;
-  const op = { type: 'remove', label: 'Xoá', ...nodeRefs(m, node) };
+  const op = { type: 'remove', label: 'Delete', ...nodeRefs(m, node) };
   doRemove(op);
   pushOp(op);
   queueThumb(S.slides[S.cur]);
   buildOutline();
   if (layersVisible()) buildLayers();
-  toast('Đã xoá · Ctrl+Z để hoàn tác');
+  toast('Deleted · Ctrl+Z to undo');
 }
 function duplicateSel() {
   const node = S.sel;
@@ -1081,14 +1081,14 @@ function duplicateSel() {
   node.parentNode.insertBefore(lc, node.nextSibling);
   markOriginals(lc, mc);
   markRoots(lc, true);
-  pushOp({ type: 'insert', label: 'Nhân bản', ...nodeRefs(mc, lc) });
+  pushOp({ type: 'insert', label: 'Duplicate', ...nodeRefs(mc, lc) });
   select(lc, { edit: false });
   queueThumb(lc);
   buildOutline();
   if (layersVisible()) buildLayers();
 }
 function insertText(kind) {
-  if (!S.doc) return toast('Mở một tài liệu trước');
+  if (!S.doc) return toast('Please open a document first');
   if (S.readOnly) return lockedHint(S.readOnly);
   const p = PRESETS[kind];
   const css = { ...p.css };
@@ -1099,7 +1099,7 @@ function insertText(kind) {
   } else {
     let anchor = S.sel || rootNearViewportCenter();
     while (anchor && anchor.parentElement && NO_BLOCK_PARENT.has(anchor.parentElement.localName) && isOriginal(anchor.parentElement)) anchor = anchor.parentElement;
-    if (!anchor || !anchor.parentElement || !isOriginal(anchor.parentElement)) return toast('Chọn một khối chữ để chèn sau nó');
+    if (!anchor || !anchor.parentElement || !isOriginal(anchor.parentElement)) return toast('Select a text block to insert after');
     lParent = anchor.parentElement;
     lRef = anchor.nextSibling;
     mRef = modelEl(anchor.dataset.edId)?.nextSibling || null;
@@ -1117,7 +1117,7 @@ function insertText(kind) {
   lParent.insertBefore(l, lRef && lRef.parentNode === lParent ? lRef : null);
   markOriginals(l, m);
   markRoots(l, true);
-  pushOp({ type: 'insert', label: 'Thêm chữ', ...nodeRefs(m, l) });
+  pushOp({ type: 'insert', label: 'Add text', ...nodeRefs(m, l) });
   if (S.mode === 'page') l.scrollIntoView({ block: 'center' });
   select(l, { edit: true });
   selectAllIn(l);
@@ -1139,15 +1139,15 @@ function rootNearViewportCenter() {
 function selectParent() {
   if (!S.sel) return;
   const parent = pickBlock(S.sel.parentElement || S.sel);
-  if (parent) select(parent, { edit: false }); else toast('Đã ở khối ngoài cùng');
+  if (parent) select(parent, { edit: false }); else toast('Already at the outermost block');
 }
 function copyStyle() {
   if (!S.sel) return;
   S.styleClip = modelEl(S.sel.dataset.edId)?.getAttribute('style') || '';
-  toast('Đã sao chép kiểu');
+  toast('Style copied');
 }
 function pasteStyle() {
-  if (!S.sel || S.styleClip == null) return toast('Chưa sao chép kiểu nào');
+  if (!S.sel || S.styleClip == null) return toast('No style copied yet');
   if (commandBlocked(S.sel)) return;
   const node = S.sel, m = modelEl(node.dataset.edId);
   if (!m) return;
@@ -1155,7 +1155,7 @@ function pasteStyle() {
   const before = m.getAttribute('style'), after = S.styleClip || null;
   if (before === after) return;
   setStyleAttr(m, after); setStyleAttr(node, after);
-  pushOp({ type: 'style', id: node.dataset.edId, before, after, label: 'Dán kiểu' });
+  pushOp({ type: 'style', id: node.dataset.edId, before, after, label: 'Paste style' });
   queueThumb(node);
   refreshToolbar();
 }
@@ -1164,10 +1164,10 @@ function clearStyle() {
   const node = S.sel, m = modelEl(node.dataset.edId);
   if (!m) return;
   const orig = m.getAttribute('style');
-  if (orig == null) return toast('Khối này không có định dạng inline');
+  if (orig == null) return toast('This block has no inline formatting');
   commitText();
   setStyleAttr(m, null); setStyleAttr(node, null);
-  pushOp({ type: 'style', id: node.dataset.edId, before: orig, after: null, label: 'Xoá định dạng' });
+  pushOp({ type: 'style', id: node.dataset.edId, before: orig, after: null, label: 'Clear formatting' });
   queueThumb(node);
   refreshToolbar();
 }
@@ -1261,7 +1261,7 @@ function setFontSize(px) {
   refreshToolbar();
 }
 function applyColor(hex) {
-  if (!S.sel) return toast('Chọn một khối chữ trước');
+  if (!S.sel) return toast('Select a text block first');
   if (S.colorTarget === 'bg') styleEdit(S.sel, { 'background-color': hex }, 'bg');
   else if (hasTextSelection()) wrapSelection('color', hex);
   else { styleEdit(S.sel, { color: hex }, 'color'); offerChildColor(S.sel, hex); }
@@ -1357,9 +1357,9 @@ function normalizeURL(raw) {
   return v;
 }
 function openLinkPop() {
-  if (!S.sel) return toast('Chọn chữ trước');
+  if (!S.sel) return toast('Select text first');
   const ctx = linkContext();
-  if (!ctx) return toast(S.editing ? 'Bôi đen phần chữ cần gắn liên kết' : 'Nhấp vào chữ rồi bôi đen phần cần gắn liên kết');
+  if (!ctx) return toast(S.editing ? 'Highlight the text to link' : 'Click text and highlight the part to link');
   S.linkCtx = ctx;
   closePopups();
   const a = ctx.a;
@@ -1404,8 +1404,8 @@ function attrsEdit(node, changes, label) {
 function applyLink() {
   const ctx = S.linkCtx;
   const href = normalizeURL($('#link-url').value), blank = $('#link-blank').checked;
-  if (href === null) return toast('Liên kết javascript:/data: không được phép', { err: true });
-  if (!href) { if (ctx && ctx.kind !== 'new') removeLink(); else toast('Nhập địa chỉ liên kết'); return; }
+  if (href === null) return toast('javascript: and data: links are not allowed', { err: true });
+  if (!href) { if (ctx && ctx.kind !== 'new') removeLink(); else toast('Please enter a link URL'); return; }
   $('#pop-link').hidden = true;
   if (!ctx || !S.sel) return;
   if (ctx.kind === 'attr') {
@@ -1413,7 +1413,7 @@ function applyLink() {
     const a = ctx.a, changes = { href };
     if (blank) Object.assign(changes, { target: '_blank', rel: 'noopener noreferrer' });
     else if (a.getAttribute('target') === '_blank') Object.assign(changes, { target: null, rel: a.getAttribute('rel') === 'noopener noreferrer' ? null : a.getAttribute('rel') });
-    attrsEdit(a, changes, 'Liên kết');
+    attrsEdit(a, changes, 'Link');
   } else if (ctx.kind === 'inner') {
     setLinkAttrs(ctx.a, href, blank);
     markTextDirty();
@@ -1437,7 +1437,7 @@ function applyLink() {
     commitText();
   }
   queueThumb(S.sel);
-  toast('Đã gắn liên kết');
+  toast('Link attached');
 }
 function removeLink() {
   const ctx = S.linkCtx;
@@ -1446,15 +1446,15 @@ function removeLink() {
   if (ctx.kind === 'attr') {
     // The link is a whole block: keep the element (and its layout), drop what makes it a link.
     commitText();
-    attrsEdit(ctx.a, { href: null, target: null, rel: null }, 'Gỡ liên kết');
-    toast('Đã gỡ liên kết');
+    attrsEdit(ctx.a, { href: null, target: null, rel: null }, 'Remove link');
+    toast('Link removed');
     return;
   }
   ctx.a.replaceWith(...ctx.a.childNodes);
   markTextDirty();
   commitText();
   queueThumb(S.sel);
-  toast('Đã gỡ liên kết');
+  toast('Link removed');
 }
 
 // ================================================================ frame panel (Khung)
@@ -1691,7 +1691,7 @@ function loadImage(src) {
   return new Promise((resolve, reject) => {
     const im = new Image();
     im.onload = () => resolve(im);
-    im.onerror = () => reject(new Error('Không tải được ảnh'));
+    im.onerror = () => reject(new Error('Failed to load image'));
     im.src = src;
   });
 }
@@ -1704,9 +1704,9 @@ const readDataURL = file => new Promise((resolve, reject) => {
 const dataURLBytes = u => Math.round((u.length - u.indexOf(',') - 1) * 3 / 4);
 // Embed a picked file as a data URL; big raster images are re-encoded so the page stays shareable.
 async function fileToDataURL(file) {
-  if (!IMG_TYPES.has(file.type)) throw new Error('Chỉ nhận ảnh PNG, JPG, WebP, GIF, SVG, AVIF');
+  if (!IMG_TYPES.has(file.type)) throw new Error('Only PNG, JPG, WebP, GIF, SVG, AVIF images are supported');
   if ((file.type === 'image/svg+xml' || file.type === 'image/gif') && file.size > IMG_HARD_LIMIT)
-    throw new Error(`${file.type === 'image/gif' ? 'GIF' : 'SVG'} nặng ${fmtSize(file.size)} — tối đa ${fmtSize(IMG_HARD_LIMIT)}, hãy nén trước`);
+    throw new Error(`${file.type === 'image/gif' ? 'GIF' : 'SVG'} size is ${fmtSize(file.size)} — maximum ${fmtSize(IMG_HARD_LIMIT)}`);
   const raw = await readDataURL(file);
   if (file.type === 'image/svg+xml' || file.type === 'image/gif') return raw;
   const im = await loadImage(raw);
@@ -1735,7 +1735,7 @@ async function fileToDataURL(file) {
     if (next.length < out.length) out = next;
     if (dataURLBytes(out) <= IMG_MAX_BYTES * 1.5) break;
   }
-  if (dataURLBytes(out) > IMG_HARD_LIMIT) throw new Error('Ảnh vẫn quá nặng sau khi nén — hãy giảm kích thước trước');
+  if (dataURLBytes(out) > IMG_HARD_LIMIT) throw new Error('Image is still too large after compression — please reduce image dimensions');
   return out;
 }
 function normalizeImageURL(raw) {
@@ -1749,7 +1749,7 @@ function normalizeImageURL(raw) {
 // Swap an image's source as one undo step. If the new picture has another aspect ratio and
 // the box does not follow it, crop to fill (object-fit: cover) instead of stretching.
 async function replaceImage(node, src) {
-  if (!node || !node.isConnected) return toast('Chọn một ảnh trên trang trước');
+  if (!node || !node.isConnected) return toast('Select an image on the page first');
   const token = S.loadToken;
   let probe;
   // Resolve like the <img> will: against the document's own base (it may have a <base href>).
@@ -1758,16 +1758,16 @@ async function replaceImage(node, src) {
   if (token !== S.loadToken || !node.isConnected || selectedImg() !== node) return;
   commitText();
   const ops = [];
-  const main = buildAttrsOp(node, { src, srcset: null, sizes: null }, 'Thay ảnh');
+  const main = buildAttrsOp(node, { src, srcset: null, sizes: null }, 'Replace image');
   if (main) ops.push(main);
   const pic = node.parentElement?.localName === 'picture' ? node.parentElement : null;
   if (pic) for (const srcEl of $$('source[srcset]', pic)) {
-    if (isOriginal(srcEl)) { const o = buildAttrsOp(srcEl, { srcset: null }, 'Thay ảnh'); if (o) ops.push(o); }
+    if (isOriginal(srcEl)) { const o = buildAttrsOp(srcEl, { srcset: null }, 'Replace image'); if (o) ops.push(o); }
     else srcEl.removeAttribute('srcset');   // added by the page's script: preview only, never saved
   }
-  if (!ops.length) return toast('Ảnh này đang được dùng rồi');
+  if (!ops.length) return toast('This image is already in use');
   // Record the step now, so a save or undo while the picture decodes already includes it.
-  const batch = { type: 'batch', ops, label: 'Thay ảnh' };
+  const batch = { type: 'batch', ops, label: 'Replace image' };
   pushOp(batch);
   try { await node.decode(); } catch { /* the box is still measurable */ }
   if (token !== S.loadToken || S.undo[S.undo.length - 1] !== batch) return;
@@ -1784,11 +1784,11 @@ async function replaceImage(node, src) {
   }
   queueThumb(node);
   refreshToolbar();
-  const size = src.startsWith('data:') ? ' · nhúng ' + fmtSize(dataURLBytes(src)) : '';
-  toast(`Đã thay ảnh (${probe.naturalWidth}×${probe.naturalHeight}${size})`);
+  const size = src.startsWith('data:') ? ' · embedded ' + fmtSize(dataURLBytes(src)) : '';
+  toast(`Image replaced (${probe.naturalWidth}×${probe.naturalHeight}${size})`);
 }
 async function replaceWithFile(node, file) {
-  if (!node) return toast('Chọn một ảnh trên trang trước');
+  if (!node) return toast('Select an image on the page first');
   try { await replaceImage(node, await fileToDataURL(file)); }
   catch (e) { toast(e.message, { err: true }); }
 }
@@ -1807,9 +1807,9 @@ function openAltPop() {
 function applyAlt() {
   const img = selectedImg();
   $('#pop-alt').hidden = true;
-  if (img) attrsEdit(img, { alt: $('#alt-input').value.trim() }, 'Mô tả ảnh');
+  if (img) attrsEdit(img, { alt: $('#alt-input').value.trim() }, 'Image description');
 }
-// "Thay ảnh ▾": upload, reuse a picture already in the document, or paste a link.
+// "Replace image ▾": upload, reuse a picture already in the document, or paste a link.
 function openImagePop() {
   if (!selectedImg()) return;
   const open = $('#pop-img').hidden;
@@ -1922,29 +1922,29 @@ function flipImage() {
 function resetImage() {
   const img = selectedImg();
   const orig = img && S.pristine.querySelector(`[data-ed-id="${img.dataset.edId}"]`);
-  if (!orig) return toast('Ảnh này mới thêm, không có bản gốc');
+  if (!orig) return toast('This image was newly added, no original exists');
   commitText();
   exitCrop();
   const ops = [];
-  const a = buildAttrsOp(img, Object.fromEntries(['src', 'srcset', 'sizes', 'alt'].map(n => [n, orig.getAttribute(n)])), 'Đặt lại ảnh');
+  const a = buildAttrsOp(img, Object.fromEntries(['src', 'srcset', 'sizes', 'alt'].map(n => [n, orig.getAttribute(n)])), 'Reset image');
   if (a) ops.push(a);
   const pic = img.parentElement?.localName === 'picture' ? img.parentElement : null;
   if (pic) for (const srcEl of $$('source', pic)) {
     const o = isOriginal(srcEl) && S.pristine.querySelector(`[data-ed-id="${srcEl.dataset.edId}"]`);
-    const op = o && buildAttrsOp(srcEl, { srcset: o.getAttribute('srcset') }, 'Đặt lại ảnh');
+    const op = o && buildAttrsOp(srcEl, { srcset: o.getAttribute('srcset') }, 'Reset image');
     if (op) ops.push(op);
   }
   const m = modelEl(img.dataset.edId), before = m.getAttribute('style'), after = orig.getAttribute('style');
   if (before !== after) {
     setStyleAttr(m, after);
     setStyleAttr(img, after);
-    ops.push({ type: 'style', id: img.dataset.edId, before, after, label: 'Đặt lại ảnh' });
+    ops.push({ type: 'style', id: img.dataset.edId, before, after, label: 'Reset image' });
   }
-  if (!ops.length) return toast('Ảnh đang giống bản gốc');
-  pushOp({ type: 'batch', ops, label: 'Đặt lại ảnh' });
+  if (!ops.length) return toast('Image already matches original');
+  pushOp({ type: 'batch', ops, label: 'Reset image' });
   queueThumb(img);
   refreshToolbar();
-  toast('Đã đặt lại ảnh gốc');
+  toast('Reset to original image');
 }
 
 // ================================================================ move / reorder blocks
@@ -2004,14 +2004,14 @@ function moveNode(node, drop) {
   if (mRef === m) mRef = m.nextSibling;
   if (lParent === node.parentNode && (lRef === node.nextSibling || (lRef === null && !node.nextSibling))) return false;
   const op = {
-    type: 'move', label: 'Di chuyển khối', m, l: node,
+    type: 'move', label: 'Move block', m, l: node,
     from: { mP: m.parentNode, mN: m.nextSibling, lP: node.parentNode, lN: node.nextSibling },
     to: { mP: mParent, mN: mRef, lP: lParent, lN: lRef },
   };
   applyMove(op, true);
   if (!survivesReparse(mParent)) {
     applyMove(op, false);
-    toast('Vị trí này sẽ bị trình duyệt tự sắp xếp lại khi mở file — không đặt được', { err: true, ms: 4000 });
+    toast('Browser will re-parent this position on reload — cannot place here', { err: true, ms: 4000 });
     return false;
   }
   pushOp(op);
@@ -2028,7 +2028,7 @@ function nudgeOrder(dir) {
   if (!node) return;
   const sibs = siblingBlocks(node), i = sibs.indexOf(node);
   const other = sibs[i + dir];
-  if (!other) return toast(dir < 0 ? 'Khối đã ở trên cùng' : 'Khối đã ở dưới cùng');
+  if (!other) return toast(dir < 0 ? 'Block is already at the top' : 'Block is already at the bottom');
   moveNode(node, { mode: dir < 0 ? 'before' : 'after', target: other });
 }
 // ---- dragging rows in the layer tree
@@ -2103,7 +2103,7 @@ function bindLayerDrag() {
       stop();
       if (!dragging) return;
       S.layerDragEnded = Date.now();
-      if (drop && !moveNode(node, drop)) toast('Không đặt khối vào vị trí đó được');
+      if (drop && !moveNode(node, drop)) toast('Cannot place block at that position');
     };
     const onKey = ev => { if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); dragging = false; stop(); } };
     window.addEventListener('pointermove', onMove);
@@ -2335,7 +2335,7 @@ function applyFx() {
   if (FX_ATTRS.every(a => before[a] === after[a])) return;
   setAttrs(m, after);
   setAttrs(node, after);
-  pushOp({ type: 'attrs', id, before, after, key: 'fx:' + id, label: 'Hiệu ứng' });
+  pushOp({ type: 'attrs', id, before, after, key: 'fx:' + id, label: 'Effect' });
   renderFxDoc();
 }
 function previewFx() {
@@ -2445,7 +2445,7 @@ function insertFxScript(src) {
   S.model.body.insertBefore(m, mRef);
   S.doc.body.insertBefore(l, lLast ? lLast.nextSibling : null);
   markOriginals(l, m);
-  pushOp({ type: 'insert', label: 'Bật FX', ...nodeRefs(m, l) });
+  pushOp({ type: 'insert', label: 'Enable FX', ...nodeRefs(m, l) });
   renderFxDoc();
   toast(t('fx_doc_on'));
 }
@@ -2456,13 +2456,13 @@ function updateFxScript(src) {
   const attrs = { type: 'attrs', id, before: { 'data-htmldeck-fx': m.getAttribute('data-htmldeck-fx') }, after: { 'data-htmldeck-fx': String(FX_VERSION) } };
   m.textContent = src; l.textContent = src;
   setAttrs(m, attrs.after); setAttrs(l, attrs.after);
-  pushOp({ type: 'batch', label: 'Cập nhật FX', ops: [html, attrs] });
+  pushOp({ type: 'batch', label: 'Update FX', ops: [html, attrs] });
   renderFxDoc();
 }
 function removeFxScript() {
   const m = fxScriptEl(), id = m?.getAttribute('data-ed-id'), l = id && $$(`[data-ed-id="${id}"]`, S.doc)[0];
   if (!m || !l) return;
-  const op = { type: 'remove', label: 'Tắt FX', ...nodeRefs(m, l) };
+  const op = { type: 'remove', label: 'Disable FX', ...nodeRefs(m, l) };
   doRemove(op);
   pushOp(op);
   renderFxDoc();
@@ -2827,7 +2827,7 @@ function saveNotes() {
     if (before === after) return;
     m.setAttribute('data-notes', after);
     a.setAttribute('data-notes', after);
-    pushOp({ type: 'attrs', id, before: { 'data-notes': before }, after: { 'data-notes': after }, key: 'notes:' + id, label: 'Ghi chú' });
+    pushOp({ type: 'attrs', id, before: { 'data-notes': before }, after: { 'data-notes': after }, key: 'notes:' + id, label: 'Speaker notes' });
     return;
   }
   if (!n || commandBlocked(n)) return;
@@ -2837,7 +2837,7 @@ function saveNotes() {
   if (before === after) return;
   m.innerHTML = after;
   n.innerHTML = after;
-  pushOp({ type: 'html', id, before, after, key: 'notes:' + id, label: 'Ghi chú' });
+  pushOp({ type: 'html', id, before, after, key: 'notes:' + id, label: 'Speaker notes' });
 }
 function buildDocColors() {
   const counts = new Map();
@@ -2918,7 +2918,7 @@ async function loadAgentNotes() {
       const res = await api(`/api/notes?path=${encodeURIComponent(src.path)}`);
       if (token !== S.loadToken) return;
       S.agentNotes = res.notes || [];
-    } catch (e) { if (token === S.loadToken) toast('Không đọc được feedback: ' + e.message, { err: true }); }
+    } catch (e) { if (token === S.loadToken) toast('Cannot read feedback: ' + e.message, { err: true }); }
   }
   $('#agent-cmd').textContent = S.source?.kind === 'server' ? agentCmd() : t('note_workspace_only');
   renderNoteList();
@@ -2928,12 +2928,12 @@ async function loadAgentNotes() {
 // disk, so an agent's `--done` made meanwhile is never overwritten by this stale copy.
 async function noteOps(ops) {
   const src = S.source, token = S.loadToken;
-  if (src?.kind !== 'server') return toast('Feedback chỉ lưu được cho file trong workspace', { err: true });
+  if (src?.kind !== 'server') return toast('Feedback can only be saved for workspace files', { err: true });
   try {
     const res = await postJSON('/api/notes', { path: src.path, ops });
     if (token !== S.loadToken) return;
     S.agentNotes = res.notes || [];
-  } catch (e) { toast('Không lưu được feedback: ' + e.message, { err: true, ms: 5000 }); }
+  } catch (e) { toast('Cannot save feedback: ' + e.message, { err: true, ms: 5000 }); }
   renderNoteList();
   renderPins();
 }
@@ -2970,7 +2970,7 @@ const agentCmd = () => `htmldeck-notes --file ${shq(S.source.path)}`;   // run i
 // target: the selected block, or a whole slide / report section pinned from the panel.
 // region: { region, canvas, targets } of a box drawn on `target` (see drawRegion).
 function openNotePop(target = S.sel, region = null) {
-  if (!target) return toast('Chọn một khối trước khi viết feedback');
+  if (!target) return toast('Select a block before writing feedback');
   if (S.source?.kind !== 'server') return toast(t('note_workspace_only'), { err: true });
   if (S.editing) setEditing(false);
   const pop = $('#pop-note');
@@ -3010,7 +3010,7 @@ function addNoteFromPop() {
   const text = $('#note-input').value.trim(), target = S.noteTarget;
   if (!text || !target || !target.isConnected) return;
   const id = target.dataset.edId, p = S.pristine.querySelector(`[data-ed-id="${id}"]`);
-  if (!p) return toast('Khối này chưa có trong file — bấm Lưu trước rồi viết feedback', { err: true, ms: 4000 });
+  if (!p) return toast('This block is not in the file yet — save first, then write feedback', { err: true, ms: 4000 });
   const slide = S.slides.indexOf(target.closest('[data-ed-slide]'));
   const reg = S.noteRegion?.owner === target ? S.noteRegion : null;
   $('#pop-note').hidden = true;
@@ -3020,7 +3020,7 @@ function addNoteFromPop() {
     selector: cssPath(p), tag: p.localName, text: snippetOf(p), line: sourceLine(id), slide: slide >= 0 ? slide : null,
     ...(reg && { kind: 'region', region: reg.region, canvas: reg.canvas, targets: reg.targets }),
   } }]);
-  toast('Đã lưu feedback');
+  toast('Feedback saved');
 }
 // ---------------------------------------------------------------- region feedback
 // One note about an area rather than one block (idea from slides-grab's bbox tool). The box is
@@ -3225,7 +3225,7 @@ function focusNote(i) {
   if (!el.panel.classList.contains('open') || el.panel.dataset.view !== 'review') openPanel('review');
   $$('.note-card').forEach(c => c.classList.toggle('hot', +c.dataset.i === i));
   $(`.note-card[data-i="${i}"]`)?.scrollIntoView({ block: 'nearest' });
-  if (!target) return toast('Không còn tìm thấy phần tử của feedback này');
+  if (!target) return toast('Target element for this feedback no longer found');
   const slideIdx = S.slides.indexOf(target.closest('[data-ed-slide]'));
   if (slideIdx >= 0 && slideIdx !== S.cur) showSlide(slideIdx);
   if (n.kind === 'region') {
@@ -3322,7 +3322,7 @@ function flushRemoval() {
   // keepalive: the request still goes out when this runs from pagehide.
   api('/api/notes', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: p.path, ops: [{ op: 'delete', id: p.id }] }) })
     .then(res => { if (S.source?.path === p.path) { S.agentNotes = res.notes || []; renderNoteList(); renderPins(); } })
-    .catch(e => { renderNoteList(); renderPins(); toast('Không gỡ được feedback: ' + e.message, { err: true }); });
+    .catch(e => { renderNoteList(); renderPins(); toast('Cannot remove feedback: ' + e.message, { err: true }); });
 }
 function editNoteCard(card, n) {
   const text = card.querySelector('.nc-text');
@@ -3440,7 +3440,7 @@ function startPresent() {
       bodyClass: staticReveal ? 'reveal-viewport' : '',
       session: { ns: PRESENT_NS, v: PRESENT_V, sessionId: p.sessionId, docRevision: p.docRevision, origin: location.origin },
     });
-  } catch (e) { toast('Không mở được chế độ trình chiếu: ' + e.message, { err: true }); return; }
+  } catch (e) { toast('Cannot start presenting: ' + e.message, { err: true }); return; }
   S.present = p;
   S.presenting = true;
   el.stage.classList.add('presenting');
@@ -3449,9 +3449,9 @@ function startPresent() {
   // Refused (or unsupported), the present layer still covers the window.
   // A request that completes after the session already ended must not leave the stage full screen.
   el.stage.requestFullscreen?.().then(() => { if (S.present !== p && document.fullscreenElement === el.stage) document.exitFullscreen().catch(() => {}); }, () => {});
-  const fail = msg => { if (S.present !== p) return; endPresent(); toast('Không mở được chế độ trình chiếu' + (msg ? ': ' + msg : ''), { err: true }); };
+  const fail = msg => { if (S.present !== p) return; endPresent(); toast('Cannot start presenting' + (msg ? ': ' + msg : ''), { err: true }); };
   // One deadline from the click to the frame's ready, staging included.
-  p.deadline = setTimeout(() => { if (p.session?.state !== 'active') fail('quá thời gian chờ'); }, 10000);
+  p.deadline = setTimeout(() => { if (p.session?.state !== 'active') fail('timed out'); }, 10000);
   postJSON('/api/preview', { path: S.source.kind === 'server' ? S.source.path : null, content: html, target: 'present' }).then(({ url }) => {
     if (S.present !== p) return;
     p.session = createPresentSession({
@@ -3518,12 +3518,12 @@ document.addEventListener('fullscreenchange', () => {
 async function save({ force = false, rewriteOk = false } = {}) {
   if (!S.model || S.saving) return;
   flushPending();
-  if (!isDirty() && !force) return toast('Không có thay đổi nào để lưu');
+  if (!isDirty() && !force) return toast('No changes to save');
   const { content, minimal } = contentForSave();
   // Ask before rewriting a file whose edits could not be patched in place (an upload only
   // downloads a new copy, so there is nothing to protect).
   if (!minimal && !rewriteOk && S.source.kind !== 'upload') return askRewrite(content);
-  if (content.length > 60 * 1048576) return toast(`File sau khi sửa nặng ${fmtSize(content.length)}, vượt giới hạn lưu 60 MB — bỏ bớt ảnh nhúng`, { err: true, ms: 7000 });
+  if (content.length > 60 * 1048576) return toast(`File is ${fmtSize(content.length)} after editing, over the 60 MB save limit — remove some embedded images`, { err: true, ms: 7000 });
   const seqAtSave = topSeq();
   // Edits made while the request is in flight belong to the next save.
   const snapshot = S.model.cloneNode(true), touchedAtSave = S.touched;
@@ -3541,7 +3541,7 @@ async function save({ force = false, rewriteOk = false } = {}) {
       const res = await postJSON('/api/save', { path: src.path, content, mtime_ns: src.mtime, force });
       src.mtime = res.mtime_ns;
       if (token !== S.loadToken) return;
-      toast(`Đã lưu ${res.file} · ${fmtSize(res.bytes_written)} · sao lưu: ${res.backup.split('/').pop()}`);
+      toast(`Saved ${res.file} · ${fmtSize(res.bytes_written)} · backup: ${res.backup.split('/').pop()}`);
     } else if (src.kind === 'handle') {
       // No server mtime here: compare the file on disk with the text we opened or last saved.
       if (!force && textHash(await (await src.handle.getFile()).text()) !== S.diskHash) {
@@ -3551,10 +3551,10 @@ async function save({ force = false, rewriteOk = false } = {}) {
       await w.write(content);
       await w.close();
       if (token !== S.loadToken) return;
-      toast(`Đã lưu thẳng vào ${src.name}`);
+      toast(`Saved directly to ${src.name}`);
     } else {
       download(content, src.name);
-      toast('Trình duyệt không cho ghi trực tiếp file đã kéo vào — đã tải bản mới về máy', { ms: 4500 });
+      toast('Browser blocked direct write to dropped file — downloaded new copy instead', { ms: 4500 });
     }
     S.savedSeq = seqAtSave;
     S.saveError = '';
@@ -3572,7 +3572,7 @@ async function save({ force = false, rewriteOk = false } = {}) {
     for (const id of touchedAtSave) S.touched.add(id);
     if (e.status === 409) { S.saving = false; updateChrome(); return showConflict(content); }
     S.saveError = e.message;
-    toast('Lưu thất bại: ' + e.message, { err: true, ms: 6000 });
+    toast('Save failed: ' + e.message, { err: true, ms: 6000 });
   } finally {
     S.inFlightSeq = null;
     if (token === S.loadToken) S.touchedInFlight = null;
@@ -3683,7 +3683,7 @@ async function offerDraft(html, source) {
   // Restoring reopens the document; never do that over edits made while IndexedDB was read.
   // The draft stays, and the next autosave of the new edits replaces it.
   if (token !== S.loadToken || S.undo.length || isDirty()) return false;
-  const time = new Date(rec.savedAt).toLocaleString(S.lang === 'en' ? 'en-GB' : S.lang === 'zh' ? 'zh-CN' : 'vi-VN');
+  const time = new Date(rec.savedAt).toLocaleString(S.lang === 'vi' ? 'vi-VN' : S.lang === 'zh' ? 'zh-CN' : 'en-GB');
   let msg = t('draft_restore').replace('{name}', source.name).replace('{time}', time);
   if (rec.base && rec.base !== textHash(html)) msg += t('draft_changed');
   if (!confirm(msg)) { clearDraft(rec.key); return false; }
@@ -3926,8 +3926,8 @@ function applyModeUI() {
   if (!deck) { el.notes.hidden = true; $('#sb-notes').classList.remove('on'); }
   $('#sb-notes').disabled = deck && !S.slides.some(s => $$('.notes', s).some(isOriginal));
   $('#text-hint').innerHTML = deck
-    ? (S.lang === 'zh' ? '点击向当前幻灯片添加文本框。拖动悬浮栏上的<b>移动</b>手柄调整位置。' : (S.lang === 'en' ? 'Click to add text box to current slide. Drag <b>move</b> handle on floating toolbar to reposition.' : 'Nhấp để thêm hộp chữ vào slide hiện tại. Kéo nút <b>di chuyển</b> trên thanh nổi để đặt lại vị trí.'))
-    : (S.lang === 'zh' ? '新文字插入在当前选定区块后（或屏幕中央的区块后）。' : (S.lang === 'en' ? 'New text is inserted after the selected block (or block in center of screen).' : 'Chữ mới được chèn ngay sau khối đang chọn (hoặc khối ở giữa màn hình).'));
+    ? (S.lang === 'zh' ? '点击向当前幻灯片添加文本框。拖动悬浮栏上的<b>移动</b>手柄调整位置。' : S.lang === 'vi' ? 'Nhấp để thêm hộp chữ vào slide hiện tại. Kéo nút <b>di chuyển</b> trên thanh nổi để đặt lại vị trí.' : 'Click to add text box to current slide. Drag <b>move</b> handle on floating toolbar to reposition.')
+    : (S.lang === 'zh' ? '新文字插入在当前选定区块后（或屏幕中央的区块后）。' : S.lang === 'vi' ? 'Chữ mới được chèn ngay sau khối đang chọn (hoặc khối ở giữa màn hình).' : 'New text is inserted after the selected block (or block in center of screen).');
 }
 function updateChrome() {
   const dirty = S.model ? isDirty() : false;
@@ -4019,7 +4019,7 @@ function renderFileList() {
       b.innerHTML = `<span class="fi-icon"><svg class="icon sm"><use href="#i-file"/></svg></span><span class="fi-text"><div class="fi-name"></div><div class="fi-meta"></div></span>`;
       b.querySelector('.fi-name').textContent = f.path.split('/').pop();
       const meta = b.querySelector('.fi-meta');
-      const loc = S.lang === 'zh' ? 'zh-CN' : (S.lang === 'en' ? 'en-US' : 'vi-VN');
+      const loc = S.lang === 'zh' ? 'zh-CN' : S.lang === 'vi' ? 'vi-VN' : 'en-US';
       meta.textContent = fmtSize(f.size) + ' · ' + new Date(f.mtime * 1000).toLocaleDateString(loc);
       if (f.size > 3 * 1048576) meta.insertAdjacentHTML('beforeend', ' · <span class="fi-heavy">' + t('file_heavy') + '</span>');
       b.title = f.path;
@@ -4232,7 +4232,7 @@ function bindUI() {
   $('#img-input').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) replaceWithFile(selectedImg(), f); });
   $('#img-url-apply').addEventListener('click', () => {
     const v = normalizeImageURL($('#img-url').value);
-    if (v === null) return toast('Link ảnh không hợp lệ', { err: true });
+    if (v === null) return toast('Invalid image link', { err: true });
     if (v) { $('#pop-img').hidden = true; replaceImage(selectedImg(), v); }
   });
   $('#img-url').addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') $('#img-url-apply').click(); });
@@ -4276,7 +4276,7 @@ function bindUI() {
   });
   $('#note-cancel').addEventListener('click', () => { $('#pop-note').hidden = true; });
   $('#note-input').addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) addNoteFromPop(); if (e.key === 'Escape') $('#pop-note').hidden = true; });
-  $('#agent-cmd-copy').addEventListener('click', () => navigator.clipboard?.writeText($('#agent-cmd').textContent).then(() => toast('Đã sao chép lệnh')));
+  $('#agent-cmd-copy').addEventListener('click', () => navigator.clipboard?.writeText($('#agent-cmd').textContent).then(() => toast('Command copied')));
   $('#sb-width').addEventListener('change', e => {
     try { localStorage.setItem(PAGE_W_KEY, e.target.value); } catch {}
     applyPageWidth(e.target.value);
@@ -4310,8 +4310,8 @@ function bindUI() {
     e.preventDefault();
     const handlePromise = item.getAsFileSystemHandle?.();
     const file = item.getAsFile();
-    if (file && file.type.startsWith('image/')) return selectedImg() ? replaceWithFile(selectedImg(), file) : toast('Chọn một ảnh trên trang rồi thả ảnh mới vào');
-    if (!file || !/\.html?$/i.test(file.name)) return toast('Chỉ mở được file .html / .htm', { err: true });
+    if (file && file.type.startsWith('image/')) return selectedImg() ? replaceWithFile(selectedImg(), file) : toast('Select an image on the page then drop the new image on it');
+    if (!file || !/\.html?$/i.test(file.name)) return toast('Only .html / .htm files are supported', { err: true });
     if (!confirmDiscard()) return;
     const handle = handlePromise ? await handlePromise.catch(() => null) : null;
     if (handle && handle.kind === 'file') { setLoading(true); openFromHandle(handle).catch(err => { setLoading(false); toast(err.message, { err: true }); }); }
@@ -4327,7 +4327,7 @@ async function boot() {
   updateChrome();
   let cfg = {};
   try { cfg = await api('/api/config'); }
-  catch (e) { if (e.status === 404) toast('Server đang chạy là bản cũ — tắt (Ctrl+C) rồi chạy lại htmldeck', { err: true, ms: 10000 }); }
+  catch (e) { if (e.status === 404) toast('Server is running an older version — please restart htmldeck', { err: true, ms: 10000 }); }
   // Presenting runs on this second origin (no API there); the editor's own origin otherwise.
   S.previewOrigin = cfg.preview_origin || location.origin;
   loadWorkspaceList();

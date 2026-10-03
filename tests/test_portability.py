@@ -39,12 +39,13 @@ def test_file_lock_excludes_another_process(tmp_path):
 
 
 def test_cli_output_is_utf8_on_a_legacy_code_page(tmp_path):
-    (tmp_path / "a.html").write_text("<p>x</p>", encoding="utf-8")
+    # Document names and note text are often not ASCII (here: Vietnamese, outside cp1252).
+    (tmp_path / "bản-trình-bày.html").write_text("<p>x</p>", encoding="utf-8")
     env = {**ENV, "PYTHONIOENCODING": "cp1252"}   # what a Windows pipe gets by default
-    res = subprocess.run([sys.executable, "-m", "htmldeck.notes", "--root", str(tmp_path), "--file", "a.html"],
+    res = subprocess.run([sys.executable, "-m", "htmldeck.notes", "--root", str(tmp_path), "--file", "bản-trình-bày.html"],
                          capture_output=True, env=env, check=False)
     assert res.returncode == 0, res.stderr.decode("utf-8", "replace")
-    assert "đang mở" in res.stdout.decode("utf-8")
+    assert "bản-trình-bày.html" in res.stdout.decode("utf-8")
 
 
 def test_banner_url_line_is_flushed_when_piped(tmp_path):

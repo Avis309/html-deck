@@ -39,28 +39,28 @@ def _px(v: float) -> int:
 
 
 def _note_lines(source: str, n: dict, i: int) -> list[str]:
-    where = [f"dòng {current_line(source, n) or '?'}"]
+    where = [f"line {current_line(source, n) or '?'}"]
     if n.get("slide") is not None:
         where.append(f"slide {n['slide'] + 1}")
     region = n.get("kind") == "region"
-    lines = [f"{i}. [{n['status']}] id={n['id']} · {' · '.join(where)} · <{n.get('tag', '?')}>{' · vùng khoanh' if region else ''}",
+    lines = [f"{i}. [{n['status']}] id={n['id']} · {' · '.join(where)} · <{n.get('tag', '?')}>{' · region' if region else ''}",
              f"   selector: {n.get('selector', '')}"]
     if region:
         # The area is in CSS pixels of the slide (or report section) it was drawn on.
         r, c = n["region"], n["canvas"]
-        owner = "slide" if n.get("slide") is not None else "mục"
-        lines.append(f"   vùng x={_px(r['x'])} y={_px(r['y'])} rộng {_px(r['width'])} cao {_px(r['height'])}"
-                     f" (px trên {owner} {_px(c['width'])}×{_px(c['height'])}, tính từ góc trên trái)")
+        owner = "slide" if n.get("slide") is not None else "section"
+        lines.append(f"   region x={_px(r['x'])} y={_px(r['y'])} width {_px(r['width'])} height {_px(r['height'])}"
+                     f" (CSS px of the {owner}, {_px(c['width'])}×{_px(c['height'])}, from its top-left corner)")
         if not n.get("targets"):
-            lines.append("   phần tử trong vùng: không có phần tử nào (vùng trống hoặc nền) — xem toạ độ vùng")
+            lines.append("   elements in it: none (empty area or background) — go by the region")
         else:
-            lines.append("   phần tử trong vùng:")
+            lines.append("   elements in it:")
             for k, t in enumerate(n["targets"], 1):
                 text = " ".join(t.get("text", "").split())[:80]
-                lines.append(f"     {k}) <{t.get('tag', '?')}> {t.get('selector', '')} · dòng {current_line(source, t) or '?'}"
+                lines.append(f"     {k}) <{t.get('tag', '?')}> {t.get('selector', '')} · line {current_line(source, t) or '?'}"
                              + (f' · "{text}"' if text else ""))
     elif n.get("text"):
-        lines.append(f"   đoạn chữ: \"{n['text'][:160]}\"")
+        lines.append(f"   text: \"{n['text'][:160]}\"")
     lines.append(f"   → {n['note']}")
     lines.append("")
     return lines
@@ -71,8 +71,8 @@ def format_notes(target: Path, notes: list[dict], show_all: bool, root: Path | N
     source = target.read_text(encoding="utf-8") if target.is_file() else ""
     shown = [n for n in notes if show_all or n.get("status") == "open"]
     if not shown:
-        return f"Không có ghi chú {'nào' if show_all else 'đang mở'} cho {display_path(target, root)}."
-    lines = [f"# Ghi chú cần sửa — {display_path(target, root)} ({len(shown)})", ""]
+        return f"No {'' if show_all else 'open '}notes for {display_path(target, root)}."
+    lines = [f"# Notes to address — {display_path(target, root)} ({len(shown)})", ""]
     for i, n in enumerate(shown, 1):
         lines += _note_lines(source, n, i)
     return "\n".join(lines).rstrip()
@@ -90,17 +90,17 @@ def format_prompt(target: Path, notes: list[dict], root: Path | None = None) -> 
     source = target.read_text(encoding="utf-8") if target.is_file() else ""
     shown = [n for n in notes if n.get("status") == "open"]
     if not shown:
-        return f"Không có ghi chú đang mở cho {name}."
+        return f"No open notes for {name}."
     lines = [
-        f"Sửa {name} theo {len(shown)} ghi chú dưới đây (feedback để lại trong HTML Deck).",
-        "- Chỉ sửa file này, đúng chỗ được chỉ; giữ nguyên định dạng và phần còn lại của file.",
-        "- Selector và số dòng chỉ để tìm chỗ: đọc lại file hiện tại trước khi sửa.",
-        "- Ghi chú vùng khoanh: yêu cầu áp cho cả vùng; danh sách phần tử là những gì nằm trong vùng lúc khoanh.",
+        f"Edit {name} as asked in the {len(shown)} note(s) below (feedback left in HTML Deck).",
+        "- Edit only this file, only where pointed; keep its formatting and everything else as is.",
+        "- Selectors and lines are hints for finding the spot: read the current file before editing.",
+        "- A region note applies to the whole area; its elements are what lay in it when it was drawn.",
         "",
     ]
     for i, n in enumerate(shown, 1):
         lines += _note_lines(source, n, i)
-    lines += ["Xong ghi chú nào thì đánh dấu đã xong:", f"htmldeck-notes --file {_shq(name)} --done <id>"]
+    lines += ["Mark each note done once addressed:", f"htmldeck-notes --file {_shq(name)} --done <id>"]
     return "\n".join(lines)
 
 
@@ -122,14 +122,14 @@ def main(argv: list[str] | None = None):
         known = {n["id"] for n in notes}
         missing = [i for i in args.done if i not in known]
         if missing:
-            print(f"Không tìm thấy ghi chú: {', '.join(missing)}", file=sys.stderr)
+            print(f"Note not found: {', '.join(missing)}", file=sys.stderr)
             sys.exit(1)
         try:
             apply_note_ops(target, [{"op": "update", "id": i, "patch": {"status": "done"}} for i in args.done], root)
         except EditorError as exc:
             print(f"Error: {exc}", file=sys.stderr)
             sys.exit(1)
-        print(f"Đã đánh dấu xong {len(args.done)} ghi chú → {display_path(notes_path(target), root)}")
+        print(f"Marked {len(args.done)} note(s) done → {display_path(notes_path(target), root)}")
         return
     print(format_prompt(target, notes, root) if args.prompt else format_notes(target, notes, args.all, root))
 

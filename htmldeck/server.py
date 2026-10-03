@@ -92,7 +92,7 @@ class EditorError(Exception):
 def resolve_html_path(req_path: str | None, root: Path, extra_allowed: frozenset[Path] = frozenset()) -> Path:
     """Map a client-supplied path to an HTML file the editor is allowed to touch."""
     if not req_path:
-        raise EditorError(400, "Thiếu tham số path")
+        raise EditorError(400, "Missing path parameter")
     path = Path(req_path)
     if not path.is_absolute():
         path = root / path
@@ -100,11 +100,11 @@ def resolve_html_path(req_path: str | None, root: Path, extra_allowed: frozenset
     if path in extra_allowed:
         return path
     if not path.is_relative_to(root):
-        raise EditorError(403, "Chỉ được mở file trong workspace")
+        raise EditorError(403, "Only files inside the workspace can be opened")
     if any(part.startswith(".") for part in path.relative_to(root).parts):
-        raise EditorError(403, "Không mở file trong thư mục ẩn")
+        raise EditorError(403, "Files in hidden folders are not opened")
     if path.suffix.lower() not in HTML_SUFFIXES:
-        raise EditorError(400, "Chỉ hỗ trợ file .html / .htm")
+        raise EditorError(400, "Only .html / .htm files are supported")
     return path
 
 
@@ -136,12 +136,12 @@ def list_html_files(root: Path) -> list[dict]:
 
 def load_html(target: Path, root: Path) -> dict:
     if not target.is_file():
-        raise EditorError(404, f"Không tìm thấy file: {display_path(target, root)}")
+        raise EditorError(404, f"File not found: {display_path(target, root)}")
     raw = target.read_bytes()
     try:
         content = raw.decode("utf-8-sig")
     except UnicodeDecodeError as exc:
-        raise EditorError(415, "File không phải UTF-8") from exc
+        raise EditorError(415, "File is not UTF-8") from exc
     return {
         "path": display_path(target, root),
         "filename": target.name,
@@ -165,7 +165,7 @@ def _backup(target: Path, stamp: str) -> Path:
 def save_html(target: Path, content: object, expected_mtime_ns: str | None, force: bool, root: Path) -> dict:
     """Atomically overwrite an existing HTML file, refusing if it changed since load."""
     if not isinstance(content, str) or not content.strip():
-        raise EditorError(400, "Nội dung rỗng hoặc không hợp lệ")
+        raise EditorError(400, "Content is empty or invalid")
     # The mtime check, backup and replace must be one step, or two tabs can both pass the check.
     with SAVE_LOCK:
         return _save_locked(target, content, expected_mtime_ns, force, root)
@@ -173,10 +173,10 @@ def save_html(target: Path, content: object, expected_mtime_ns: str | None, forc
 
 def _save_locked(target: Path, content: str, expected_mtime_ns: str | None, force: bool, root: Path) -> dict:
     if not target.is_file():
-        raise EditorError(404, "File đích không tồn tại (editor không tạo file mới)")
+        raise EditorError(404, "Target file does not exist (the editor does not create files)")
     current = str(target.stat().st_mtime_ns)
     if expected_mtime_ns and not force and current != str(expected_mtime_ns):
-        raise EditorError(409, "File đã bị thay đổi bên ngoài kể từ lúc mở")
+        raise EditorError(409, "The file was changed outside the editor since it was opened")
 
     stamp = time.strftime("%Y%m%d-%H%M%S") + f"-{time.time_ns() % 1_000_000:06d}"
     backup = _backup(target, stamp)
@@ -213,17 +213,17 @@ def read_notes(target: Path) -> list[dict]:
 
 def _clean_note(raw: object) -> dict:
     if not isinstance(raw, dict):
-        raise EditorError(400, "Ghi chú phải là object")
+        raise EditorError(400, "A note must be an object")
     note = {}
     for key, kind in NOTE_FIELDS.items():
         value = raw.get(key, "")
         if not isinstance(value, kind):
-            raise EditorError(400, f"Trường {key} không hợp lệ")
+            raise EditorError(400, f"Invalid field: {key}")
         note[key] = value[:4000]
     if not note["id"] or not note["note"].strip():
-        raise EditorError(400, "Ghi chú thiếu id hoặc nội dung")
+        raise EditorError(400, "A note needs an id and text")
     if note["status"] not in NOTE_STATUSES:
-        raise EditorError(400, "status phải là open hoặc done")
+        raise EditorError(400, "status must be open or done")
     for key in ("line", "slide"):
         note[key] = _line(raw.get(key))
     # A region note: one request about an area drawn on a slide. The top-level anchor is the
@@ -231,13 +231,13 @@ def _clean_note(raw: object) -> dict:
     # in it ride along. Element notes carry none of these keys.
     if "kind" in raw:
         if raw["kind"] != "region":
-            raise EditorError(400, "kind chỉ nhận region")
+            raise EditorError(400, "kind must be region")
         note["kind"] = "region"
         note["region"] = _box(raw.get("region"), ("x", "y", "width", "height"))
         note["canvas"] = _box(raw.get("canvas"), ("width", "height"))
         targets = raw.get("targets", [])
         if not isinstance(targets, list) or len(targets) > MAX_NOTE_TARGETS:
-            raise EditorError(400, "targets không hợp lệ")
+            raise EditorError(400, "Invalid targets")
         note["targets"] = [_clean_target(t) for t in targets]
     return note
 
@@ -249,26 +249,26 @@ def _line(value: object) -> int | None:
 def _box(raw: object, keys: tuple[str, ...]) -> dict:
     """Finite numbers in CSS pixels; width and height must be positive."""
     if not isinstance(raw, dict):
-        raise EditorError(400, "Thiếu toạ độ vùng")
+        raise EditorError(400, "Missing region coordinates")
     box = {}
     for key in keys:
         value = raw.get(key)
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
-            raise EditorError(400, f"Toạ độ {key} không hợp lệ")
+            raise EditorError(400, f"Invalid coordinate: {key}")
         if key in ("width", "height") and value <= 0:
-            raise EditorError(400, f"{key} phải lớn hơn 0")
+            raise EditorError(400, f"{key} must be greater than 0")
         box[key] = round(value, 2)
     return box
 
 
 def _clean_target(raw: object) -> dict:
     if not isinstance(raw, dict):
-        raise EditorError(400, "target phải là object")
+        raise EditorError(400, "A target must be an object")
     target = {}
     for key in ("selector", "tag", "text"):
         value = raw.get(key, "")
         if not isinstance(value, str):
-            raise EditorError(400, f"target.{key} không hợp lệ")
+            raise EditorError(400, f"Invalid field: target.{key}")
         target[key] = value[:4000]
     target["line"] = _line(raw.get("line"))
     return target
@@ -333,9 +333,9 @@ def _write_notes_file(target: Path, notes: list[dict], root: Path) -> None:
 def write_notes(target: Path, notes: object, root: Path) -> dict:
     """Replace the review notes of a document (atomic, validated)."""
     if not isinstance(notes, list) or len(notes) > MAX_NOTES:
-        raise EditorError(400, "Danh sách ghi chú không hợp lệ")
+        raise EditorError(400, "Invalid note list")
     if not target.is_file():
-        raise EditorError(404, "File đích không tồn tại")
+        raise EditorError(404, "Target file does not exist")
     cleaned = [_clean_note(n) for n in notes]
     with _notes_lock(target):
         _write_notes_file(target, cleaned, root)
@@ -351,9 +351,9 @@ def apply_note_ops(target: Path, ops: object, root: Path) -> dict:
     """Apply add/update/delete operations against the sidecar as it is on disk right now,
     so a stale copy in one client can never undo another client's change."""
     if not isinstance(ops, list) or not ops:
-        raise EditorError(400, "Thiếu danh sách thao tác")
+        raise EditorError(400, "Missing list of operations")
     if not target.is_file():
-        raise EditorError(404, "File đích không tồn tại")
+        raise EditorError(404, "Target file does not exist")
     with _notes_lock(target):
         notes = read_notes(target)
         by_id = {n.get("id"): n for n in notes}
@@ -362,7 +362,7 @@ def apply_note_ops(target: Path, ops: object, root: Path) -> dict:
             if kind == "add":
                 note = _clean_note(op.get("note"))
                 if note["id"] in by_id:
-                    raise EditorError(409, "Trùng id ghi chú")
+                    raise EditorError(409, "Duplicate note id")
                 notes.append(note)
                 by_id[note["id"]] = note
             elif kind == "update":
@@ -377,9 +377,9 @@ def apply_note_ops(target: Path, ops: object, root: Path) -> dict:
                 notes = [n for n in notes if n.get("id") != op.get("id")]
                 by_id.pop(op.get("id"), None)
             else:
-                raise EditorError(400, "Thao tác ghi chú không hợp lệ")
+                raise EditorError(400, "Invalid note operation")
         if len(notes) > MAX_NOTES:
-            raise EditorError(400, "Quá nhiều ghi chú")
+            raise EditorError(400, "Too many notes")
         _write_notes_file(target, notes, root)
     return {"success": True, "notes": notes, "notes_file": display_path(notes_path(target), root)}
 
@@ -443,7 +443,7 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
     # --- routing --------------------------------------------------------
     def do_GET(self):
         if not self._host_ok():
-            self._send_json({"error": "Host không hợp lệ"}, 403)
+            self._send_json({"error": "Invalid Host"}, 403)
             return
         parsed = urllib.parse.urlparse(self.path)
         route = {
@@ -454,7 +454,7 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
         }.get(parsed.path)
         if route:
             if not self._same_origin_fetch():
-                self._send_json({"error": "Chỉ editor được gọi API"}, 403)
+                self._send_json({"error": "Only the editor may call the API"}, 403)
                 return
             self._run_api(route, parsed)
             return
@@ -514,7 +514,7 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         if not self._host_ok() or not self._origin_ok() or not self._same_origin_fetch():
-            self._send_json({"error": "Origin không hợp lệ"}, 403)
+            self._send_json({"error": "Invalid Origin"}, 403)
             return
         parsed = urllib.parse.urlparse(self.path)
         route = {"/api/save": self._api_save, "/api/preview": self._api_preview, "/api/notes": self._api_notes_post}.get(parsed.path)
@@ -522,7 +522,7 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404, "Endpoint not found")
             return
         if self.headers.get("Content-Type", "").split(";")[0].strip() != "application/json":
-            self._send_json({"error": "Cần Content-Type: application/json"}, 415)
+            self._send_json({"error": "Content-Type must be application/json"}, 415)
             return
         self._run_api(route, parsed)
 
@@ -561,24 +561,24 @@ class HTMLEditorHandler(http.server.SimpleHTTPRequestHandler):
     def _read_json(self) -> dict:
         length = int(self.headers.get("Content-Length", 0))
         if length <= 0 or length > MAX_BODY_BYTES:
-            raise EditorError(413, "Kích thước body không hợp lệ")
+            raise EditorError(413, "Invalid body size")
         payload = json.loads(self.rfile.read(length).decode("utf-8"))
         if not isinstance(payload, dict):
-            raise EditorError(400, "Body phải là JSON object")
+            raise EditorError(400, "Body must be a JSON object")
         return payload
 
     def _api_preview(self, parsed):
         payload = self._read_json()
         content = payload.get("content")
         if not isinstance(content, str):
-            raise EditorError(400, "Thiếu content")
+            raise EditorError(400, "Missing content")
         source = payload.get("path")
         source_path = resolve_html_path(source, self.root, self._allowed_extra()) if source else None
         url = preview_url(source_path, self.root)
         # Presenting runs the document on the preview origin, away from this API.
         if payload.get("target") == "present":
             if not self.preview_origin:
-                raise EditorError(503, "Origin trình chiếu chưa chạy")
+                raise EditorError(503, "The presentation origin is not running")
             with self.previews_lock:
                 self.present_previews[url] = content.encode("utf-8")
                 while len(self.present_previews) > PREVIEWS_KEPT:
@@ -717,7 +717,7 @@ def bind_server(start_port: int, attempts: int = 50) -> LocalServer:
             return LocalServer(("127.0.0.1", port), HTMLEditorHandler)
         except OSError:
             continue
-    raise SystemExit(f"Không tìm được cổng trống trong {start_port}-{start_port + attempts - 1}")
+    raise SystemExit(f"No free port in {start_port}-{start_port + attempts - 1}")
 
 
 def main(argv: list[str] | None = None):
@@ -733,24 +733,24 @@ def main(argv: list[str] | None = None):
 
     root = Path(args.root or ".").expanduser().resolve()
     if not root.is_dir():
-        print(f"Error: không phải thư mục: {root}", file=sys.stderr)
+        print(f"Error: not a folder: {root}", file=sys.stderr)
         sys.exit(1)
     target = None
     if args.file:
         target = Path(args.file).expanduser()
         target = (target if target.is_absolute() else root / target).resolve()
         if not target.is_file() or target.suffix.lower() not in HTML_SUFFIXES:
-            print(f"Error: không phải file HTML hợp lệ: {target}", file=sys.stderr)
+            print(f"Error: not a valid HTML file: {target}", file=sys.stderr)
             sys.exit(1)
         # A document's relative assets (images, CSS) are served from the workspace only, so the
         # document has to be inside it: without --root, its own folder becomes the workspace.
         if not target.is_relative_to(root):
             if args.root:
-                print(f"Error: {target} nằm ngoài workspace {root} — chọn --root chứa file, hoặc bỏ --root", file=sys.stderr)
+                print(f"Error: {target} is outside the workspace {root} — pass a --root that contains it, or drop --root", file=sys.stderr)
                 sys.exit(1)
             root = target.parent
     if not EDITOR_HTML.is_file():
-        print(f"Error: thiếu editor UI: {EDITOR_HTML}", file=sys.stderr)
+        print(f"Error: editor UI missing: {EDITOR_HTML}", file=sys.stderr)
         sys.exit(1)
     if args.dry:
         print(f"[dry] root={root} file={display_path(target, root) if target else '-'} editor={EDITOR_HTML}")
@@ -766,9 +766,9 @@ def main(argv: list[str] | None = None):
     print("============================================================")
     print("  HtmlDeck · by Avis (hunganh.freeze@gmail.com)")
     print(f"  Workspace     : {root}")
-    print(f"  Mở trước      : {display_path(target, root) if target else '(file lần trước / chọn trong danh sách)'}")
+    print(f"  Open first    : {display_path(target, root) if target else '(last file / pick from the list)'}")
     print(f"  Editor URL    : {url}")
-    print(f"  Preview origin: {HTMLEditorHandler.preview_origin}  (trình chiếu, không có API)")
+    print(f"  Preview origin: {HTMLEditorHandler.preview_origin}  (presenting, no API)")
     print("============================================================")
     print(f"HTMLDECK_URL={url}", flush=True)   # stable, untranslated: agents read the URL from this line
     if not args.no_browser:
@@ -776,7 +776,7 @@ def main(argv: list[str] | None = None):
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nĐã tắt editor server.")
+        print("\nEditor server stopped.")
     finally:
         httpd.server_close()
         preview.shutdown()

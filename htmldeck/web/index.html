@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -64,120 +64,120 @@
 
 <div class="app" id="app">
   <header class="topbar">
-    <div class="brand" data-i18n-title="brand_title" title="HtmlDeck · tạo bởi Avis (hunganh.freeze@gmail.com)">
+    <div class="brand" data-i18n-title="brand_title" title="HtmlDeck · created by Avis (hunganh.freeze@gmail.com)">
       <svg class="brand-logo" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="8" width="17" height="12" rx="3" fill="#fff" fill-opacity=".45"/><rect x="9" y="3" width="17" height="22" rx="3.5" fill="#fff"/><path d="M13.5 9.5h8M13.5 13.5h8M13.5 17.5h5" stroke="#ff5a1f" stroke-width="2.2" stroke-linecap="round"/></svg>
       <span class="brand-word"><b>HTML</b>Deck</span>
     </div>
-    <button class="tb-ghost" data-panel="files" data-i18n="open_file"><svg class="icon sm"><use href="#i-folder"/></svg>Mở file</button>
+    <button class="tb-ghost" data-panel="files" data-i18n="open_file"><svg class="icon sm"><use href="#i-folder"/></svg>Open File</button>
     <div class="tb-sep"></div>
-    <button class="tb-ghost" id="btn-undo" data-i18n-title="undo" title="Hoàn tác (Ctrl+Z)" disabled><svg class="icon"><use href="#i-undo"/></svg></button>
-    <button class="tb-ghost" id="btn-redo" data-i18n-title="redo" title="Làm lại (Ctrl+Shift+Z)" disabled><svg class="icon"><use href="#i-redo"/></svg></button>
+    <button class="tb-ghost" id="btn-undo" data-i18n-title="undo" title="Undo (Ctrl+Z)" disabled><svg class="icon"><use href="#i-undo"/></svg></button>
+    <button class="tb-ghost" id="btn-redo" data-i18n-title="redo" title="Redo (Ctrl+Shift+Z)" disabled><svg class="icon"><use href="#i-redo"/></svg></button>
     <div class="tb-sep"></div>
-    <div class="save-state" id="save-state"><svg class="icon"><use href="#i-cloud-ok"/></svg><span data-i18n="save_no_doc">Chưa mở tài liệu</span></div>
+    <div class="save-state" id="save-state"><svg class="icon"><use href="#i-cloud-ok"/></svg><span data-i18n="save_no_doc">No document open</span></div>
     <div class="spacer"></div>
     <div class="doc-name" id="doc-name" title=""><span class="name">—</span><span class="mode-badge" id="mode-badge" hidden></span></div>
-    <button class="btn-download" id="btn-present" data-i18n="present" data-i18n-title="present_title" title="Trình chiếu toàn màn hình"><svg class="icon sm"><use href="#i-play"/></svg>Thuyết trình</button>
-    <button class="btn-download" id="btn-download" data-i18n="download" data-i18n-title="download_title" title="Tải bản đang sửa về máy"><svg class="icon sm"><use href="#i-download"/></svg>Tải về</button>
-    <button class="btn-save" id="btn-save" data-i18n="save" data-i18n-title="save_title" title="Lưu (Ctrl+S)"><span class="dot"></span><svg class="icon sm"><use href="#i-save"/></svg>Lưu</button>
+    <button class="btn-download" id="btn-present" data-i18n="present" data-i18n-title="present_title" title="Fullscreen presentation (F)"><svg class="icon sm"><use href="#i-play"/></svg>Present</button>
+    <button class="btn-download" id="btn-download" data-i18n="download" data-i18n-title="download_title" title="Download current document to computer"><svg class="icon sm"><use href="#i-download"/></svg>Download</button>
+    <button class="btn-save" id="btn-save" data-i18n="save" data-i18n-title="save_title" title="Save (Ctrl+S)"><span class="dot"></span><svg class="icon sm"><use href="#i-save"/></svg>Save</button>
   </header>
 
   <div class="main">
-    <nav class="rail" aria-label="Công cụ" data-i18n-title="rail_tools">
-      <button class="rail-item" data-panel="files" data-i18n="rail_files"><span class="ic"><svg class="icon lg"><use href="#i-folder"/></svg></span>Tệp</button>
-      <button class="rail-item" data-panel="text" data-i18n="rail_text"><span class="ic"><svg class="icon lg"><use href="#i-type"/></svg></span>Văn bản</button>
+    <nav class="rail" aria-label="Tools" data-i18n-title="rail_tools">
+      <button class="rail-item" data-panel="files" data-i18n="rail_files"><span class="ic"><svg class="icon lg"><use href="#i-folder"/></svg></span>Files</button>
+      <button class="rail-item" data-panel="text" data-i18n="rail_text"><span class="ic"><svg class="icon lg"><use href="#i-type"/></svg></span>Text</button>
       <button class="rail-item" data-panel="box" data-i18n="rail_box"><span class="ic"><svg class="icon lg"><use href="#i-box"/></svg></span>Khung</button>
-      <button class="rail-item" data-panel="layers" data-i18n="rail_layers"><span class="ic"><svg class="icon lg"><use href="#i-layers"/></svg></span>Lớp</button>
-      <button class="rail-item" data-panel="outline" data-i18n="rail_outline"><span class="ic"><svg class="icon lg"><use href="#i-pages"/></svg></span>Mục lục</button>
-      <button class="rail-item" data-panel="effects" data-i18n="rail_effects"><span class="ic"><svg class="icon lg"><use href="#i-play"/></svg></span>Hiệu ứng</button>
-      <button class="rail-item" data-panel="colors" data-i18n="rail_colors"><span class="ic"><svg class="icon lg"><use href="#i-palette"/></svg></span>Màu sắc</button>
+      <button class="rail-item" data-panel="layers" data-i18n="rail_layers"><span class="ic"><svg class="icon lg"><use href="#i-layers"/></svg></span>Layers</button>
+      <button class="rail-item" data-panel="outline" data-i18n="rail_outline"><span class="ic"><svg class="icon lg"><use href="#i-pages"/></svg></span>Outline</button>
+      <button class="rail-item" data-panel="effects" data-i18n="rail_effects"><span class="ic"><svg class="icon lg"><use href="#i-play"/></svg></span>Effects</button>
+      <button class="rail-item" data-panel="colors" data-i18n="rail_colors"><span class="ic"><svg class="icon lg"><use href="#i-palette"/></svg></span>Colors</button>
       <button class="rail-item" data-panel="review" data-i18n="rail_review"><span class="ic"><svg class="icon lg"><use href="#i-comment"/></svg></span>AI Feedback<span class="badge-count" id="note-count" hidden></span></button>
       <div class="grow"></div>
-      <button class="rail-item" id="btn-lang" data-i18n-title="lang_btn_title" title="Chuyển đổi ngôn ngữ / Switch language"><span class="ic"><svg class="icon lg"><use href="#i-globe"/></svg></span><span id="lang-indicator" style="font-weight:700">VI</span></button>
-      <button class="rail-item" id="rail-keys" data-i18n="rail_keys"><span class="ic"><svg class="icon lg"><use href="#i-keyboard"/></svg></span>Phím tắt</button>
+      <button class="rail-item" id="btn-lang" data-i18n-title="lang_btn_title" title="Switch language / Chuyển ngôn ngữ (VI / EN)"><span class="ic"><svg class="icon lg"><use href="#i-globe"/></svg></span><span id="lang-indicator" style="font-weight:700">VI</span></button>
+      <button class="rail-item" id="rail-keys" data-i18n="rail_keys"><span class="ic"><svg class="icon lg"><use href="#i-keyboard"/></svg></span>Shortcuts</button>
     </nav>
 
     <aside class="panel" id="panel">
       <div class="panel-inner">
-        <div class="panel-head"><h2 id="panel-title">Tệp</h2><button class="icon-btn" id="panel-close" data-i18n-title="close" title="Đóng"><svg class="icon"><use href="#i-x"/></svg></button></div>
+        <div class="panel-head"><h2 id="panel-title">Files</h2><button class="icon-btn" id="panel-close" data-i18n-title="close" title="Close"><svg class="icon"><use href="#i-x"/></svg></button></div>
         <div class="panel-body" data-view="files">
-          <button class="btn-primary" id="btn-pick" data-i18n="pick_file"><svg class="icon sm"><use href="#i-laptop"/></svg>Mở file từ máy tính</button>
-          <div class="hint" style="margin:8px 2px 14px" data-i18n="drag_hint">Hoặc kéo-thả file .html vào cửa sổ này.</div>
-          <label class="search"><svg class="icon sm"><use href="#i-search"/></svg><input id="file-search" data-i18n-placeholder="search_files" placeholder="Tìm file trong workspace"></label>
-          <div id="file-list"><div class="hint" data-i18n="loading_list">Đang tải danh sách…</div></div>
+          <button class="btn-primary" id="btn-pick" data-i18n="pick_file"><svg class="icon sm"><use href="#i-laptop"/></svg>Open file from computer</button>
+          <div class="hint" style="margin:8px 2px 14px" data-i18n="drag_hint">Or drag &amp; drop .html files into this window.</div>
+          <label class="search"><svg class="icon sm"><use href="#i-search"/></svg><input id="file-search" data-i18n-placeholder="search_files" placeholder="Search files in workspace"></label>
+          <div id="file-list"><div class="hint" data-i18n="loading_list">Loading list…</div></div>
         </div>
         <div class="panel-body" data-view="text" hidden>
-          <div class="hint" style="margin-bottom:12px" id="text-hint" data-i18n-html="text_hint">Nhấp để thêm hộp chữ vào trang hiện tại. Kéo nút <b>di chuyển</b> trên thanh nổi để đặt lại vị trí.</div>
-          <button class="text-preset h" data-preset="heading" data-i18n="preset_heading">Thêm tiêu đề</button>
-          <button class="text-preset s" data-preset="subheading" data-i18n="preset_subheading">Thêm tiêu đề phụ</button>
-          <button class="text-preset b" data-preset="body" data-i18n="preset_body">Thêm một đoạn văn bản</button>
+          <div class="hint" style="margin-bottom:12px" id="text-hint" data-i18n-html="text_hint">Click to add a text box to the current page. Drag the <b>move</b> handle on the floating toolbar to reposition.</div>
+          <button class="text-preset h" data-preset="heading" data-i18n="preset_heading">Add Heading</button>
+          <button class="text-preset s" data-preset="subheading" data-i18n="preset_subheading">Add Subheading</button>
+          <button class="text-preset b" data-preset="body" data-i18n="preset_body">Add Paragraph</button>
         </div>
         <div class="panel-body" data-view="box" hidden>
           <div class="box-target" id="box-target"></div>
           <div class="box-sec needs-img">
-            <div class="box-h"><span data-i18n="box_size">Kích thước</span><span class="sp"></span><button data-reset="size" data-i18n="reset_orig">Về kích thước gốc</button></div>
-            <div class="hint" data-i18n="size_hint">Kéo các chấm tròn ở góc hoặc cạnh khung ngay trên trang để đổi kích thước.</div>
+            <div class="box-h"><span data-i18n="box_size">Dimensions</span><span class="sp"></span><button data-reset="size" data-i18n="reset_orig">Reset to original</button></div>
+            <div class="hint" data-i18n="size_hint">Drag corner or edge handles on canvas to resize.</div>
           </div>
           <div class="box-sec needs-img">
-            <div class="box-h"><span data-i18n="padding_label">Khoảng cách từ viền vào nội dung</span><span class="sp"></span><button data-reset="padding" data-i18n="reset_btn">Đặt lại</button></div>
+            <div class="box-h"><span data-i18n="padding_label">Padding (inner spacing)</span><span class="sp"></span><button data-reset="padding" data-i18n="reset_btn">Reset</button></div>
             <div class="chips" id="chips-padding"></div>
             <div class="slider-row"><input type="range" min="0" max="80" id="sl-padding"><output id="out-padding"></output></div>
-            <details class="more"><summary data-i18n="sides_padding_sum">Chỉnh riêng từng cạnh</summary><div id="sides-padding"></div></details>
+            <details class="more"><summary data-i18n="sides_padding_sum">Custom per side</summary><div id="sides-padding"></div></details>
           </div>
           <div class="box-sec needs-img">
-            <div class="box-h"><span data-i18n="margin_label">Khoảng cách với khối trên / dưới</span><span class="sp"></span><button data-reset="margin" data-i18n="reset_btn">Đặt lại</button></div>
+            <div class="box-h"><span data-i18n="margin_label">Margin (top / bottom)</span><span class="sp"></span><button data-reset="margin" data-i18n="reset_btn">Reset</button></div>
             <div class="chips" id="chips-margin"></div>
-            <details class="more"><summary data-i18n="sides_margin_sum">Chỉnh riêng trên / dưới</summary><div id="sides-margin"></div></details>
+            <details class="more"><summary data-i18n="sides_margin_sum">Custom top / bottom</summary><div id="sides-margin"></div></details>
           </div>
           <div class="box-sec needs-img" data-noimg>
-            <div class="box-h"><span data-i18n="bg_label">Màu nền</span><span class="sp"></span><button data-reset="bg" data-i18n="reset_btn">Đặt lại</button></div>
+            <div class="box-h"><span data-i18n="bg_label">Background color</span><span class="sp"></span><button data-reset="bg" data-i18n="reset_btn">Reset</button></div>
             <div class="swatches" id="box-bg-swatches"></div>
           </div>
           <div class="box-sec needs-img">
-            <div class="box-h"><span data-i18n="border_label">Viền</span><span class="sp"></span><button data-reset="border" data-i18n="reset_btn">Đặt lại</button></div>
+            <div class="box-h"><span data-i18n="border_label">Border</span><span class="sp"></span><button data-reset="border" data-i18n="reset_btn">Reset</button></div>
             <div class="chips" id="chips-bstyle"></div>
             <div class="chips" id="chips-bw" style="margin-top:6px"></div>
             <div class="swatches small" id="box-bc-swatches"></div>
           </div>
           <div class="box-sec needs-img">
-            <div class="box-h"><span data-i18n="radius_label">Bo góc</span><span class="sp"></span><button data-reset="radius" data-i18n="reset_btn">Đặt lại</button></div>
+            <div class="box-h"><span data-i18n="radius_label">Corner radius</span><span class="sp"></span><button data-reset="radius" data-i18n="reset_btn">Reset</button></div>
             <div class="chips" id="chips-radius"></div>
             <div class="slider-row"><input type="range" min="0" max="60" id="sl-radius"><output id="out-radius"></output></div>
           </div>
           <div class="box-sec needs-img">
-            <div class="box-h"><span data-i18n="shadow_label">Bóng đổ</span><span class="sp"></span><button data-reset="shadow" data-i18n="reset_btn">Đặt lại</button></div>
-            <div class="shadow-row"><button data-shadow="none" data-i18n="shadow_none">Không</button><button data-shadow="soft" data-i18n="shadow_soft">Nhẹ</button><button data-shadow="medium" data-i18n="shadow_medium">Vừa</button><button data-shadow="strong" data-i18n="shadow_strong">Đậm</button></div>
+            <div class="box-h"><span data-i18n="shadow_label">Box shadow</span><span class="sp"></span><button data-reset="shadow" data-i18n="reset_btn">Reset</button></div>
+            <div class="shadow-row"><button data-shadow="none" data-i18n="shadow_none">None</button><button data-shadow="soft" data-i18n="shadow_soft">Soft</button><button data-shadow="medium" data-i18n="shadow_medium">Medium</button><button data-shadow="strong" data-i18n="shadow_strong">Strong</button></div>
           </div>
         </div>
         <div class="panel-body" data-view="layers" hidden>
-          <div class="hint" style="margin-bottom:10px" data-i18n="layers_hint_top">Các khối trên trang, xếp theo thứ tự. Bấm để chọn, rê chuột để thấy vị trí trên trang.</div>
+          <div class="hint" style="margin-bottom:10px" data-i18n="layers_hint_top">Blocks on the page, in order. Click to select, hover to preview on canvas.</div>
           <div class="layer-scope" id="layer-scope"></div>
           <div id="layer-tree"></div>
-          <div class="hint" style="margin-top:10px" data-i18n-html="layers_hint_bottom">Kéo một dòng để đổi vị trí khối: thả lên <b>vạch cam</b> để đặt trên/dưới, thả vào giữa dòng để đặt <b>vào trong</b>. Esc để huỷ.</div>
+          <div class="hint" style="margin-top:10px" data-i18n-html="layers_hint_bottom">Drag a row to reorder: drop on <b>orange line</b> for above/below, drop into middle to place <b>inside</b>. Esc to cancel.</div>
         </div>
         <div class="panel-body" data-view="outline" hidden><div id="outline-list"></div></div>
         <div class="panel-body" data-view="effects" hidden>
-          <div class="hint" style="margin-bottom:10px" data-i18n="fx_panel_hint">Hiệu ứng chạy khi trình chiếu. Chọn một khối rồi bấm nút ▶ trên thanh công cụ để gán.</div>
-          <button class="btn-soft" id="fx-play-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-play"/></svg><span data-i18n="fx_play_slide">Xem thử cả slide</span></button>
+          <div class="hint" style="margin-bottom:10px" data-i18n="fx_panel_hint">Effects run when presenting. Select a block, then press ▶ in the toolbar to set one.</div>
+          <button class="btn-soft" id="fx-play-slide" style="width:100%;margin-bottom:12px"><svg class="icon sm"><use href="#i-play"/></svg><span data-i18n="fx_play_slide">Preview the whole slide</span></button>
           <div id="fx-list"></div>
         </div>
         <div class="panel-body" data-view="review" hidden>
-          <div class="hint" data-i18n-html="review_hint">Chọn một khối rồi bấm <b>AI Feedback</b> trên thanh nổi để ghi chỗ cần AI sửa. Xong thì bấm nút dưới đây và dán vào Claude / Codex.</div>
-          <button class="btn-primary fb-copy" id="fb-copy"><svg class="icon sm"><use href="#i-copy"/></svg><span data-i18n="fb_copy">Sao chép yêu cầu cho AI</span></button>
+          <div class="hint" data-i18n-html="review_hint">Select a block and click <b>AI Feedback</b> on the floating toolbar to note what the AI should fix. Then click the button below and paste into Claude / Codex.</div>
+          <button class="btn-primary fb-copy" id="fb-copy"><svg class="icon sm"><use href="#i-copy"/></svg><span data-i18n="fb_copy">Copy request for AI</span></button>
           <button class="btn-soft" id="fb-slide" style="width:100%;margin-bottom:8px"><svg class="icon sm"><use href="#i-comment"/></svg><span id="fb-slide-label"></span></button>
-          <button class="btn-soft" id="fb-region" style="width:100%;margin-bottom:12px" data-i18n-title="fb_region_title" title="Kéo chuột khoanh một vùng trên slide rồi viết feedback cho cả vùng"><svg class="icon sm"><use href="#i-box"/></svg><span data-i18n="fb_region">Khoanh vùng để feedback</span></button>
+          <button class="btn-soft" id="fb-region" style="width:100%;margin-bottom:12px" data-i18n-title="fb_region_title" title="Drag a box over the slide, then write feedback for that whole area"><svg class="icon sm"><use href="#i-box"/></svg><span data-i18n="fb_region">Draw a region for feedback</span></button>
           <div class="seg fb-filter" id="fb-filter"><button data-f="open" class="on"></button><button data-f="done"></button></div>
           <div id="note-list"></div>
-          <details class="agent-more"><summary data-i18n="fb_for_agent">Dành cho agent (lệnh đọc feedback)</summary>
-            <div class="agent-cmd"><span id="agent-cmd">—</span><button id="agent-cmd-copy" data-i18n="copy_btn">Sao chép</button></div>
+          <details class="agent-more"><summary data-i18n="fb_for_agent">For agents (command to read feedback)</summary>
+            <div class="agent-cmd"><span id="agent-cmd">—</span><button id="agent-cmd-copy" data-i18n="copy_btn">Copy</button></div>
           </details>
         </div>
         <div class="panel-body" data-view="colors" hidden>
-          <div class="seg" id="color-target"><button data-target="text" class="on" data-i18n="color_text">Màu chữ</button><button data-target="bg" data-i18n="color_bg">Màu nền khối</button></div>
-          <div class="sec-label" style="margin-top:4px" data-i18n="doc_colors">Màu trong tài liệu</div>
+          <div class="seg" id="color-target"><button data-target="text" class="on" data-i18n="color_text">Text Color</button><button data-target="bg" data-i18n="color_bg">Block Background</button></div>
+          <div class="sec-label" style="margin-top:4px" data-i18n="doc_colors">Document Colors</div>
           <div class="swatches" id="doc-colors"></div>
-          <div class="sec-label" data-i18n="default_colors">Màu mặc định</div>
+          <div class="sec-label" data-i18n="default_colors">Default Colors</div>
           <div class="swatches" id="default-colors"></div>
-          <div class="hint" style="margin-top:16px" data-i18n="color_hint">Bôi đen một phần chữ để chỉ tô màu phần đó; không bôi đen thì áp cho cả khối.</div>
+          <div class="hint" style="margin-top:16px" data-i18n="color_hint">Highlight text to color only that selection; otherwise applies to the entire block.</div>
         </div>
       </div>
     </aside>
@@ -185,89 +185,89 @@
     <div class="workspace">
       <main class="stage empty" id="stage">
         <div class="ctx idle" id="ctx">
-          <div class="idle-only"><svg class="icon sm"><use href="#i-pointer"/></svg><span id="idle-text">Nhấp vào chữ để sửa · giữ Alt khi nhấp để chọn cả khung (thẻ, cột…)</span></div>
-          <select class="font-select needs-sel text-only" id="tb-font" data-i18n-title="font_title" title="Phông chữ"></select>
-          <div class="size-ctl needs-sel text-only"><button id="tb-size-dn" data-i18n-title="size_dn" title="Giảm cỡ">−</button><input id="tb-size" inputmode="decimal" data-i18n-title="font_size" title="Cỡ chữ"><button id="tb-size-up" data-i18n-title="size_up" title="Tăng cỡ">+</button></div>
+          <div class="idle-only"><svg class="icon sm"><use href="#i-pointer"/></svg><span id="idle-text">Click text to edit · hold Alt while clicking to select parent frame (card, column…)</span></div>
+          <select class="font-select needs-sel text-only" id="tb-font" data-i18n-title="font_title" title="Font family"></select>
+          <div class="size-ctl needs-sel text-only"><button id="tb-size-dn" data-i18n-title="size_dn" title="Decrease size">−</button><input id="tb-size" inputmode="decimal" data-i18n-title="font_size" title="Font size"><button id="tb-size-up" data-i18n-title="size_up" title="Increase size">+</button></div>
           <div class="ctx-sep needs-sel text-only"></div>
-          <button class="tbtn label needs-sel img-only" id="tb-img-replace" data-i18n-title="replace_img_title" title="Thay ảnh"><svg class="icon"><use href="#i-image"/></svg><span data-i18n="replace_img">Thay ảnh</span><svg class="icon sm"><use href="#i-caret-down"/></svg></button>
-          <button class="tbtn label needs-sel img-only" id="tb-img-crop" data-i18n-title="crop_img_title" title="Cắt & căn ảnh (hoặc nhấp đúp vào ảnh)"><svg class="icon"><use href="#i-crop"/></svg><span data-i18n="crop_img">Cắt &amp; căn</span></button>
+          <button class="tbtn label needs-sel img-only" id="tb-img-replace" data-i18n-title="replace_img_title" title="Replace image"><svg class="icon"><use href="#i-image"/></svg><span data-i18n="replace_img">Replace image</span><svg class="icon sm"><use href="#i-caret-down"/></svg></button>
+          <button class="tbtn label needs-sel img-only" id="tb-img-crop" data-i18n-title="crop_img_title" title="Crop &amp; align image (or double-click image)"><svg class="icon"><use href="#i-crop"/></svg><span data-i18n="crop_img">Crop &amp; align &amp; Crop &amp; align</span></button>
           <div class="ctx-sep needs-sel img-only"></div>
-          <div class="crop-only crop-hint" data-i18n="crop_hint"><svg class="icon sm"><use href="#i-move"/></svg>Kéo ảnh để chọn phần hiển thị trong khung</div>
-          <button class="tbtn label crop-only" id="crop-cover" data-i18n="crop_cover" data-i18n-title="crop_cover_title" title="Ảnh phủ kín khung, phần thừa bị cắt">Lấp đầy khung</button>
-          <button class="tbtn label crop-only" id="crop-contain" data-i18n="crop_contain" data-i18n-title="crop_contain_title" title="Hiện trọn ảnh, có thể còn khoảng trống">Hiện trọn ảnh</button>
+          <div class="crop-only crop-hint" data-i18n="crop_hint"><svg class="icon sm"><use href="#i-move"/></svg>Drag image to adjust visible crop area</div>
+          <button class="tbtn label crop-only" id="crop-cover" data-i18n="crop_cover" data-i18n-title="crop_cover_title" title="Image fills frame, overflow is cropped">Fill frame</button>
+          <button class="tbtn label crop-only" id="crop-contain" data-i18n="crop_contain" data-i18n-title="crop_contain_title" title="Show entire image, letterboxing if needed">Fit frame</button>
           <button class="tbtn label crop-only crop-done" id="crop-done" data-i18n="crop_done">Xong</button>
-          <button class="tbtn color-btn needs-sel text-only" id="tb-color" data-i18n-title="text_color" title="Màu chữ"><span class="a">A</span><span class="bar" id="tb-color-bar"></span></button>
-          <button class="tbtn needs-sel text-only" id="tb-bold" data-i18n-title="bold_title" title="Đậm (Ctrl+B)"><span class="glyph" style="font-weight:800">B</span></button>
-          <button class="tbtn needs-sel text-only" id="tb-italic" data-i18n-title="italic_title" title="Nghiêng (Ctrl+I)"><span class="glyph" style="font-style:italic;font-family:Georgia,serif">I</span></button>
-          <button class="tbtn needs-sel text-only" id="tb-underline" data-i18n-title="underline_title" title="Gạch chân (Ctrl+U)"><span class="glyph" style="text-decoration:underline">U</span></button>
-          <button class="tbtn needs-sel text-only" id="tb-strike" data-i18n-title="strike_title" title="Gạch ngang"><span class="glyph" style="text-decoration:line-through">S</span></button>
-          <button class="tbtn needs-sel text-only" id="tb-case" data-i18n-title="case_title" title="Chữ HOA"><span class="glyph" style="font-size:13px">aA</span></button>
-          <button class="tbtn needs-sel text-only" id="tb-link" data-i18n-title="link_title" title="Chèn / sửa liên kết (Ctrl+K)"><svg class="icon"><use href="#i-link"/></svg></button>
+          <button class="tbtn color-btn needs-sel text-only" id="tb-color" data-i18n-title="text_color" title="Text color"><span class="a">A</span><span class="bar" id="tb-color-bar"></span></button>
+          <button class="tbtn needs-sel text-only" id="tb-bold" data-i18n-title="bold_title" title="Bold (Ctrl+B)"><span class="glyph" style="font-weight:800">B</span></button>
+          <button class="tbtn needs-sel text-only" id="tb-italic" data-i18n-title="italic_title" title="Italic (Ctrl+I)"><span class="glyph" style="font-style:italic;font-family:Georgia,serif">I</span></button>
+          <button class="tbtn needs-sel text-only" id="tb-underline" data-i18n-title="underline_title" title="Underline (Ctrl+U)"><span class="glyph" style="text-decoration:underline">U</span></button>
+          <button class="tbtn needs-sel text-only" id="tb-strike" data-i18n-title="strike_title" title="Strikethrough"><span class="glyph" style="text-decoration:line-through">S</span></button>
+          <button class="tbtn needs-sel text-only" id="tb-case" data-i18n-title="case_title" title="Uppercase"><span class="glyph" style="font-size:13px">aA</span></button>
+          <button class="tbtn needs-sel text-only" id="tb-link" data-i18n-title="link_title" title="Insert / edit link (Ctrl+K)"><svg class="icon"><use href="#i-link"/></svg></button>
           <div class="ctx-sep needs-sel"></div>
-          <button class="tbtn needs-sel text-only" id="tb-align" data-i18n-title="align_title" title="Căn lề"><svg class="icon"><use href="#i-al-left"/></svg></button>
-          <button class="tbtn needs-sel text-only" id="tb-spacing" data-i18n-title="spacing_title" title="Khoảng cách"><svg class="icon"><use href="#i-spacing"/></svg></button>
-          <button class="tbtn needs-sel" id="tb-opacity" data-i18n-title="opacity_title" title="Độ trong suốt"><svg class="icon"><use href="#i-opacity"/></svg></button>
-          <button class="tbtn needs-sel" id="tb-fx" data-i18n-title="fx_title" title="Hiệu ứng khi hiện (trình chiếu)"><svg class="icon"><use href="#i-play"/></svg></button>
+          <button class="tbtn needs-sel text-only" id="tb-align" data-i18n-title="align_title" title="Alignment"><svg class="icon"><use href="#i-al-left"/></svg></button>
+          <button class="tbtn needs-sel text-only" id="tb-spacing" data-i18n-title="spacing_title" title="Spacing"><svg class="icon"><use href="#i-spacing"/></svg></button>
+          <button class="tbtn needs-sel" id="tb-opacity" data-i18n-title="opacity_title" title="Opacity"><svg class="icon"><use href="#i-opacity"/></svg></button>
+          <button class="tbtn needs-sel" id="tb-fx" data-i18n-title="fx_title" title="Entrance effect (presenting)"><svg class="icon"><use href="#i-play"/></svg></button>
           <div class="ctx-sep needs-sel"></div>
-          <button class="tbtn label needs-sel" id="tb-box" data-i18n-title="box_btn_title" title="Chỉnh khung: khoảng cách, nền, viền, bo góc, bóng"><svg class="icon"><use href="#i-box"/></svg><span data-i18n="box_btn">Khung</span></button>
-          <button class="tbtn needs-sel" id="tb-clear" data-i18n-title="clear_title" title="Xoá định dạng đã sửa"><svg class="icon"><use href="#i-eraser"/></svg></button>
+          <button class="tbtn label needs-sel" id="tb-box" data-i18n-title="box_btn_title" title="Box styles: padding, margin, bg, border, radius, shadow"><svg class="icon"><use href="#i-box"/></svg><span data-i18n="box_btn">Khung</span></button>
+          <button class="tbtn needs-sel" id="tb-clear" data-i18n-title="clear_title" title="Clear formatting"><svg class="icon"><use href="#i-eraser"/></svg></button>
         </div>
         <div class="pop" id="pop-spacing" hidden>
-          <label><span data-i18n="letter_spacing">Khoảng cách chữ</span> <output id="ls-out">0</output></label>
+          <label><span data-i18n="letter_spacing">Letter spacing</span> <output id="ls-out">0</output></label>
           <input type="range" id="ls-range" min="-100" max="500" step="5">
-          <label><span data-i18n="line_height">Giãn dòng</span> <output id="lh-out">1.2</output></label>
+          <label><span data-i18n="line_height">Line height</span> <output id="lh-out">1.2</output></label>
           <input type="range" id="lh-range" min="0.7" max="2.6" step="0.05">
         </div>
         <div class="pop img-pop" id="pop-img" hidden>
-          <button class="btn-primary" id="img-upload" data-i18n="upload_img"><svg class="icon sm"><use href="#i-laptop"/></svg>Tải ảnh từ máy tính</button>
-          <div class="hint" style="margin:6px 0 14px" data-i18n="img_drop_hint">Hoặc kéo-thả file ảnh thẳng lên ảnh trên trang.</div>
-          <label data-i18n="doc_img_label">Dùng ảnh có trong tài liệu</label>
+          <button class="btn-primary" id="img-upload" data-i18n="upload_img"><svg class="icon sm"><use href="#i-laptop"/></svg>Upload image from computer</button>
+          <div class="hint" style="margin:6px 0 14px" data-i18n="img_drop_hint">Or drag &amp; drop image file directly onto the image on page.</div>
+          <label data-i18n="doc_img_label">Use image from document</label>
           <div class="img-grid" id="img-grid"></div>
-          <label style="margin-top:14px" data-i18n="paste_img_link">Dán link ảnh</label>
-          <div class="url-row"><input id="img-url" placeholder="https://…" autocomplete="off" spellcheck="false"><button class="btn-soft" id="img-url-apply" data-i18n="use_btn">Dùng</button></div>
+          <label style="margin-top:14px" data-i18n="paste_img_link">Paste image link</label>
+          <div class="url-row"><input id="img-url" placeholder="https://…" autocomplete="off" spellcheck="false"><button class="btn-soft" id="img-url-apply" data-i18n="use_btn">Use</button></div>
         </div>
         <div class="pop link-pop" id="pop-alt" hidden>
-          <label data-i18n="alt_label">Mô tả ảnh</label>
-          <div class="hint" style="margin:-2px 0 8px" data-i18n="alt_hint">Dòng chữ hiện khi ảnh không tải được, và để trình đọc màn hình đọc lên.</div>
-          <input type="text" id="alt-input" data-i18n-placeholder="alt_placeholder" placeholder="VD: Logo công ty, biểu đồ doanh thu Q3…" autocomplete="off">
-          <div class="row"><span class="grow"></span><button class="btn-soft" id="alt-cancel" data-i18n="cancel_btn">Huỷ</button><button class="btn-primary" id="alt-apply" data-i18n="apply_btn">Áp dụng</button></div>
+          <label data-i18n="alt_label">Image description (alt text)</label>
+          <div class="hint" style="margin:-2px 0 8px" data-i18n="alt_hint">Text displayed when image fails to load, and read by screen readers.</div>
+          <input type="text" id="alt-input" data-i18n-placeholder="alt_placeholder" placeholder="e.g., Company logo, Q3 Revenue Chart…" autocomplete="off">
+          <div class="row"><span class="grow"></span><button class="btn-soft" id="alt-cancel" data-i18n="cancel_btn">Cancel</button><button class="btn-primary" id="alt-apply" data-i18n="apply_btn">Apply</button></div>
         </div>
         <div class="pop link-pop" id="pop-link" hidden>
-          <label><span data-i18n="link_label">Liên kết</span> <output id="link-mode"></output></label>
+          <label><span data-i18n="link_label">Link URL</span> <output id="link-mode"></output></label>
           <input type="text" id="link-url" placeholder="https://…, mailto:…, #muc-trong-trang" autocomplete="off" spellcheck="false">
-          <label class="check"><input type="checkbox" id="link-blank"> <span data-i18n="link_blank">Mở trong tab mới</span></label>
-          <div class="row"><button class="btn-unlink" id="link-remove" data-i18n="link_remove">Gỡ liên kết</button><span class="grow"></span><button class="btn-soft" id="link-cancel" data-i18n="cancel_btn">Huỷ</button><button class="btn-primary" id="link-apply" data-i18n="apply_btn">Áp dụng</button></div>
+          <label class="check"><input type="checkbox" id="link-blank"> <span data-i18n="link_blank">Open in new tab</span></label>
+          <div class="row"><button class="btn-unlink" id="link-remove" data-i18n="link_remove">Remove link</button><span class="grow"></span><button class="btn-soft" id="link-cancel" data-i18n="cancel_btn">Cancel</button><button class="btn-primary" id="link-apply" data-i18n="apply_btn">Apply</button></div>
         </div>
         <div class="pop note-pop" id="pop-note" hidden>
           <label data-i18n="note_label">Feedback cho AI Agent</label>
           <div class="target" id="note-target"></div>
-          <textarea id="note-input" data-i18n-placeholder="note_placeholder" placeholder="VD: đổi số liệu thành Q3, rút gọn còn 1 dòng, thay icon…"></textarea>
-          <div class="row"><button class="btn-soft" id="note-cancel" data-i18n="cancel_btn">Huỷ</button><button class="btn-primary" id="note-save" data-i18n="note_save_btn">Lưu feedback</button></div>
+          <textarea id="note-input" data-i18n-placeholder="note_placeholder" placeholder="e.g., change metric to Q3, shorten to 1 line, replace icon…"></textarea>
+          <div class="row"><button class="btn-soft" id="note-cancel" data-i18n="cancel_btn">Cancel</button><button class="btn-primary" id="note-save" data-i18n="note_save_btn">Save feedback</button></div>
         </div>
         <div class="pop" id="pop-opacity" hidden>
-          <label><span data-i18n="opacity_label">Độ trong suốt</span> <output id="op-out">100</output></label>
+          <label><span data-i18n="opacity_label">Opacity</span> <output id="op-out">100</output></label>
           <input type="range" id="op-range" min="0" max="100" step="1">
         </div>
 
         <div class="pop pop-fx" id="pop-fx" hidden>
-          <label><span data-i18n="fx_label">Hiệu ứng khi hiện</span></label>
+          <label><span data-i18n="fx_label">Entrance effect</span></label>
           <select id="fx-preset">
-            <option value="" data-i18n="fx_none">Không có</option>
+            <option value="" data-i18n="fx_none">None</option>
             <option value="fade-in">Fade in</option><option value="fade-up">Fade up</option>
             <option value="zoom-in">Zoom in</option><option value="slide-left">Slide left</option>
             <option value="count-up">Count up</option>
           </select>
           <div class="fx-grid">
-            <label><span data-i18n="fx_delay">Trễ (ms)</span><input type="number" id="fx-delay" min="0" step="50" placeholder="0"></label>
-            <label><span data-i18n="fx_dur">Thời lượng (ms)</span><input type="number" id="fx-dur" min="50" step="50" placeholder="700"></label>
-            <label><span data-i18n="fx_stagger">Lần lượt từng con (ms)</span><input type="number" id="fx-stagger" min="0" step="50" placeholder="0"></label>
+            <label><span data-i18n="fx_delay">Delay (ms)</span><input type="number" id="fx-delay" min="0" step="50" placeholder="0"></label>
+            <label><span data-i18n="fx_dur">Duration (ms)</span><input type="number" id="fx-dur" min="50" step="50" placeholder="700"></label>
+            <label><span data-i18n="fx_stagger">Children one by one (ms)</span><input type="number" id="fx-stagger" min="0" step="50" placeholder="0"></label>
           </div>
-          <button class="btn-soft" id="fx-preview" data-i18n="fx_preview">Xem thử</button>
+          <button class="btn-soft" id="fx-preview" data-i18n="fx_preview">Preview</button>
           <div class="fx-doc" id="fx-doc" hidden><span id="fx-doc-state"></span><button class="btn-soft" id="fx-doc-btn"></button></div>
         </div>
 
         <div class="scroller" id="scroller">
-          <div class="sizer" id="sizer"><div class="sheet" id="sheet"><iframe id="frame" title="Tài liệu đang sửa" data-i18n-title="frame_title"></iframe></div></div>
+          <div class="sizer" id="sizer"><div class="sheet" id="sheet"><iframe id="frame" title="Document editing view" data-i18n-title="frame_title"></iframe></div></div>
         </div>
 
         <div class="pins" id="pins"></div>
@@ -283,47 +283,47 @@
             <span class="size-tip" id="size-tip"></span>
           </div>
           <div class="pill" id="pill">
-            <button class="move" data-h="move" data-i18n-title="drag_move" title="Kéo để di chuyển"><svg class="icon"><use href="#i-move"/></svg></button>
+            <button class="move" data-h="move" data-i18n-title="drag_move" title="Drag to move"><svg class="icon"><use href="#i-move"/></svg></button>
             <span class="sep"></span>
-            <button id="pill-parent" data-i18n-title="select_parent" title="Chọn khung bao quanh"><svg class="icon"><use href="#i-parent"/></svg></button>
+            <button id="pill-parent" data-i18n-title="select_parent" title="Select parent frame"><svg class="icon"><use href="#i-parent"/></svg></button>
             <button id="pill-note" data-i18n-title="feedback_pill_title" title="Feedback cho AI Agent (Ctrl+Shift+M)"><svg class="icon"><use href="#i-comment"/></svg></button>
-            <button id="pill-dup" data-i18n-title="dup_title" title="Nhân bản (Ctrl+D)"><svg class="icon"><use href="#i-copy"/></svg></button>
-            <button id="pill-del" class="danger" data-i18n-title="del_title" title="Xoá (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
-            <button id="pill-more" data-i18n-title="more_title" title="Thêm"><svg class="icon"><use href="#i-more"/></svg></button>
+            <button id="pill-dup" data-i18n-title="dup_title" title="Duplicate (Ctrl+D)"><svg class="icon"><use href="#i-copy"/></svg></button>
+            <button id="pill-del" class="danger" data-i18n-title="del_title" title="Delete (Delete)"><svg class="icon"><use href="#i-trash"/></svg></button>
+            <button id="pill-more" data-i18n-title="more_title" title="More options"><svg class="icon"><use href="#i-more"/></svg></button>
           </div>
           <div class="menu" id="pill-menu" hidden>
-            <button id="m-alt" class="img-menu" data-i18n="m_alt"><svg class="icon sm"><use href="#i-type"/></svg>Mô tả ảnh</button>
-            <button id="m-flip" class="img-menu" data-i18n="m_flip"><svg class="icon sm"><use href="#i-flip"/></svg>Lật ngang</button>
-            <button id="m-img-reset" class="img-menu" data-i18n="m_img_reset"><svg class="icon sm"><use href="#i-undo"/></svg>Đặt lại ảnh gốc</button>
-            <button id="m-up"><svg class="icon sm"><use href="#i-caret-up"/></svg><span data-i18n="m_up">Đưa lên trên</span><kbd>Alt+↑</kbd></button>
-            <button id="m-down"><svg class="icon sm"><use href="#i-caret-down"/></svg><span data-i18n="m_down">Đưa xuống dưới</span><kbd>Alt+↓</kbd></button>
-            <button id="m-copy-style"><svg class="icon sm"><use href="#i-brush"/></svg><span data-i18n="m_copy_style">Sao chép kiểu</span><kbd>Ctrl+Alt+C</kbd></button>
-            <button id="m-paste-style"><svg class="icon sm"><use href="#i-brush"/></svg><span data-i18n="m_paste_style">Dán kiểu</span><kbd>Ctrl+Alt+V</kbd></button>
-            <button id="m-clear"><svg class="icon sm"><use href="#i-eraser"/></svg><span data-i18n="m_clear">Xoá định dạng đã sửa</span></button>
+            <button id="m-alt" class="img-menu" data-i18n="m_alt"><svg class="icon sm"><use href="#i-type"/></svg>Image alt text</button>
+            <button id="m-flip" class="img-menu" data-i18n="m_flip"><svg class="icon sm"><use href="#i-flip"/></svg>Flip horizontal</button>
+            <button id="m-img-reset" class="img-menu" data-i18n="m_img_reset"><svg class="icon sm"><use href="#i-undo"/></svg>Reset original image</button>
+            <button id="m-up"><svg class="icon sm"><use href="#i-caret-up"/></svg><span data-i18n="m_up">Bring forward</span><kbd>Alt+↑</kbd></button>
+            <button id="m-down"><svg class="icon sm"><use href="#i-caret-down"/></svg><span data-i18n="m_down">Send backward</span><kbd>Alt+↓</kbd></button>
+            <button id="m-copy-style"><svg class="icon sm"><use href="#i-brush"/></svg><span data-i18n="m_copy_style">Copy style</span><kbd>Ctrl+Alt+C</kbd></button>
+            <button id="m-paste-style"><svg class="icon sm"><use href="#i-brush"/></svg><span data-i18n="m_paste_style">Paste style</span><kbd>Ctrl+Alt+V</kbd></button>
+            <button id="m-clear"><svg class="icon sm"><use href="#i-eraser"/></svg><span data-i18n="m_clear">Clear formatting</span></button>
           </div>
         </div>
 
         <div class="empty-state">
           <div class="empty-card">
             <div class="badge"><svg class="icon lg"><use href="#i-file"/></svg></div>
-            <h3 data-i18n="empty_h3">Mở một tài liệu HTML</h3>
-            <p data-i18n="empty_p">Chọn file trong workspace, mở từ máy tính, hoặc kéo-thả file vào đây.</p>
-            <button class="btn-primary" id="empty-open" data-i18n="empty_btn"><svg class="icon sm"><use href="#i-folder"/></svg>Chọn tài liệu</button>
+            <h3 data-i18n="empty_h3">Open an HTML document</h3>
+            <p data-i18n="empty_p">Select a file from workspace, open from computer, or drag &amp; drop here.</p>
+            <button class="btn-primary" id="empty-open" data-i18n="empty_btn"><svg class="icon sm"><use href="#i-folder"/></svg>Select Document</button>
           </div>
         </div>
         <div class="findbar" id="findbar" hidden>
           <div class="find-row">
-            <input type="text" id="find-q" data-i18n-placeholder="find_ph" placeholder="Tìm trong tài liệu" autocomplete="off" spellcheck="false">
+            <input type="text" id="find-q" data-i18n-placeholder="find_ph" placeholder="Find in document" autocomplete="off" spellcheck="false">
             <span class="find-count" id="find-count"></span>
-            <label class="find-case" data-i18n-title="find_case" title="Phân biệt chữ hoa / thường"><input type="checkbox" id="find-case">Aa</label>
-            <button class="icon-btn" id="find-prev" data-i18n-title="find_prev" title="Kết quả trước (Shift+Enter)"><svg class="icon sm"><use href="#i-caret-up"/></svg></button>
-            <button class="icon-btn" id="find-next" data-i18n-title="find_next" title="Kết quả sau (Enter)"><svg class="icon sm"><use href="#i-caret-down"/></svg></button>
-            <button class="icon-btn" id="find-close" data-i18n-title="close" title="Đóng (Esc)"><svg class="icon sm"><use href="#i-x"/></svg></button>
+            <label class="find-case" data-i18n-title="find_case" title="Match case"><input type="checkbox" id="find-case">Aa</label>
+            <button class="icon-btn" id="find-prev" data-i18n-title="find_prev" title="Previous match (Shift+Enter)"><svg class="icon sm"><use href="#i-caret-up"/></svg></button>
+            <button class="icon-btn" id="find-next" data-i18n-title="find_next" title="Next match (Enter)"><svg class="icon sm"><use href="#i-caret-down"/></svg></button>
+            <button class="icon-btn" id="find-close" data-i18n-title="close" title="Close"><svg class="icon sm"><use href="#i-x"/></svg></button>
           </div>
           <div class="find-row">
-            <input type="text" id="find-r" data-i18n-placeholder="replace_ph" placeholder="Thay bằng" autocomplete="off" spellcheck="false">
+            <input type="text" id="find-r" data-i18n-placeholder="replace_ph" placeholder="Replace with" autocomplete="off" spellcheck="false">
             <button class="btn-soft" id="find-rep" data-i18n="replace_one">Thay</button>
-            <button class="btn-soft" id="find-all" data-i18n="replace_all">Thay tất cả</button>
+            <button class="btn-soft" id="find-all" data-i18n="replace_all">Replace all</button>
           </div>
         </div>
         <div class="loading" id="loading"><div class="spinner"></div></div>
@@ -332,29 +332,29 @@
 
       <div class="filmstrip" id="filmstrip" hidden></div>
       <div class="notes" id="notes" hidden>
-        <div class="notes-head"><span id="notes-title" data-i18n="notes_drawer_title">Ghi chú</span><button class="icon-btn" id="notes-close" title="Đóng"><svg class="icon sm"><use href="#i-x"/></svg></button></div>
-        <textarea id="notes-text" data-i18n-placeholder="notes_drawer_placeholder" placeholder="Slide này không có ghi chú"></textarea>
+        <div class="notes-head"><span id="notes-title" data-i18n="notes_drawer_title">Speaker Notes</span><button class="icon-btn" id="notes-close" data-i18n-title="close" title="Close"><svg class="icon sm"><use href="#i-x"/></svg></button></div>
+        <textarea id="notes-text" data-i18n-placeholder="notes_drawer_placeholder" placeholder="No notes for this slide"></textarea>
       </div>
       <footer class="statusbar">
         <button class="sb-btn sb-trust" id="sb-trust" hidden></button>
-        <button class="sb-btn" id="sb-notes" hidden data-i18n="speaker_notes"><svg class="icon sm"><use href="#i-notes"/></svg>Ghi chú thuyết trình</button>
-        <select class="sb-select" id="sb-mode" data-i18n-title="sb_mode_title" title="Cách hiển thị tài liệu">
-          <option value="auto" data-i18n="sb_auto">Tự nhận dạng</option><option value="deck" data-i18n="sb_deck">Dạng slide</option><option value="page" data-i18n="sb_page">Dạng trang web</option>
+        <button class="sb-btn" id="sb-notes" hidden data-i18n="speaker_notes"><svg class="icon sm"><use href="#i-notes"/></svg>Speaker notes</button>
+        <select class="sb-select" id="sb-mode" data-i18n-title="sb_mode_title" title="Document display mode">
+          <option value="auto" data-i18n="sb_auto">Auto detect</option><option value="deck" data-i18n="sb_deck">Slide deck</option><option value="page" data-i18n="sb_page">Web page</option>
         </select>
-        <select class="sb-select" id="sb-width" data-i18n-title="sb_width_title" title="Bề rộng khung trang" hidden>
+        <select class="sb-select" id="sb-width" data-i18n-title="sb_width_title" title="Page viewport width" hidden>
           <option value="1920">Full HD 1920</option><option value="1600" selected>Desktop 1600</option><option value="1440">Desktop 1440</option><option value="1280">Desktop 1280</option><option value="1024">Tablet 1024</option><option value="768">Tablet 768</option><option value="390">Mobile 390</option>
         </select>
-        <button class="sb-btn" id="sb-find" data-i18n-title="find_title" title="Tìm & thay (Ctrl+F)"><svg class="icon sm"><use href="#i-search"/></svg><span data-i18n="find_btn">Tìm & thay</span></button>
-        <button class="sb-btn warn" id="sb-overflow" hidden data-i18n-title="overflow_title" title="Chữ bị tràn khỏi khung — nhấp để xem từng chỗ"></button>
+        <button class="sb-btn" id="sb-find" data-i18n-title="find_title" title="Find &amp; replace (Ctrl+F)"><svg class="icon sm"><use href="#i-search"/></svg><span data-i18n="find_btn">Find &amp; replace & thay</span></button>
+        <button class="sb-btn warn" id="sb-overflow" hidden data-i18n-title="overflow_title" title="Text overflows its frame — click to step through"></button>
         <div class="spacer"></div>
-        <input type="range" class="zoom" id="zoom" min="10" max="300" value="100" data-i18n-title="zoom_title" title="Thu phóng">
-        <button class="sb-btn zoom-pct" id="zoom-pct" data-i18n-title="zoom_pct_title" title="Vừa màn hình (Ctrl+0)">100%</button>
-        <button class="sb-btn" id="sb-fit" data-i18n-title="sb_fit_title" title="Vừa màn hình"><svg class="icon sm"><use href="#i-fit"/></svg></button>
+        <input type="range" class="zoom" id="zoom" min="10" max="300" value="100" data-i18n-title="zoom_title" title="Zoom">
+        <button class="sb-btn zoom-pct" id="zoom-pct" data-i18n-title="zoom_pct_title" title="Fit to screen (Ctrl+0)">100%</button>
+        <button class="sb-btn" id="sb-fit" data-i18n-title="sb_fit_title" title="Fit to screen"><svg class="icon sm"><use href="#i-fit"/></svg></button>
         <span class="sb-btn page-count" id="page-count" hidden></span>
-        <button class="sb-btn" id="sb-prev" data-i18n-title="sb_prev_title" title="Trang trước" hidden><svg class="icon sm"><use href="#i-left"/></svg></button>
+        <button class="sb-btn" id="sb-prev" data-i18n-title="sb_prev_title" title="Previous page" hidden><svg class="icon sm"><use href="#i-left"/></svg></button>
         <button class="sb-btn" id="sb-next" data-i18n-title="sb_next_title" title="Trang sau" hidden><svg class="icon sm"><use href="#i-right"/></svg></button>
-        <button class="sb-btn" id="sb-full" data-i18n-title="sb_full_title" title="Toàn màn hình"><svg class="icon sm"><use href="#i-expand"/></svg></button>
-        <button class="sb-btn" id="sb-help" data-i18n-title="sb_help_title" title="Phím tắt"><svg class="icon sm"><use href="#i-help"/></svg></button>
+        <button class="sb-btn" id="sb-full" data-i18n-title="sb_full_title" title="Fullscreen"><svg class="icon sm"><use href="#i-expand"/></svg></button>
+        <button class="sb-btn" id="sb-help" data-i18n-title="sb_help_title" title="Shortcuts"><svg class="icon sm"><use href="#i-help"/></svg></button>
       </footer>
     </div>
   </div>
@@ -362,58 +362,58 @@
 
 <div class="shield" id="shield"></div>
 <div class="drag-ghost" id="drag-ghost" hidden></div>
-<div class="drop-veil" id="drop-veil" data-i18n="drop_veil">Thả file .html để mở</div>
+<div class="drop-veil" id="drop-veil" data-i18n="drop_veil">Drop .html file to open</div>
 <input type="file" id="file-input" accept=".html,.htm,text/html" hidden>
 <input type="file" id="img-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif" hidden>
 
 <div class="modal-bg" id="modal-conflict">
   <div class="modal">
-    <div class="modal-h"><h3 data-i18n="conflict_h">File đã thay đổi trên đĩa</h3></div>
-    <div class="modal-b" data-i18n="conflict_b">Có ai đó (hoặc một script khác) đã sửa file này sau khi bạn mở. Lưu đè sẽ làm mất thay đổi đó — bản cũ vẫn được sao lưu trong thư mục .htmldeck_bak.</div>
-    <div class="modal-f"><button class="btn-soft" data-act="cancel" data-i18n="cancel_btn">Huỷ</button><button class="btn-soft" data-act="download" data-i18n="conflict_dl">Tải bản của tôi</button><button class="btn-danger" data-act="force" data-i18n="conflict_force">Vẫn ghi đè</button></div>
+    <div class="modal-h"><h3 data-i18n="conflict_h">File changed on disk</h3></div>
+    <div class="modal-b" data-i18n="conflict_b">Someone (or another script) modified this file after you opened it. Overwriting will lose those changes — a backup is kept in .htmldeck_bak.</div>
+    <div class="modal-f"><button class="btn-soft" data-act="cancel" data-i18n="cancel_btn">Cancel</button><button class="btn-soft" data-act="download" data-i18n="conflict_dl">Download my version</button><button class="btn-danger" data-act="force" data-i18n="conflict_force">Overwrite anyway</button></div>
   </div>
 </div>
 <div class="modal-bg" id="modal-reformat">
   <div class="modal">
-    <div class="modal-h"><h3 data-i18n="reformat_h">Lần lưu này sẽ ghi lại cả file</h3></div>
-    <div class="modal-b" data-i18n="reformat_b">Không vá riêng được vùng vừa sửa, nên file sẽ được ghi lại toàn bộ. Nội dung giữ nguyên, nhưng cách xuống dòng, dấu nháy… ở những chỗ bạn không sửa có thể bị đổi. File mở qua server vẫn có bản sao lưu cũ.</div>
-    <div class="modal-f"><button class="btn-soft" data-act="cancel" data-i18n="cancel_btn">Huỷ</button><button class="btn-soft" data-act="download" data-i18n="reformat_dl">Tải bản sao về máy</button><button class="btn-danger" data-act="save" data-i18n="reformat_save">Vẫn lưu</button></div>
+    <div class="modal-h"><h3 data-i18n="reformat_h">This save rewrites the whole file</h3></div>
+    <div class="modal-b" data-i18n="reformat_b">Your edits could not be patched in place, so the whole file will be rewritten. Content stays the same, but line breaks, quotes… outside your edits may change. Files opened through the server keep a backup of the old version.</div>
+    <div class="modal-f"><button class="btn-soft" data-act="cancel" data-i18n="cancel_btn">Cancel</button><button class="btn-soft" data-act="download" data-i18n="reformat_dl">Download a copy</button><button class="btn-danger" data-act="save" data-i18n="reformat_save">Save anyway</button></div>
   </div>
 </div>
 <div class="modal-bg" id="modal-fx">
   <div class="modal">
     <div class="modal-h"><h3 id="fx-modal-h"></h3></div>
     <div class="modal-b"><p id="fx-modal-b"></p><pre class="fx-diff" id="fx-diff"></pre></div>
-    <div class="modal-f"><button class="btn-soft" data-act="cancel" data-i18n="cancel_btn">Huỷ</button><button class="btn-primary" data-act="ok" id="fx-modal-ok"></button></div>
+    <div class="modal-f"><button class="btn-soft" data-act="cancel" data-i18n="cancel_btn">Cancel</button><button class="btn-primary" data-act="ok" id="fx-modal-ok"></button></div>
   </div>
 </div>
 <div class="modal-bg" id="modal-keys">
   <div class="modal">
-    <div class="modal-h"><h3 data-i18n="shortcuts_h">Phím tắt</h3><button class="icon-btn" data-act="cancel" data-i18n-title="close"><svg class="icon"><use href="#i-x"/></svg></button></div>
+    <div class="modal-h"><h3 data-i18n="shortcuts_h">Keyboard Shortcuts</h3><button class="icon-btn" data-act="cancel" data-i18n-title="close"><svg class="icon"><use href="#i-x"/></svg></button></div>
     <div class="modal-b keys">
-      <span data-i18n="k_save">Lưu</span><kbd>Ctrl + S</kbd>
-      <span data-i18n="k_undo_redo">Hoàn tác / Làm lại</span><kbd>Ctrl + Z · Ctrl + Shift + Z</kbd>
-      <span data-i18n="k_esc">Thoát sửa chữ → chọn khối</span><kbd>Esc</kbd>
-      <span data-i18n="k_enter">Sửa chữ của khối đang chọn</span><kbd>Enter</kbd>
-      <span data-i18n="k_del_dup">Xoá / Nhân bản khối</span><kbd>Delete · Ctrl + D</kbd>
-      <span data-i18n="k_nudge">Dịch chuyển khối (1px / 10px)</span><kbd>← → ↑ ↓ · Shift</kbd>
-      <span data-i18n="k_alt_click">Chọn cả khung bao quanh (thẻ, cột…)</span><kbd data-i18n="k_alt_click_kbd">Alt + nhấp</kbd>
+      <span data-i18n="k_save">Save</span><kbd>Ctrl + S</kbd>
+      <span data-i18n="k_undo_redo">Undo / Redo</span><kbd>Ctrl + Z · Ctrl + Shift + Z</kbd>
+      <span data-i18n="k_esc">Exit text editing → select block</span><kbd>Esc</kbd>
+      <span data-i18n="k_enter">Edit text of selected block</span><kbd>Enter</kbd>
+      <span data-i18n="k_del_dup">Delete / Duplicate block</span><kbd>Delete · Ctrl + D</kbd>
+      <span data-i18n="k_nudge">Nudge block (1px / 10px)</span><kbd>← → ↑ ↓ · Shift</kbd>
+      <span data-i18n="k_alt_click">Select parent frame (card, column…)</span><kbd data-i18n="k_alt_click_kbd">Alt + click</kbd>
       <span data-i18n="k_ai_note">Feedback cho AI Agent</span><kbd>Ctrl + Shift + M</kbd>
-      <span data-i18n="k_link">Chèn / sửa liên kết</span><kbd>Ctrl + K</kbd>
-      <span data-i18n="k_reorder">Đưa khối lên / xuống</span><kbd>Alt + ↑ / ↓</kbd>
-      <span data-i18n="k_nav">Sang trang</span><kbd data-i18n="k_nav_kbd">← → khi chưa chọn gì</kbd>
-      <span data-i18n="k_zoom">Thu phóng</span><kbd data-i18n="k_zoom_kbd">Ctrl + / − / 0 · Ctrl + cuộn</kbd>
-      <span data-i18n="k_copy_paste_style">Sao chép / Dán kiểu</span><kbd>Ctrl + Alt + C / V</kbd>
-      <span data-i18n="k_format">Đậm / Nghiêng / Gạch chân</span><kbd>Ctrl + B / I / U</kbd>
-      <span data-i18n="k_find">Tìm trong tài liệu</span><kbd>Ctrl + F</kbd>
-      <span data-i18n="k_replace">Tìm & thay</span><kbd>Ctrl + H</kbd>
-      <span data-i18n="k_find_step">Kết quả sau / trước</span><kbd>Enter · Shift + Enter</kbd>
+      <span data-i18n="k_link">Insert / edit link</span><kbd>Ctrl + K</kbd>
+      <span data-i18n="k_reorder">Move block up / down</span><kbd>Alt + ↑ / ↓</kbd>
+      <span data-i18n="k_nav">Sang trang</span><kbd data-i18n="k_nav_kbd">← → when unselected</kbd>
+      <span data-i18n="k_zoom">Zoom in / out / fit</span><kbd data-i18n="k_zoom_kbd">Ctrl + / − / 0 · Ctrl + wheel</kbd>
+      <span data-i18n="k_copy_paste_style">Copy / Paste style</span><kbd>Ctrl + Alt + C / V</kbd>
+      <span data-i18n="k_format">Bold / Italic / Underline</span><kbd>Ctrl + B / I / U</kbd>
+      <span data-i18n="k_find">Find in document</span><kbd>Ctrl + F</kbd>
+      <span data-i18n="k_replace">Find &amp; replace & thay</span><kbd>Ctrl + H</kbd>
+      <span data-i18n="k_find_step">Next / previous match</span><kbd>Enter · Shift + Enter</kbd>
     </div>
   </div>
 </div>
 
 <div class="lang-menu" id="pop-lang" role="menu">
-  <div class="lang-title" data-i18n="lang_select_title">Chọn ngôn ngữ</div>
+  <div class="lang-title" data-i18n="lang_select_title">Select Language</div>
   <button class="lang-opt" data-lang="vi">
     <span class="flag">🇻🇳</span>
     <span class="name">Tiếng Việt</span>

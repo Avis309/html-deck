@@ -298,7 +298,7 @@ def test_concurrent_saves_with_same_mtime_only_one_wins(root):
 
 
 def _note(**over):
-    base = {"id": "n1", "note": "Đổi tiêu đề", "status": "open", "created": "2026-09-27", "selector": "#h1", "tag": "h1", "text": "Game Growth", "line": 3, "slide": 0}
+    base = {"id": "n1", "note": "Rename the title", "status": "open", "created": "2026-09-27", "selector": "#h1", "tag": "h1", "text": "Game Growth", "line": 3, "slide": 0}
     base.update(over)
     return base
 
@@ -307,7 +307,7 @@ def test_notes_roundtrip_live_beside_document_not_inside(root):
     target = root / "output/deck/a.html"
     res = ed.write_notes(target, [_note()], root)
     assert res["count"] == 1 and res["notes_file"] == f"output/deck/{ed.NOTES_DIR_NAME}/a.html.json"
-    assert ed.read_notes(target)[0]["note"] == "Đổi tiêu đề"
+    assert ed.read_notes(target)[0]["note"] == "Rename the title"
     assert target.read_text(encoding="utf-8") == "<p>a</p>"
 
 
@@ -322,7 +322,7 @@ def test_list_notes_relocates_line_by_text(root):
     target = root / "output/deck/a.html"
     target.write_text("<html>\n<body>\n\n<h1>Game Growth</h1>\n</body></html>", encoding="utf-8")
     out = ln.format_notes(target, [_note(), _note(id="n2", status="done")], show_all=False)
-    assert "dòng 4" in out and "slide 1" in out and "n2" not in out
+    assert "line 4" in out and "slide 1" in out and "n2" not in out
 
 
 def test_list_notes_prefers_occurrence_nearest_pinned_line():
@@ -397,9 +397,9 @@ def test_list_notes_prints_region_and_targets(root):
     target = root / "output/deck/a.html"
     target.write_text("<section>\n<h2 id=h2>Growth</h2>\n</section>", encoding="utf-8")
     out = ln.format_notes(target, [_region(), _region(id="r2", targets=[])], show_all=False)
-    assert "vùng x=80 y=120 rộng 600 cao 240" in out and "slide 1280×720" in out
-    assert "1) <h2> #h2 · dòng 2 · \"Growth\"" in out and "2) <img> #img" in out
-    assert "không có phần tử nào" in out
+    assert "region x=80 y=120 width 600 height 240" in out and "slide, 1280×720" in out
+    assert "1) <h2> #h2 · line 2 · \"Growth\"" in out and "2) <img> #img" in out
+    assert "elements in it: none" in out
 
 
 def test_notes_prompt_is_ready_to_paste(root):
@@ -407,7 +407,7 @@ def test_notes_prompt_is_ready_to_paste(root):
     target = root / "output/deck/a b.html"
     target.write_text("<h1>Game Growth</h1>", encoding="utf-8")
     out = ln.format_prompt(target, [_note(), _region(), _note(id="n9", status="done")], root)
-    assert out.startswith("Sửa output/deck/a b.html theo 2 ghi chú")
+    assert out.startswith("Edit output/deck/a b.html as asked in the 2 note(s)")
     assert "n9" not in out and "id=r1" in out and "#h2" in out
     assert "htmldeck-notes --file 'output/deck/a b.html' --done <id>" in out
 

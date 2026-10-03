@@ -40,7 +40,7 @@ Notes the user pins to elements, or to a region drawn on a slide, live in
 `.htmldeck_notes/<name>.json` beside the document.
 
 1. List open notes: `RUN notes --root "<workspace>" --file "<doc>"` — each shows an id, the current
-   line, a CSS selector, a text snippet and what the user wants. A region note ("vùng khoanh") also
+   line, a CSS selector, a text snippet and what the user wants. A region note also
    gives the area in CSS pixels of its slide (or section) and the elements found in it, each with
    a selector and line: the request applies to that whole area. `--prompt` prints the same notes as
    one ready-made request.
@@ -52,4 +52,3 @@ Notes the user pins to elements, or to a region drawn on a slide, live in
 ## Rules
 
 - Only documents inside the workspace. Never edit `.htmldeck_notes/` or `.htmldeck_bak/` (backups) by hand.
-- The tool prints Vietnamese; relay it in the user's language.

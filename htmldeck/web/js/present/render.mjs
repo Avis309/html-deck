@@ -167,7 +167,7 @@ export function renderPresentHTML(model, doctype, opts) {
   if (legacy) {
     slideIds.forEach((id, i) => {
       const s = root.querySelector(`[data-ed-id="${id}"]`);
-      if (!s) throw new Error(`slide ${id} không có trong model`);
+      if (!s) throw new Error(`slide ${id} is not in the model`);
       s.setAttribute('data-ed-slide', '');
       if (i === start) s.setAttribute('data-ed-cur', '');
       for (let n = s.parentElement; n && n !== root; n = n.parentElement) n.setAttribute('data-ed-slide-anc', '');

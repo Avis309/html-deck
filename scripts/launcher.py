@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 if sys.version_info < (3, 11):
-    sys.stderr.write(f"htmldeck: cần Python >= 3.11 (đang chạy {sys.version.split()[0]}) — "
-                     "cài từ https://www.python.org/downloads/ hoặc chạy: uv python install 3.12\n")
+    sys.stderr.write(f"htmldeck: needs Python >= 3.11 (running {sys.version.split()[0]}) — "
+                     "install it from https://www.python.org/downloads/ or run: uv python install 3.12\n")
     sys.exit(127)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))

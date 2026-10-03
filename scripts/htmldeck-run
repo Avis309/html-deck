@@ -6,5 +6,5 @@ for py in python3 python; do
     exec "$py" "$here/launcher.py" "$@"
   fi
 done
-echo "htmldeck: cần Python >= 3.11 — cài từ https://www.python.org/downloads/ hoặc chạy: uv python install 3.12" >&2
+echo "htmldeck: needs Python >= 3.11 — install it from https://www.python.org/downloads/ or run: uv python install 3.12" >&2
 exit 127

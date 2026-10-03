@@ -322,5 +322,5 @@ export function fxRuntime(win, opts) {
 
 // The inline block a document carries once FX is enabled.
 export function fxScriptSource() {
-  return `\n/* HtmlDeck FX v${FX_VERSION} — data-fx effects (Web Animations). Managed by HtmlDeck: "Tắt FX" removes it. */\n(${fxRuntime.toString()})(window);\n`;
+  return `\n/* HtmlDeck FX v${FX_VERSION} — data-fx effects (Web Animations). Managed by HtmlDeck: "Disable FX" removes it. */\n(${fxRuntime.toString()})(window);\n`;
 }

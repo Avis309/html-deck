@@ -19,7 +19,7 @@ function findPython() {
 function run(moduleName) {
   const python = findPython();
   if (!python) {
-    console.error('htmldeck: cần Python >= 3.11 — cài từ https://www.python.org/downloads/ hoặc chạy: uv python install 3.12');
+    console.error('htmldeck: needs Python >= 3.11 — install it from https://www.python.org/downloads/ or run: uv python install 3.12');
     process.exit(127);
   }
   const [cmd, pre] = python;
@@ -27,7 +27,7 @@ function run(moduleName) {
   const env = { ...process.env, PYTHONPATH: [PY_HOME, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter) };
   const child = spawn(cmd, [...pre, '-P', '-m', moduleName, ...process.argv.slice(2)], { stdio: 'inherit', env });
   child.on('error', (err) => {
-    console.error(`htmldeck: không chạy được ${cmd}: ${err.message}`);
+    console.error(`htmldeck: cannot run ${cmd}: ${err.message}`);
     process.exit(127);
   });
   // Ctrl-C already reaches the child through the terminal; only stay alive until it exits.
